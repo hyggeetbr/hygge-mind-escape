@@ -66,7 +66,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
               <Button
                 onClick={handleGoogleAuth}
                 variant="outline"
-                className="w-full py-6 border-hygge-stone/40 hover:bg-hygge-mist/50 hover:border-hygge-sage/60 transition-all duration-200"
+                className="w-full py-6 border-hygge-stone/40"
               >
                 <div className="flex items-center justify-center space-x-3">
                   <div className="w-5 h-5 bg-gradient-to-r from-blue-500 via-red-500 to-yellow-500 rounded-sm"></div>
@@ -78,7 +78,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
               <Button
                 onClick={() => setAuthMethod('phone')}
                 variant="outline"
-                className="w-full py-6 border-hygge-stone/40 hover:bg-hygge-mist/50 hover:border-hygge-sage/60 transition-all duration-200"
+                className="w-full py-6 border-hygge-stone/40"
               >
                 <div className="flex items-center justify-center space-x-3">
                   <Phone className="w-5 h-5 text-hygge-moss" />
@@ -90,7 +90,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
               <Button
                 onClick={() => setAuthMethod('email')}
                 variant="outline"
-                className="w-full py-6 border-hygge-stone/40 hover:bg-hygge-mist/50 hover:border-hygge-sage/60 transition-all duration-200"
+                className="w-full py-6 border-hygge-stone/40"
               >
                 <div className="flex items-center justify-center space-x-3">
                   <Mail className="w-5 h-5 text-hygge-moss" />
