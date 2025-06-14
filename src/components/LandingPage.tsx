@@ -25,22 +25,33 @@ const LandingPage = ({ onEnterApp }: LandingPageProps) => {
           Find peace in the digital chaos. Meditate, move mindfully, and rediscover meaningful content.
         </p>
         
-        {/* Floating bubble with tagline */}
+        {/* Circular transparent bubble */}
         <div className="relative flex justify-center">
           <button
             onClick={onEnterApp}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             className={`
-              relative bg-gradient-to-br from-hygge-sage to-hygge-moss 
-              text-hygge-cream font-medium px-8 py-4 rounded-full 
-              animate-float bubble-glow
+              relative w-48 h-48 
+              bg-gradient-to-br from-white/30 to-white/10 
+              backdrop-blur-sm border border-white/40
+              text-hygge-earth font-medium
+              rounded-full 
+              animate-float
               transition-all duration-300 ease-out
-              hover:scale-110 hover:shadow-lg
+              hover:scale-110 hover:shadow-xl hover:shadow-hygge-sage/30
+              flex items-center justify-center
               ${isHovered ? 'animate-pulse-soft' : ''}
             `}
+            style={{
+              boxShadow: `
+                0 8px 32px rgba(168, 181, 160, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.2)
+              `
+            }}
           >
-            <span className="relative z-10 text-lg md:text-xl">
+            <span className="relative z-10 text-lg md:text-xl text-center px-6">
               Escape the Brainrot
             </span>
             
