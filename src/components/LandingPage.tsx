@@ -12,7 +12,7 @@ const LandingPage = ({ onEnterApp }: LandingPageProps) => {
     <div className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute top-20 left-10 w-32 h-32 bg-hygge-sage/20 rounded-full blur-xl animate-pulse-soft"></div>
-      <div className="absolute bottom-32 right-16 w-24 h-24 bg-hygge-stone/30 rounded-full blur-lg animate-float"></div>
+      <div className="absolute bottom-32 right-16 w-24 h-24 bg-hygge-stone/30 rounded-full blur-lg"></div>
       <div className="absolute top-1/3 right-20 w-16 h-16 bg-hygge-sky/25 rounded-full blur-md animate-pulse-soft delay-1000"></div>
       
       {/* Main content */}
@@ -37,7 +37,6 @@ const LandingPage = ({ onEnterApp }: LandingPageProps) => {
               backdrop-blur-sm border border-white/40
               text-hygge-earth font-medium
               rounded-full 
-              animate-float
               transition-all duration-300 ease-out
               hover:scale-110 hover:shadow-xl hover:shadow-hygge-sage/30
               flex items-center justify-center
