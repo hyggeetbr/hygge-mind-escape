@@ -198,7 +198,7 @@ const TodaysReading = () => {
               </div>
               <Button
                 className="mt-2 w-full md:w-auto"
-                // Removed any custom bg/text - uses default
+                variant="default"
                 onClick={() => handleStartReading(article)}
                 disabled={isReading || sessionLoading}
               >
@@ -231,9 +231,9 @@ const TodaysReading = () => {
                   Time: <span>{Math.floor(readingSeconds / 60)}:{("0" + (readingSeconds % 60)).slice(-2)}</span>
                 </div>
                 <Button
-                  // Removed any custom bg/text - uses default
                   onClick={handleFinishReading}
                   className="w-full"
+                  variant="default"
                   disabled={sessionLoading}
                 >
                   {sessionLoading ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : "Finish & Save"}
