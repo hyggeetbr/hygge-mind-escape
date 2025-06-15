@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Chrome } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
@@ -81,7 +81,7 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
             disabled={loading}
           >
             <div className="flex items-center justify-center space-x-3">
-              <div className="w-5 h-5 bg-gradient-to-r from-blue-500 via-red-500 to-yellow-500 rounded-sm"></div>
+              <Chrome className="w-5 h-5 text-blue-500" />
               <span className="font-medium text-hygge-moss">
                 {loading ? "Signing in..." : "Continue with Google"}
               </span>
