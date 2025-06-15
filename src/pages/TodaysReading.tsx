@@ -1,11 +1,13 @@
+
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HomeButton from "@/components/HomeButton";
+import ReadingDialog from "@/components/ReadingDialog";
+import TodaysReadingList from "@/components/TodaysReadingList";
 
 type Article = {
   id: string;
@@ -167,90 +169,23 @@ const TodaysReading = () => {
         <div className="absolute top-20 left-8 w-32 h-32 bg-hygge-sage/10 rounded-full blur-2xl animate-float pointer-events-none" />
         <div className="absolute bottom-24 right-16 w-24 h-24 bg-hygge-mist/20 rounded-full blur-lg" />
       </div>
-
-      <div className="relative z-10 flex flex-col items-center w-[90vw] max-w-2xl px-5 py-10 rounded-2xl shadow-xl bg-white/80 border-2 border-hygge-stone/20 animate-fade-in">
-        <h1 className="font-display text-2xl md:text-3xl text-hygge-moss mb-4">
-          Today's Reading
-        </h1>
-        <div className="text-hygge-moss/80 mb-6 font-light">
-          Read at least 10 minutes daily to grow mindful. <br />{" "}
-          <span className="text-hygge-earth/60">You've read <span className="font-bold text-hygge-moss">{todaysMinutes} min</span> today.</span>
-        </div>
-        <div className="grid gap-5 w-full">
-          {articles.map((article) => (
-            <div
-              key={article.id}
-              className="border border-hygge-sage/40 rounded-xl px-6 py-5 bg-hygge-mist/40 shadow-sm flex flex-col md:flex-row md:items-center justify-between items-start gap-3"
-            >
-              <div>
-                <div className="font-display text-lg text-hygge-moss mb-1">{article.title}</div>
-                <div className="text-hygge-earth/80 text-sm mb-2">{article.summary}</div>
-                <div className="text-hygge-sky/80 text-xs mb-1">{article.estimated_read_minutes ?? 5} min read</div>
-                <a
-                  href={article.url}
-                  className="text-hygge-moss underline text-xs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  tabIndex={-1}
-                >
-                  External link
-                </a>
-              </div>
-              <Button
-                className="mt-2 w-full md:w-auto bg-white text-black border border-hygge-stone"
-                variant="plain"
-                onClick={() => handleStartReading(article)}
-                disabled={isReading || sessionLoading}
-              >
-                {isReading && selectedArticle?.id === article.id ? 'Reading…' : 'Read'}
-              </Button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Reading Dialog */}
-      <Dialog open={!!selectedArticle && isReading} onOpenChange={(open) => { if (!open) setIsReading(false); }}>
-        <DialogContent className="max-w-xl bg-white/90">
-          <DialogHeader>
-            <DialogTitle className="text-black">
-              {selectedArticle?.title}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-col gap-3 items-center">
-            {selectedArticle && (
-              <>
-                <div className="mb-2 text-hygge-earth/70 text-center">{selectedArticle.summary}</div>
-                <iframe
-                  src={selectedArticle.url}
-                  title={selectedArticle.title}
-                  className="w-full h-60 max-w-lg rounded border"
-                  style={{ minHeight: 200 }}
-                />
-                <div className="font-mono text-hygge-moss text-lg mb-1">
-                  Time: <span>{Math.floor(readingSeconds / 60)}:{("0" + (readingSeconds % 60)).slice(-2)}</span>
-                </div>
-                <Button
-                  onClick={handleFinishReading}
-                  className="w-full bg-white text-black border border-hygge-stone"
-                  variant="plain"
-                  disabled={sessionLoading}
-                >
-                  {sessionLoading ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : "Finish & Save"}
-                </Button>
-                <DialogClose asChild>
-                  <button
-                    className="text-xs text-hygge-sky underline mt-2"
-                    onClick={() => setIsReading(false)}
-                  >
-                    Cancel
-                  </button>
-                </DialogClose>
-              </>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <TodaysReadingList
+        articles={articles}
+        todaysMinutes={todaysMinutes}
+        isReading={isReading}
+        sessionLoading={sessionLoading}
+        selectedArticle={selectedArticle}
+        onStartReading={handleStartReading}
+      />
+      <ReadingDialog
+        open={!!selectedArticle && isReading}
+        isReading={isReading}
+        selectedArticle={selectedArticle}
+        readingSeconds={readingSeconds}
+        sessionLoading={sessionLoading}
+        onFinishReading={handleFinishReading}
+        onCancel={() => setIsReading(false)}
+      />
     </div>
   );
 };
