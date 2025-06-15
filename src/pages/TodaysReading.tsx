@@ -213,7 +213,7 @@ const TodaysReading = () => {
       <Dialog open={!!selectedArticle && isReading} onOpenChange={(open) => { if (!open) setIsReading(false); }}>
         <DialogContent className="max-w-xl bg-white/90">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-black">
               {selectedArticle?.title}
             </DialogTitle>
           </DialogHeader>
