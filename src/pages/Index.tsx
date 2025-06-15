@@ -8,32 +8,36 @@ const Index = () => {
   const [showAuth, setShowAuth] = useState(false);
   const { user, loading } = useAuth();
 
+  console.log("Index component rendering:", { user, loading, showAuth });
+
   const handleEnterApp = () => {
+    console.log("Enter app clicked");
     setShowAuth(true);
   };
 
   const handleBackToLanding = () => {
+    console.log("Back to landing clicked");
     setShowAuth(false);
   };
 
   const handleAuthSuccess = () => {
-    // For now, just go back to landing - you can later redirect to a dashboard
+    console.log("Auth success, user:", user);
     setShowAuth(false);
-    console.log("User authenticated successfully:", user);
   };
 
   if (loading) {
+    console.log("Showing loading state");
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-hygge-moss">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-hygge-cream">
+        <div className="text-hygge-moss text-xl">Loading...</div>
       </div>
     );
   }
 
-  // If user is authenticated, you might want to show a different page
   if (user) {
+    console.log("User is authenticated, showing welcome page");
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-hygge-cream">
         <div className="text-center">
           <h1 className="text-2xl font-display text-hygge-moss mb-4">
             Welcome to Hygge!
@@ -43,7 +47,6 @@ const Index = () => {
           </p>
           <button
             onClick={() => {
-              // You can implement sign out here
               console.log("Sign out functionality coming soon");
             }}
             className="text-hygge-moss hover:text-hygge-earth underline"
@@ -54,6 +57,8 @@ const Index = () => {
       </div>
     );
   }
+
+  console.log("Showing main app flow:", { showAuth });
 
   return (
     <div className="min-h-screen overflow-hidden">
