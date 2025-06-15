@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,6 +9,7 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
+import HomeButton from "@/components/HomeButton";
 
 // Add video URLs to techniques
 const MEDITATION_TECHNIQUES = [
@@ -64,6 +64,8 @@ const Meditate = () => {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-hygge-cream overflow-hidden">
+      {/* Home Button */}
+      <HomeButton />
       {/* Floating Bubbles */}
       <div>
         <div className="absolute top-16 left-10 w-36 h-36 bg-hygge-sage/15 rounded-full blur-2xl animate-float z-0 pointer-events-none" />
@@ -157,4 +159,3 @@ const Meditate = () => {
 };
 
 export default Meditate;
-

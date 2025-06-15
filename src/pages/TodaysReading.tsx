@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import HomeButton from "@/components/HomeButton";
 
 type Article = {
   id: string;
@@ -160,6 +160,8 @@ const TodaysReading = () => {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-hygge-cream overflow-hidden">
+      {/* Home Button */}
+      <HomeButton />
       {/* Bubbles */}
       <div>
         <div className="absolute top-20 left-8 w-32 h-32 bg-hygge-sage/10 rounded-full blur-2xl animate-float pointer-events-none" />
