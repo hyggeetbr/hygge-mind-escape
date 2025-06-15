@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,25 +11,31 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
+// Add video URLs to techniques
 const MEDITATION_TECHNIQUES = [
   {
     title: "Breath Awareness",
     description: "Focus on the movement of your breath—inhale and exhale—to quiet the mind.",
+    videoUrl: "https://www.youtube.com/embed/4GtpuD13nZk?si=rwiLZCWJipXe-Il8"
   },
   {
     title: "Watching Thoughts",
     description: "Observe your thoughts without judgment as they arise and pass away.",
+    videoUrl: "https://www.youtube.com/embed/3TJefFc9UW4?si=tIBflf1LLL_5zOst"
   },
   {
     title: "Sound Meditation",
     description: "Concentrate on subtle sounds (external or internal) to anchor your awareness.",
+    videoUrl: "https://www.youtube.com/embed/unCya_-8ECs?si=9eJAaZlVzWuwtZHv"
   },
 ];
 
 const Meditate = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
+  // Track selected technique for showing video dialog
+  const [selectedTechnique, setSelectedTechnique] = useState<null | typeof MEDITATION_TECHNIQUES[0]>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -46,11 +53,12 @@ const Meditate = () => {
     );
   }
 
-  const handleTechniqueClick = (technique: string) => {
-    if (technique === "Breath Awareness") {
-      setIsVideoOpen(true);
+  // Open video dialog when a technique with video is selected
+  const handleTechniqueClick = (technique: typeof MEDITATION_TECHNIQUES[0]) => {
+    if (technique.videoUrl) {
+      setSelectedTechnique(technique);
     } else {
-      alert(`You selected "${technique}"`);
+      alert(`You selected "${technique.title}"`);
     }
   };
 
@@ -83,7 +91,7 @@ const Meditate = () => {
           {MEDITATION_TECHNIQUES.map((tech, idx) => (
             <button
               key={tech.title}
-              onClick={() => handleTechniqueClick(tech.title)}
+              onClick={() => handleTechniqueClick(tech)}
               className="group w-full px-6 py-5 rounded-xl border border-hygge-sage/40 bg-hygge-mist/40 font-display text-lg md:text-xl text-hygge-moss shadow-md transition hover:bg-hygge-sage/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-hygge-sage/40"
               style={{
                 animationDelay: `${idx * 0.07 + 0.1}s`,
@@ -103,45 +111,45 @@ const Meditate = () => {
         </div>
       </div>
 
-      {/* Video Dialog for Breath Awareness */}
-      <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
+      {/* Video Dialog for Meditation Techniques */}
+      <Dialog open={!!selectedTechnique} onOpenChange={(open) => { if (!open) setSelectedTechnique(null); }}>
         <DialogContent
           className="max-w-2xl px-0 bg-white/80 shadow-2xl border border-hygge-stone/30 rounded-2xl"
         >
-          <div className="flex flex-col items-center w-full pb-2">
-            <div className="w-full flex justify-center">
-              <span className="font-display text-lg md:text-xl text-hygge-sky font-semibold tracking-wide mb-3 mt-2">
-                {/* "Hygge Play" heading with subtle shadow for aesthetics */}
-                Hygge <span className="font-bold text-hygge-moss">Play</span>
-              </span>
+          {selectedTechnique && (
+            <div className="flex flex-col items-center w-full pb-2">
+              <div className="w-full flex justify-center">
+                <span className="font-display text-lg md:text-xl text-hygge-sky font-semibold tracking-wide mb-3 mt-2">
+                  Hygge <span className="font-bold text-hygge-moss">Play</span>
+                </span>
+              </div>
+              <DialogHeader className="w-full flex justify-center">
+                <DialogTitle className="font-display text-xl text-hygge-moss mb-2 text-center">
+                  {selectedTechnique.title}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="aspect-w-16 aspect-h-9 w-full max-w-xl mx-auto rounded-xl overflow-hidden shadow-lg">
+                <iframe
+                  width="100%"
+                  height="360"
+                  src={selectedTechnique.videoUrl}
+                  title={selectedTechnique.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-64 md:h-96 rounded-xl"
+                ></iframe>
+              </div>
+              <DialogClose asChild>
+                <button
+                  className="mt-6 px-5 py-2 rounded-xl bg-hygge-moss text-hygge-cream font-display text-base hover:bg-hygge-sage transition w-full max-w-xs mx-auto"
+                  aria-label="Close"
+                >
+                  Close
+                </button>
+              </DialogClose>
             </div>
-            <DialogHeader className="w-full flex justify-center">
-              <DialogTitle className="font-display text-xl text-hygge-moss mb-2 text-center">
-                Breath Awareness
-              </DialogTitle>
-            </DialogHeader>
-            {/* Responsive video box */}
-            <div className="aspect-w-16 aspect-h-9 w-full max-w-xl mx-auto rounded-xl overflow-hidden shadow-lg">
-              <iframe
-                width="100%"
-                height="360"
-                src="https://www.youtube.com/embed/4GtpuD13nZk?si=rwiLZCWJipXe-Il8"
-                title="Breath Awareness"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-64 md:h-96 rounded-xl"
-              ></iframe>
-            </div>
-            <DialogClose asChild>
-              <button
-                className="mt-6 px-5 py-2 rounded-xl bg-hygge-moss text-hygge-cream font-display text-base hover:bg-hygge-sage transition w-full max-w-xs mx-auto"
-                aria-label="Close"
-              >
-                Close
-              </button>
-            </DialogClose>
-          </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
@@ -149,3 +157,4 @@ const Meditate = () => {
 };
 
 export default Meditate;
+
