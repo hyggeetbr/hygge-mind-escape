@@ -18,6 +18,10 @@ const Dashboard = () => {
     navigate("/meditate");
   };
 
+  const handleTodaysReading = () => {
+    navigate("/todays-reading");
+  };
+
   const handleLogout = async () => {
     await signOut();
     navigate("/", { replace: true });
@@ -62,10 +66,16 @@ const Dashboard = () => {
           className="w-[90vw] max-w-md px-8 py-12 rounded-2xl shadow-2xl backdrop-blur-md bg-white/80 border-2 border-hygge-stone/20 flex flex-col items-center transition-shadow mb-4 animate-fade-in"
         >
           <button
-            className="w-full py-6 px-6 rounded-xl text-2xl font-display bg-hygge-moss text-hygge-cream shadow-lg transition hover:bg-hygge-sage hover:text-hygge-earth focus:ring-4 focus:ring-hygge-sage/40 focus:outline-none"
+            className="w-full py-6 px-6 rounded-xl text-2xl font-display bg-hygge-moss text-hygge-cream shadow-lg transition hover:bg-hygge-sage hover:text-hygge-earth focus:ring-4 focus:ring-hygge-sage/40 focus:outline-none mb-4"
             onClick={handleMeditate}
           >
             Meditate
+          </button>
+          <button
+            className="w-full py-6 px-6 rounded-xl text-2xl font-display bg-hygge-stone text-hygge-cream shadow-lg transition hover:bg-hygge-sage hover:text-hygge-earth focus:ring-4 focus:ring-hygge-sage/40 focus:outline-none"
+            onClick={handleTodaysReading}
+          >
+            Today's Reading
           </button>
         </div>
       </div>
