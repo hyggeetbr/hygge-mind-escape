@@ -197,8 +197,8 @@ const TodaysReading = () => {
                 </a>
               </div>
               <Button
-                className="mt-2 w-full md:w-auto"
-                variant="default"
+                className="mt-2 w-full md:w-auto bg-white text-black border border-hygge-stone"
+                variant="plain"
                 onClick={() => handleStartReading(article)}
                 disabled={isReading || sessionLoading}
               >
@@ -232,8 +232,8 @@ const TodaysReading = () => {
                 </div>
                 <Button
                   onClick={handleFinishReading}
-                  className="w-full"
-                  variant="default"
+                  className="w-full bg-white text-black border border-hygge-stone"
+                  variant="plain"
                   disabled={sessionLoading}
                 >
                   {sessionLoading ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : "Finish & Save"}
