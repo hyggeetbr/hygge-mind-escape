@@ -1,206 +1,56 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+import React from "react";
 import HomeButton from "@/components/HomeButton";
-import ReadingDialog from "@/components/ReadingDialog";
-import TodaysReadingList from "@/components/TodaysReadingList";
-import ReadingCarousel from "@/components/ReadingCarousel";
 
-type Article = {
-  id: string;
-  title: string;
-  url: string;
-  summary: string | null;
-  estimated_read_minutes: number | null;
-};
-
-type ReadingSession = {
-  id: string;
-  article_id: string;
-  user_id: string;
-  date: string;
-  duration_minutes: number;
-  created_at: string;
-};
-
-const TodaysReading = () => {
-  const { user, loading: userLoading } = useAuth();
-  const navigate = useNavigate();
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [isReading, setIsReading] = useState(false);
-  const [readingSeconds, setReadingSeconds] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const [sessionLoading, setSessionLoading] = useState(false);
-  const [todaysMinutes, setTodaysMinutes] = useState<number>(0);
-  const [summarizingId, setSummarizingId] = useState<string | null>(null);
-
-  // Fetch articles from Supabase
-  useEffect(() => {
-    (async () => {
-      // Get only short articles
-      const { data, error } = await supabase
-        .from("articles")
-        .select("*")
-        .gte("estimated_read_minutes", 5)
-        .lte("estimated_read_minutes", 10)
-        .order("created_at", { ascending: false });
-      if (error || !data || data.length === 0) {
-        // fallback demo items
-        setArticles([
-          {
-            id: "demo-1",
-            title: "Mindful Minutes: 7 Small Habits",
-            url: "https://blog.example.com/mindful-habits",
-            summary: "Adopt 7 bite-sized habits for a calmer, more present day.",
-            estimated_read_minutes: 7,
-          },
-          {
-            id: "demo-2",
-            title: "Nutrition for Focus",
-            url: "https://blog.example.com/nutrition-focus",
-            summary: "The foods that sharpen your meditation and mindfulness.",
-            estimated_read_minutes: 9,
-          },
-          {
-            id: "demo-3",
-            title: "5-Minute Reflection Routine",
-            url: "https://blog.example.com/quick-reflection",
-            summary: "A fast way to reset and ground yourself between tasks.",
-            estimated_read_minutes: 5,
-          },
-        ]);
-      } else {
-        setArticles(data);
-      }
-    })();
-  }, []);
-
-  // Auth gate
-  useEffect(() => {
-    if (!userLoading && !user) {
-      navigate("/", { replace: true });
-    }
-  }, [userLoading, user, navigate]);
-
-  // Fetch today's total read minutes
-  const fetchTodaysMinutes = useCallback(async () => {
-    if (!user) return;
-    const today = new Date().toISOString().slice(0, 10);
-    const { data, error } = await supabase
-      .from("reading_sessions")
-      .select("duration_minutes")
-      .eq("user_id", user.id)
-      .eq("date", today);
-
-    if (error) return setTodaysMinutes(0);
-    setTodaysMinutes(
-      data.reduce((acc: number, row: { duration_minutes: number }) => acc + (row.duration_minutes || 0), 0)
-    );
-  }, [user]);
-
-  useEffect(() => {
-    fetchTodaysMinutes();
-  }, [fetchTodaysMinutes, user]);
-
-  // Timer logic
-  useEffect(() => {
-    if (isReading) {
-      timerRef.current = setInterval(() => {
-        setReadingSeconds((s) => s + 1);
-      }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isReading]);
-
-  // Start reading an article
-  const handleStartReading = (article: Article) => {
-    setSelectedArticle(article);
-    setIsReading(true);
-    setReadingSeconds(0);
-  };
-
-  // End reading and save session in database
-  const handleFinishReading = async () => {
-    setIsReading(false);
-    setSessionLoading(true);
-
-    if (user && selectedArticle) {
-      const durationInMinutes = Math.max(1, Math.round(readingSeconds / 60)); // round up, at least 1 min
-      const today = new Date().toISOString().slice(0, 10);
-
-      await supabase.from("reading_sessions").insert({
-        article_id: selectedArticle.id,
-        user_id: user.id,
-        date: today,
-        duration_minutes: durationInMinutes,
-      });
-
-      setReadingSeconds(0);
-      setSelectedArticle(null);
-      fetchTodaysMinutes();
-    } else {
-      // Should never happen
-      alert("Cannot save session, please login again.");
-    }
-    setSessionLoading(false);
-  };
-
-  // NEW: Summarize with AI
-  const handleSummarizeAI = async (article: Article) => {
-    setSummarizingId(article.id);
-    try {
-      const response = await fetch("/functions/summarize-article", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: article.url, articleId: article.id }),
-      });
-      const result = await response.json();
-      if (result?.summary) {
-        setArticles((prev) =>
-          prev.map((a) =>
-            a.id === article.id ? { ...a, summary: result.summary } : a
-          )
-        );
-      } else {
-        alert("Failed to generate summary.");
-      }
-    } catch (e) {
-      alert("Error summarizing article.");
-    }
-    setSummarizingId(null);
-  };
-
-  if (userLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-hygge-cream">
-        <Loader2 className="animate-spin text-hygge-moss" size={32} />
-      </div>
-    );
+const ARTICLE_LINKS = [
+  {
+    url: "https://www.tumblr.com/theavtalks/747561886028103680/the-illusion-of-freedom?source=share",
+    title: "The Illusion of Freedom"
+  },
+  {
+    url: "https://www.tumblr.com/theavtalks/727012363900977152/at-war-i-go-outside-mostly-for-a-walk-or-a-run?source=share",
+    title: "At War: I Go Outside"
+  },
+  {
+    url: "https://www.tumblr.com/theavtalks/715098282497622016/memory?source=share",
+    title: "Memory"
   }
+];
 
+const TodaysReading: React.FC = () => {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-hygge-cream overflow-hidden">
+    <div className="relative min-h-screen flex flex-col items-center bg-hygge-cream">
       {/* Home Button */}
       <HomeButton />
-      {/* Bubbles */}
-      <div>
-        <div className="absolute top-20 left-8 w-32 h-32 bg-hygge-sage/10 rounded-full blur-2xl animate-float pointer-events-none" />
-        <div className="absolute bottom-24 right-16 w-24 h-24 bg-hygge-mist/20 rounded-full blur-lg" />
+      <div className="w-full flex flex-col items-center pt-6 pb-10 gap-8">
+        <h1 className="font-display text-2xl md:text-3xl text-hygge-moss mb-2">Today's Reading</h1>
+        <div className="flex flex-col gap-12 w-full items-center">
+          {ARTICLE_LINKS.map((article, idx) => (
+            <div
+              key={article.url}
+              className="w-full max-w-lg mx-auto bg-white/85 border border-hygge-stone/30 rounded-2xl shadow-md flex flex-col items-center p-0 overflow-hidden"
+              style={{ minHeight: "70vh" }}
+            >
+              <div className="w-full py-3 px-4 text-center border-b border-hygge-stone/20">
+                <span className="font-medium text-lg text-hygge-moss">
+                  {article.title || `Article ${idx + 1}`}
+                </span>
+              </div>
+              <iframe
+                src={article.url}
+                title={article.title || `Article ${idx + 1}`}
+                className="w-full flex-1"
+                style={{
+                  height: '65vh',
+                  border: 'none',
+                  background: '#F5F3ED'
+                }}
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              />
+            </div>
+          ))}
+        </div>
       </div>
-      <ReadingCarousel
-        articles={articles}
-        onSummarize={handleSummarizeAI}
-        summarizingId={summarizingId}
-      />
-      {/* Optionally, keep ReadingDialog etc. if you want the dialog UI */}
     </div>
   );
 };
