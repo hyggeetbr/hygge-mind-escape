@@ -19,9 +19,8 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
   const handleGoogleAuth = async () => {
     try {
       setLoading(true);
-      const { error } = await signInWithGoogle({
-        promptSelectAccount: true,
-      });
+      // Always force account selection
+      const { error } = await signInWithGoogle({ promptSelectAccount: true });
 
       if (error) {
         toast({
@@ -29,13 +28,11 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
           description: error.message,
           variant: "destructive",
         });
-      } else {
-        toast({
-          title: "Success",
-          description: "Signed in with Google successfully!",
-        });
-        onAuthSuccess();
+        setLoading(false);
       }
+      // DO NOT call toast for success! Handled after Supabase redirect
+      // DO NOT call onAuthSuccess() here. Dashboard redirection is handled by session logic elsewhere.
+      // Remain on loader/this page until redirect happens.
     } catch (error) {
       console.error("Google auth error:", error);
       toast({
@@ -43,10 +40,18 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
         description: "An unexpected error occurred",
         variant: "destructive",
       });
-    } finally {
       setLoading(false);
     }
   };
+
+  // Show a dedicated loader screen while Google flow is in progress.
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <span className="font-display text-5xl text-hygge-moss animate-fade-in transition-all duration-500">Hygge</span>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 py-8 animate-slide-in-right">
@@ -80,7 +85,6 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
           <Button
             onClick={handleGoogleAuth}
             variant="plain"
-            // REMOVE: any yellow background classes. Add minimal border, shadow for accessibility.
             className="w-full py-6 border-hygge-stone/40 bg-white hover:bg-hygge-mist/90 shadow-sm transition-colors"
             disabled={loading}
           >
@@ -102,4 +106,3 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
 };
 
 export default AuthPage;
-
