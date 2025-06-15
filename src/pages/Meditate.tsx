@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -106,32 +105,43 @@ const Meditate = () => {
 
       {/* Video Dialog for Breath Awareness */}
       <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
-        <DialogContent className="max-w-2xl px-0">
-          <DialogHeader>
-            <DialogTitle className="font-display text-xl text-hygge-moss">
-              Breath Awareness
-            </DialogTitle>
-          </DialogHeader>
-          <div className="aspect-w-16 aspect-h-9 w-full max-w-xl mx-auto rounded-xl overflow-hidden">
-            <iframe
-              width="100%"
-              height="360"
-              src="https://www.youtube.com/embed/4GtpuD13nZk?si=rwiLZCWJipXe-Il8"
-              title="Breath Awareness"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-64 md:h-96 rounded-xl"
-            ></iframe>
+        <DialogContent
+          className="max-w-2xl px-0 bg-white/80 shadow-2xl border border-hygge-stone/30 rounded-2xl"
+        >
+          <div className="flex flex-col items-center w-full pb-2">
+            <div className="w-full flex justify-center">
+              <span className="font-display text-lg md:text-xl text-hygge-sky font-semibold tracking-wide mb-3 mt-2">
+                {/* "Hygge Play" heading with subtle shadow for aesthetics */}
+                Hygge <span className="font-bold text-hygge-moss">Play</span>
+              </span>
+            </div>
+            <DialogHeader className="w-full flex justify-center">
+              <DialogTitle className="font-display text-xl text-hygge-moss mb-2 text-center">
+                Breath Awareness
+              </DialogTitle>
+            </DialogHeader>
+            {/* Responsive video box */}
+            <div className="aspect-w-16 aspect-h-9 w-full max-w-xl mx-auto rounded-xl overflow-hidden shadow-lg">
+              <iframe
+                width="100%"
+                height="360"
+                src="https://www.youtube.com/embed/4GtpuD13nZk?si=rwiLZCWJipXe-Il8"
+                title="Breath Awareness"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-64 md:h-96 rounded-xl"
+              ></iframe>
+            </div>
+            <DialogClose asChild>
+              <button
+                className="mt-6 px-5 py-2 rounded-xl bg-hygge-moss text-hygge-cream font-display text-base hover:bg-hygge-sage transition w-full max-w-xs mx-auto"
+                aria-label="Close"
+              >
+                Close
+              </button>
+            </DialogClose>
           </div>
-          <DialogClose asChild>
-            <button
-              className="mt-4 px-4 py-2 rounded-lg bg-hygge-moss text-hygge-cream font-display text-base hover:bg-hygge-sage transition"
-              aria-label="Close"
-            >
-              Close
-            </button>
-          </DialogClose>
         </DialogContent>
       </Dialog>
     </div>
@@ -139,4 +149,3 @@ const Meditate = () => {
 };
 
 export default Meditate;
-
