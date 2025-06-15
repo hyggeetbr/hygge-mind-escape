@@ -5,28 +5,113 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/components/ui/use-toast";
 
 interface AuthPageProps {
   onBack: () => void;
+  onAuthSuccess: () => void;
 }
 
-const AuthPage = ({ onBack }: AuthPageProps) => {
+const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
   const [authMethod, setAuthMethod] = useState<'email' | 'phone' | null>(null);
   const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleGoogleAuth = () => {
-    console.log("Google authentication initiated");
-    // Integration with Google OAuth would go here
+  const { signUp, signIn, signInWithGoogle } = useAuth();
+
+  const handleGoogleAuth = async () => {
+    try {
+      setLoading(true);
+      const { error } = await signInWithGoogle();
+      
+      if (error) {
+        toast({
+          title: "Authentication Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Signed in with Google successfully!",
+        });
+        onAuthSuccess();
+      }
+    } catch (error) {
+      console.error("Google auth error:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEmailAuth = async () => {
+    if (!email || !password) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      if (isLogin) {
+        const { error } = await signIn(email, password);
+        if (error) {
+          toast({
+            title: "Sign In Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Success",
+            description: "Signed in successfully!",
+          });
+          onAuthSuccess();
+        }
+      } else {
+        const { error } = await signUp(email, password);
+        if (error) {
+          toast({
+            title: "Sign Up Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Success",
+            description: "Account created! Please check your email for verification.",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Email auth error:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePhoneAuth = () => {
-    console.log("Phone authentication initiated");
-    // Integration with phone auth would go here
-  };
-
-  const handleEmailAuth = () => {
-    console.log("Email authentication initiated");
-    // Integration with email auth would go here
+    toast({
+      title: "Coming Soon",
+      description: "Phone authentication will be available soon!",
+    });
   };
 
   return (
@@ -67,10 +152,13 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                 onClick={handleGoogleAuth}
                 variant="outline"
                 className="w-full py-6 border-hygge-stone/40"
+                disabled={loading}
               >
                 <div className="flex items-center justify-center space-x-3">
                   <div className="w-5 h-5 bg-gradient-to-r from-blue-500 via-red-500 to-yellow-500 rounded-sm"></div>
-                  <span className="font-medium text-hygge-moss">Continue with Google</span>
+                  <span className="font-medium text-hygge-moss">
+                    {loading ? "Signing in..." : "Continue with Google"}
+                  </span>
                 </div>
               </Button>
               
@@ -79,6 +167,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                 onClick={() => setAuthMethod('phone')}
                 variant="outline"
                 className="w-full py-6 border-hygge-stone/40"
+                disabled={loading}
               >
                 <div className="flex items-center justify-center space-x-3">
                   <Phone className="w-5 h-5 text-hygge-moss" />
@@ -91,6 +180,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                 onClick={() => setAuthMethod('email')}
                 variant="outline"
                 className="w-full py-6 border-hygge-stone/40"
+                disabled={loading}
               >
                 <div className="flex items-center justify-center space-x-3">
                   <Mail className="w-5 h-5 text-hygge-moss" />
@@ -104,6 +194,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                   <button
                     onClick={() => setIsLogin(!isLogin)}
                     className="text-hygge-moss hover:text-hygge-earth font-medium underline"
+                    disabled={loading}
                   >
                     {isLogin ? "Sign up" : "Sign in"}
                   </button>
@@ -129,6 +220,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                   <Button
                     onClick={handlePhoneAuth}
                     className="w-full bg-hygge-moss hover:bg-hygge-earth text-hygge-cream"
+                    disabled={loading}
                   >
                     Send Verification Code
                   </Button>
@@ -146,7 +238,10 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                       id="email"
                       type="email"
                       placeholder="your@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="mt-2 border-hygge-stone/40 focus:border-hygge-sage focus:ring-hygge-sage/20"
+                      disabled={loading}
                     />
                   </div>
                   <div>
@@ -157,14 +252,18 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                       id="password"
                       type="password"
                       placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       className="mt-2 border-hygge-stone/40 focus:border-hygge-sage focus:ring-hygge-sage/20"
+                      disabled={loading}
                     />
                   </div>
                   <Button
                     onClick={handleEmailAuth}
                     className="w-full bg-hygge-moss hover:bg-hygge-earth text-hygge-cream"
+                    disabled={loading}
                   >
-                    {isLogin ? "Sign In" : "Create Account"}
+                    {loading ? "Processing..." : (isLogin ? "Sign In" : "Create Account")}
                   </Button>
                 </div>
               )}
@@ -173,6 +272,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                 onClick={() => setAuthMethod(null)}
                 variant="ghost"
                 className="w-full text-hygge-earth hover:text-hygge-moss hover:bg-hygge-sage/10"
+                disabled={loading}
               >
                 Back to options
               </Button>
