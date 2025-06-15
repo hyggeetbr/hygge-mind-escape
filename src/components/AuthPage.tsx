@@ -18,7 +18,10 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
   const handleGoogleAuth = async () => {
     try {
       setLoading(true);
-      const { error } = await signInWithGoogle();
+      // Always force account selection
+      const { error } = await signInWithGoogle({ 
+        promptSelectAccount: true 
+      });
       
       if (error) {
         toast({

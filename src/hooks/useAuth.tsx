@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 import { User, Session } from '@supabase/supabase-js'
 // Change: use the real client, NOT the mock!
@@ -56,13 +55,18 @@ export const useAuth = () => {
     return { data, error }
   }
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (opts?: { promptSelectAccount?: boolean }) => {
     console.log("useAuth: Attempting Google sign in");
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-    })
+      options: {
+        queryParams: {
+          prompt: opts?.promptSelectAccount ? "select_account" : undefined,
+        },
+      },
+    });
     console.log("useAuth: Google sign in result:", { data, error });
-    return { data, error }
+    return { data, error };
   }
 
   const signOut = async () => {
