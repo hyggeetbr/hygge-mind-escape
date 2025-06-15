@@ -1,53 +1,49 @@
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import HomeButton from "@/components/HomeButton";
 
-const ARTICLE_LINKS = [
+const ARTICLES = [
   {
-    url: "https://www.tumblr.com/theavtalks/747561886028103680/the-illusion-of-freedom?source=share",
-    title: "The Illusion of Freedom"
+    id: "the-illusion-of-freedom",
+    title: "The Illusion of Freedom",
+    author: "Ankit Vats"
   },
   {
-    url: "https://www.tumblr.com/theavtalks/727012363900977152/at-war-i-go-outside-mostly-for-a-walk-or-a-run?source=share",
-    title: "At War: I Go Outside"
+    id: "at-war-i-go-outside",
+    title: "At War: I Go Outside",
+    author: "Ankit Vats"
   },
   {
-    url: "https://www.tumblr.com/theavtalks/715098282497622016/memory?source=share",
-    title: "Memory"
+    id: "memory",
+    title: "Memory",
+    author: "Ankit Vats"
   }
 ];
 
 const TodaysReading: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="relative min-h-screen flex flex-col items-center bg-hygge-cream">
-      {/* Home Button */}
       <HomeButton />
-      <div className="w-full flex flex-col items-center pt-6 pb-10 gap-8">
-        <h1 className="font-display text-2xl md:text-3xl text-hygge-moss mb-2">Today's Reading</h1>
-        <div className="flex flex-col gap-12 w-full items-center">
-          {ARTICLE_LINKS.map((article, idx) => (
-            <div
-              key={article.url}
-              className="w-full max-w-lg mx-auto bg-white/85 border border-hygge-stone/30 rounded-2xl shadow-md flex flex-col items-center p-0 overflow-hidden"
-              style={{ minHeight: "70vh" }}
+      <div className="w-full flex flex-col items-center pt-8 pb-14 px-2 gap-8">
+        <h1 className="font-display text-2xl md:text-3xl text-hygge-moss mb-4">Today's Reading</h1>
+        <div className="flex flex-col gap-8 w-full items-center max-w-lg mx-auto">
+          {ARTICLES.map((article) => (
+            <button
+              key={article.id}
+              className="w-full rounded-2xl bg-white/90 border border-hygge-stone/30 shadow-md px-6 py-5 flex flex-col items-start hover:shadow-lg transition group outline-none focus:ring-2 focus:ring-hygge-sky"
+              onClick={() => navigate(`/todays-reading/${article.id}`)}
+              aria-label={`Read article: ${article.title}`}
             >
-              <div className="w-full py-3 px-4 text-center border-b border-hygge-stone/20">
-                <span className="font-medium text-lg text-hygge-moss">
-                  {article.title || `Article ${idx + 1}`}
-                </span>
-              </div>
-              <iframe
-                src={article.url}
-                title={article.title || `Article ${idx + 1}`}
-                className="w-full flex-1"
-                style={{
-                  height: '65vh',
-                  border: 'none',
-                  background: '#F5F3ED'
-                }}
-                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-              />
-            </div>
+              <span className="font-display text-lg md:text-xl text-hygge-moss group-hover:underline">
+                {article.title}
+              </span>
+              <span className="mt-1 text-hygge-stone text-base">
+                By <span className="font-semibold">{article.author}</span>
+              </span>
+            </button>
           ))}
         </div>
       </div>

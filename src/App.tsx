@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Meditate from "./pages/Meditate";
 import TodaysReading from "./pages/TodaysReading";
+import ArticleDetail from "./pages/ArticleDetail";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/meditate" element={<Meditate />} />
           <Route path="/todays-reading" element={<TodaysReading />} />
+          <Route path="/todays-reading/:articleId" element={<ArticleDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
