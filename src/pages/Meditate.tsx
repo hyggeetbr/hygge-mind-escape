@@ -1,7 +1,15 @@
 
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+// Import shadcn/ui dialog components
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 const MEDITATION_TECHNIQUES = [
   {
@@ -21,6 +29,7 @@ const MEDITATION_TECHNIQUES = [
 const Meditate = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -39,8 +48,11 @@ const Meditate = () => {
   }
 
   const handleTechniqueClick = (technique: string) => {
-    // For now, just alert. You can customize navigation here in the future.
-    alert(`You selected "${technique}"`);
+    if (technique === "Breath Awareness") {
+      setIsVideoOpen(true);
+    } else {
+      alert(`You selected "${technique}"`);
+    }
   };
 
   return (
@@ -91,8 +103,40 @@ const Meditate = () => {
           ))}
         </div>
       </div>
+
+      {/* Video Dialog for Breath Awareness */}
+      <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
+        <DialogContent className="max-w-2xl px-0">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl text-hygge-moss">
+              Breath Awareness
+            </DialogTitle>
+          </DialogHeader>
+          <div className="aspect-w-16 aspect-h-9 w-full max-w-xl mx-auto rounded-xl overflow-hidden">
+            <iframe
+              width="100%"
+              height="360"
+              src="https://www.youtube.com/embed/4GtpuD13nZk?si=rwiLZCWJipXe-Il8"
+              title="Breath Awareness"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-64 md:h-96 rounded-xl"
+            ></iframe>
+          </div>
+          <DialogClose asChild>
+            <button
+              className="mt-4 px-4 py-2 rounded-lg bg-hygge-moss text-hygge-cream font-display text-base hover:bg-hygge-sage transition"
+              aria-label="Close"
+            >
+              Close
+            </button>
+          </DialogClose>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
 export default Meditate;
+
