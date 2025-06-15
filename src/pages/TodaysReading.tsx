@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import HomeButton from "@/components/HomeButton";
 import ReadingDialog from "@/components/ReadingDialog";
 import TodaysReadingList from "@/components/TodaysReadingList";
+import ReadingCarousel from "@/components/ReadingCarousel";
 
 type Article = {
   id: string;
@@ -36,6 +36,7 @@ const TodaysReading = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [sessionLoading, setSessionLoading] = useState(false);
   const [todaysMinutes, setTodaysMinutes] = useState<number>(0);
+  const [summarizingId, setSummarizingId] = useState<string | null>(null);
 
   // Fetch articles from Supabase
   useEffect(() => {
@@ -152,6 +153,31 @@ const TodaysReading = () => {
     setSessionLoading(false);
   };
 
+  // NEW: Summarize with AI
+  const handleSummarizeAI = async (article: Article) => {
+    setSummarizingId(article.id);
+    try {
+      const response = await fetch("/functions/summarize-article", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: article.url, articleId: article.id }),
+      });
+      const result = await response.json();
+      if (result?.summary) {
+        setArticles((prev) =>
+          prev.map((a) =>
+            a.id === article.id ? { ...a, summary: result.summary } : a
+          )
+        );
+      } else {
+        alert("Failed to generate summary.");
+      }
+    } catch (e) {
+      alert("Error summarizing article.");
+    }
+    setSummarizingId(null);
+  };
+
   if (userLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-hygge-cream">
@@ -169,23 +195,12 @@ const TodaysReading = () => {
         <div className="absolute top-20 left-8 w-32 h-32 bg-hygge-sage/10 rounded-full blur-2xl animate-float pointer-events-none" />
         <div className="absolute bottom-24 right-16 w-24 h-24 bg-hygge-mist/20 rounded-full blur-lg" />
       </div>
-      <TodaysReadingList
+      <ReadingCarousel
         articles={articles}
-        todaysMinutes={todaysMinutes}
-        isReading={isReading}
-        sessionLoading={sessionLoading}
-        selectedArticle={selectedArticle}
-        onStartReading={handleStartReading}
+        onSummarize={handleSummarizeAI}
+        summarizingId={summarizingId}
       />
-      <ReadingDialog
-        open={!!selectedArticle && isReading}
-        isReading={isReading}
-        selectedArticle={selectedArticle}
-        readingSeconds={readingSeconds}
-        sessionLoading={sessionLoading}
-        onFinishReading={handleFinishReading}
-        onCancel={() => setIsReading(false)}
-      />
+      {/* Optionally, keep ReadingDialog etc. if you want the dialog UI */}
     </div>
   );
 };
