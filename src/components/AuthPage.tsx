@@ -76,7 +76,7 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
           {/* Google Authentication */}
           <Button
             onClick={handleGoogleAuth}
-            variant="outline"
+            variant="plain"
             className="w-full py-6 border-hygge-stone/40"
             disabled={loading}
           >
