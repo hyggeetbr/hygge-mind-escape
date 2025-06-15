@@ -2,23 +2,17 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+// Removed Button and LogOut imports
 
 const Meditate = () => {
   const navigate = useNavigate();
-  const { user, loading, signOut } = useAuth();
+  const { user, loading } = useAuth(); // Removed signOut
 
   useEffect(() => {
     if (!loading && !user) {
       navigate("/", { replace: true });
     }
   }, [user, loading, navigate]);
-
-  const handleLogout = async () => {
-    await signOut();
-    navigate("/", { replace: true });
-  };
 
   if (loading) {
     return (
@@ -38,18 +32,6 @@ const Meditate = () => {
         <div className="absolute bottom-10 right-32 w-32 h-32 bg-hygge-mist/15 rounded-full blur-xl animate-float z-0 pointer-events-none" style={{ animationDelay: "2s" }} />
       </div>
 
-      {/* Logout Button */}
-      <div className="absolute top-6 right-8 z-10">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleLogout}
-          className="border-hygge-sage text-hygge-moss hover:bg-hygge-sage/20 bg-white/80 shadow-md"
-        >
-          <LogOut size={20} />
-        </Button>
-      </div>
-      
       {/* Main Content */}
       <div className="relative z-10 flex flex-col items-center">
         <div className="w-[90vw] max-w-xl px-8 py-12 rounded-2xl shadow-2xl backdrop-blur-md bg-white/80 border-2 border-hygge-stone/20 flex flex-col items-center transition-shadow animate-fade-in">
@@ -64,3 +46,4 @@ const Meditate = () => {
 };
 
 export default Meditate;
+

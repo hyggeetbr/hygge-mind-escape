@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -68,11 +67,6 @@ const Dashboard = () => {
           >
             Meditate
           </button>
-          {user && (
-            <p className="mt-8 text-hygge-earth/70 text-center text-sm break-words">
-              {user.email}
-            </p>
-          )}
         </div>
       </div>
     </div>
