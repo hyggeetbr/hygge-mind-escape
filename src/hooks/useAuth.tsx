@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react'
 import { User, Session } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+// Change: use the real client, NOT the mock!
+import { supabase } from '@/integrations/supabase/client'
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null)
