@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { ArrowLeft, Chrome } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,11 +19,10 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
   const handleGoogleAuth = async () => {
     try {
       setLoading(true);
-      // Always force account selection
-      const { error } = await signInWithGoogle({ 
-        promptSelectAccount: true 
+      const { error } = await signInWithGoogle({
+        promptSelectAccount: true,
       });
-      
+
       if (error) {
         toast({
           title: "Authentication Error",
@@ -80,7 +80,8 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
           <Button
             onClick={handleGoogleAuth}
             variant="plain"
-            className="w-full py-6 border-hygge-stone/40"
+            // REMOVE: any yellow background classes. Add minimal border, shadow for accessibility.
+            className="w-full py-6 border-hygge-stone/40 bg-white hover:bg-hygge-mist/90 shadow-sm transition-colors"
             disabled={loading}
           >
             <div className="flex items-center justify-center space-x-3">
@@ -101,3 +102,4 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
 };
 
 export default AuthPage;
+
