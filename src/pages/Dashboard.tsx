@@ -2,7 +2,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LogOut, BookOpen, Brain, Check } from "lucide-react";
+import { LogOut, BookOpen, Brain, Check, Lotus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
@@ -13,9 +13,10 @@ const Dashboard = () => {
   // Mock completion status - in real app this would come from your database
   const [meditationComplete, setMeditationComplete] = useState(false);
   const [readingComplete, setReadingComplete] = useState(false);
+  const [yogaComplete, setYogaComplete] = useState(false);
   
-  const completedTasks = (meditationComplete ? 1 : 0) + (readingComplete ? 1 : 0);
-  const progressPercentage = (completedTasks / 2) * 100;
+  const completedTasks = (meditationComplete ? 1 : 0) + (readingComplete ? 1 : 0) + (yogaComplete ? 1 : 0);
+  const progressPercentage = (completedTasks / 3) * 100;
 
   useEffect(() => {
     if (!loading && !user) {
@@ -33,6 +34,11 @@ const Dashboard = () => {
     navigate("/todays-reading");
     // In real app, you would track completion here
     setReadingComplete(true);
+  };
+
+  const handleYoga = () => {
+    // For now, just mark as complete - in real app would navigate to yoga page
+    setYogaComplete(true);
   };
 
   const handleLogout = async () => {
@@ -101,7 +107,7 @@ const Dashboard = () => {
           <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl">
             <div className="text-center mb-4">
               <h3 className="font-display text-xl text-hygge-moss mb-2">Today's Progress</h3>
-              <p className="text-hygge-earth/70 text-sm">{completedTasks} of 2 tasks completed</p>
+              <p className="text-hygge-earth/70 text-sm">{completedTasks} of 3 tasks completed</p>
             </div>
             
             {/* Progress Bar */}
@@ -118,20 +124,20 @@ const Dashboard = () => {
             </div>
 
             {/* Task Status Cards */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               {/* Meditation Status */}
               <div className={`relative p-3 rounded-xl border transition-all duration-300 ${
                 meditationComplete 
                   ? 'bg-hygge-moss/20 border-hygge-moss/30 shadow-lg' 
                   : 'bg-white/5 border-white/10'
               }`}>
-                <div className="flex items-center space-x-2">
+                <div className="flex flex-col items-center space-y-2">
                   <div className={`p-1.5 rounded-full transition-colors ${
                     meditationComplete ? 'bg-hygge-moss text-white' : 'bg-hygge-moss/20 text-hygge-moss'
                   }`}>
                     {meditationComplete ? <Check size={12} /> : <Brain size={12} />}
                   </div>
-                  <div>
+                  <div className="text-center">
                     <p className="text-xs font-medium text-hygge-moss">Meditation</p>
                     <p className="text-xs text-hygge-earth/60">
                       {meditationComplete ? 'Complete' : 'Pending'}
@@ -146,16 +152,37 @@ const Dashboard = () => {
                   ? 'bg-hygge-sky/20 border-hygge-sky/30 shadow-lg' 
                   : 'bg-white/5 border-white/10'
               }`}>
-                <div className="flex items-center space-x-2">
+                <div className="flex flex-col items-center space-y-2">
                   <div className={`p-1.5 rounded-full transition-colors ${
                     readingComplete ? 'bg-hygge-sky text-white' : 'bg-hygge-sky/20 text-hygge-moss'
                   }`}>
                     {readingComplete ? <Check size={12} /> : <BookOpen size={12} />}
                   </div>
-                  <div>
+                  <div className="text-center">
                     <p className="text-xs font-medium text-hygge-moss">Reading</p>
                     <p className="text-xs text-hygge-earth/60">
                       {readingComplete ? 'Complete' : 'Pending'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Yoga Status */}
+              <div className={`relative p-3 rounded-xl border transition-all duration-300 ${
+                yogaComplete 
+                  ? 'bg-hygge-stone/20 border-hygge-stone/30 shadow-lg' 
+                  : 'bg-white/5 border-white/10'
+              }`}>
+                <div className="flex flex-col items-center space-y-2">
+                  <div className={`p-1.5 rounded-full transition-colors ${
+                    yogaComplete ? 'bg-hygge-stone text-white' : 'bg-hygge-stone/20 text-hygge-moss'
+                  }`}>
+                    {yogaComplete ? <Check size={12} /> : <Lotus size={12} />}
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-medium text-hygge-moss">Yoga</p>
+                    <p className="text-xs text-hygge-earth/60">
+                      {yogaComplete ? 'Complete' : 'Pending'}
                     </p>
                   </div>
                 </div>
@@ -213,6 +240,68 @@ const Dashboard = () => {
                   </div>
                   <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Today's Reading</h3>
                   <p className="text-hygge-earth/80 text-xs leading-relaxed">Nourish your mind with wisdom</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Yoga for the Day Bubble */}
+          <div 
+            className="animate-float cursor-pointer group w-full"
+            onClick={handleYoga}
+            style={{ animationDelay: "1.8s" }}
+          >
+            <div className="relative">
+              {/* Outer glow ring */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/30 to-hygge-mist/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+              
+              {/* Main bubble - smaller size */}
+              <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/20 to-hygge-mist/10 opacity-50"></div>
+                
+                {/* Content */}
+                <div className="relative flex flex-col items-center justify-center h-full p-4 text-center">
+                  <div className="mb-3 p-3 rounded-full bg-hygge-stone/20 backdrop-blur-sm group-hover:bg-hygge-stone/30 transition-all duration-300">
+                    <Lotus size={36} className="text-hygge-moss" />
+                  </div>
+                  <h3 className="font-display text-lg text-hygge-moss mb-3 font-semibold">Yoga for the Day</h3>
+                  
+                  {/* Yoga Technique Buttons */}
+                  <div className="space-y-2 w-full">
+                    <Button 
+                      variant="plain" 
+                      size="sm" 
+                      className="w-full text-xs py-1 h-auto bg-white/20 border-hygge-stone/30 text-hygge-moss hover:bg-hygge-stone/20"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log("Pranayama practice started");
+                      }}
+                    >
+                      Pranayama
+                    </Button>
+                    <Button 
+                      variant="plain" 
+                      size="sm" 
+                      className="w-full text-xs py-1 h-auto bg-white/20 border-hygge-stone/30 text-hygge-moss hover:bg-hygge-stone/20"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log("Dharana practice started");
+                      }}
+                    >
+                      Dharana
+                    </Button>
+                    <Button 
+                      variant="plain" 
+                      size="sm" 
+                      className="w-full text-xs py-1 h-auto bg-white/20 border-hygge-stone/30 text-hygge-moss hover:bg-hygge-stone/20"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log("Dhyana practice started");
+                      }}
+                    >
+                      Dhyana
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
