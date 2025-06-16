@@ -71,3 +71,14 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Environment variables
+
+To enable the Ask AI feature, create a `.env` file in the project root based on `.env.example` and provide your OpenAI API key:
+
+```sh
+cp .env.example .env
+echo "OPENAI_API_KEY=your-key" >> .env
+```
+
+The same key is used by the Supabase edge function that communicates with OpenAI.

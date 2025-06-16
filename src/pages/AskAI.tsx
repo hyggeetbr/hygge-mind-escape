@@ -1,5 +1,6 @@
 import { useState } from "react";
 import HomeButton from "@/components/HomeButton";
+import { supabase } from "@/integrations/supabase/client";
 
 const AskAI = () => {
   const [question, setQuestion] = useState("");
@@ -10,33 +11,16 @@ const AskAI = () => {
     if (!question.trim()) return;
     setLoading(true);
     try {
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-      if (!apiKey) {
-        setAnswer("OpenAI key not configured.");
+      const { data, error } = await supabase.functions.invoke('ask-ai', {
+        body: { question },
+      });
+      if (error) {
+        console.error('ask-ai error:', error);
+        setAnswer('Error contacting AI.');
         return;
       }
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content: "You are a helpful assistant for a mindfulness app.",
-            },
-            { role: "user", content: question },
-          ],
-          temperature: 0.7,
-          max_tokens: 200,
-        }),
-      });
-      const data = await res.json();
-      const text = data.choices?.[0]?.message?.content?.trim();
-      setAnswer(text || "No response.");
+      const text = (data as { answer?: string }).answer;
+      setAnswer(text || 'No response.');
     } catch (err) {
       console.error(err);
       setAnswer("Error contacting AI.");
