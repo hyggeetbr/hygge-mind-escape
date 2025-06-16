@@ -59,7 +59,7 @@ const Dashboard = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-hygge-cream/50 via-transparent to-hygge-mist/30 pointer-events-none" />
       </div>
 
-      {/* Logout Button - Enhanced */}
+      {/* Logout Button */}
       <div className="absolute top-6 right-8 z-20">
         <Button
           variant="outline"
@@ -72,9 +72,9 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
-        {/* Welcome Text - Enhanced Typography */}
-        <div className="text-center mb-16 animate-fade-in">
+      <div className="relative z-10 flex flex-col min-h-screen px-4">
+        {/* Welcome Text at Top */}
+        <div className="text-center pt-16 pb-8 animate-fade-in">
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-hygge-moss mb-4 drop-shadow-lg">
             Welcome to your
           </h1>
@@ -84,11 +84,11 @@ const Dashboard = () => {
           <div className="mt-6 w-24 h-1 bg-gradient-to-r from-hygge-sage to-hygge-sky mx-auto rounded-full opacity-60"></div>
         </div>
 
-        {/* Floating Bubble Buttons */}
-        <div className="relative w-full max-w-4xl mx-auto">
+        {/* Bubble Buttons in Vertical Layout */}
+        <div className="flex-1 flex flex-col items-center justify-center space-y-16 max-w-md mx-auto">
           {/* Meditation Bubble */}
           <div 
-            className="absolute left-8 md:left-16 lg:left-24 top-0 animate-float cursor-pointer group"
+            className="animate-float cursor-pointer group w-full"
             onClick={handleMeditate}
             style={{ animationDelay: "0.5s" }}
           >
@@ -97,7 +97,7 @@ const Dashboard = () => {
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               
               {/* Main bubble */}
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
+              <div className="relative w-72 h-72 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/20 to-hygge-sage/10 opacity-50"></div>
                 
                 {/* Content */}
@@ -114,7 +114,7 @@ const Dashboard = () => {
 
           {/* Today's Reading Bubble */}
           <div 
-            className="absolute right-8 md:right-16 lg:right-24 top-20 md:top-32 animate-float cursor-pointer group"
+            className="animate-float cursor-pointer group w-full"
             onClick={handleTodaysReading}
             style={{ animationDelay: "1.2s" }}
           >
@@ -123,7 +123,7 @@ const Dashboard = () => {
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               
               {/* Main bubble */}
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
+              <div className="relative w-72 h-72 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/20 to-hygge-stone/10 opacity-50"></div>
                 
                 {/* Content */}
@@ -139,8 +139,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Subtle Call to Action */}
-        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-center animate-fade-in" style={{ animationDelay: "2s" }}>
+        {/* Subtle Call to Action at Bottom */}
+        <div className="text-center pb-12 animate-fade-in" style={{ animationDelay: "2s" }}>
           <p className="text-hygge-earth/60 text-sm font-light tracking-wide">
             Choose your path to mindfulness
           </p>
