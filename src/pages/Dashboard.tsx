@@ -36,7 +36,8 @@ const Dashboard = () => {
   };
 
   const handleYoga = () => {
-    // For now, just mark as complete - in real app would navigate to yoga page
+    navigate("/yoga");
+    // In real app, you would track completion here
     setYogaComplete(true);
   };
 
@@ -259,48 +260,12 @@ const Dashboard = () => {
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/20 to-hygge-mist/10 opacity-50"></div>
                 
                 {/* Content */}
-                <div className="relative flex flex-col items-center justify-center h-full p-4 text-center">
-                  <div className="mb-3 p-3 rounded-full bg-hygge-stone/20 backdrop-blur-sm group-hover:bg-hygge-stone/30 transition-all duration-300">
+                <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
+                  <div className="mb-4 p-3 rounded-full bg-hygge-stone/20 backdrop-blur-sm group-hover:bg-hygge-stone/30 transition-all duration-300">
                     <Flower2 size={36} className="text-hygge-moss" />
                   </div>
-                  <h3 className="font-display text-lg text-hygge-moss mb-3 font-semibold">Yoga for the Day</h3>
-                  
-                  {/* Yoga Technique Buttons */}
-                  <div className="space-y-2 w-full">
-                    <Button 
-                      variant="plain" 
-                      size="sm" 
-                      className="w-full text-xs py-1 h-auto bg-white/20 border-hygge-stone/30 text-hygge-moss hover:bg-hygge-stone/20"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        console.log("Pranayama practice started");
-                      }}
-                    >
-                      Pranayama
-                    </Button>
-                    <Button 
-                      variant="plain" 
-                      size="sm" 
-                      className="w-full text-xs py-1 h-auto bg-white/20 border-hygge-stone/30 text-hygge-moss hover:bg-hygge-stone/20"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        console.log("Dharana practice started");
-                      }}
-                    >
-                      Dharana
-                    </Button>
-                    <Button 
-                      variant="plain" 
-                      size="sm" 
-                      className="w-full text-xs py-1 h-auto bg-white/20 border-hygge-stone/30 text-hygge-moss hover:bg-hygge-stone/20"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        console.log("Dhyana practice started");
-                      }}
-                    >
-                      Dhyana
-                    </Button>
-                  </div>
+                  <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Yoga for the Day</h3>
+                  <p className="text-hygge-earth/80 text-xs leading-relaxed">Harmonize body, mind, and spirit</p>
                 </div>
               </div>
             </div>
