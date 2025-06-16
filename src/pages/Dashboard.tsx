@@ -1,13 +1,21 @@
 
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { LogOut, BookOpen, Brain } from "lucide-react";
+import { useEffect, useState } from "react";
+import { LogOut, BookOpen, Brain, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 const Dashboard = () => {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
+  
+  // Mock completion status - in real app this would come from your database
+  const [meditationComplete, setMeditationComplete] = useState(false);
+  const [readingComplete, setReadingComplete] = useState(false);
+  
+  const completedTasks = (meditationComplete ? 1 : 0) + (readingComplete ? 1 : 0);
+  const progressPercentage = (completedTasks / 2) * 100;
 
   useEffect(() => {
     if (!loading && !user) {
@@ -17,10 +25,14 @@ const Dashboard = () => {
 
   const handleMeditate = () => {
     navigate("/meditate");
+    // In real app, you would track completion here
+    setMeditationComplete(true);
   };
 
   const handleTodaysReading = () => {
     navigate("/todays-reading");
+    // In real app, you would track completion here
+    setReadingComplete(true);
   };
 
   const handleLogout = async () => {
@@ -84,8 +96,76 @@ const Dashboard = () => {
           <div className="mt-6 w-24 h-1 bg-gradient-to-r from-hygge-sage to-hygge-sky mx-auto rounded-full opacity-60"></div>
         </div>
 
-        {/* Bubble Buttons in Vertical Layout */}
-        <div className="flex-1 flex flex-col items-center justify-center space-y-16 max-w-md mx-auto">
+        {/* Progress Tracker */}
+        <div className="max-w-lg mx-auto mb-12 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl">
+            <div className="text-center mb-4">
+              <h3 className="font-display text-xl text-hygge-moss mb-2">Today's Progress</h3>
+              <p className="text-hygge-earth/70 text-sm">{completedTasks} of 2 tasks completed</p>
+            </div>
+            
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <Progress 
+                value={progressPercentage} 
+                className="h-3 bg-hygge-mist/50"
+              />
+              <div className="flex justify-between mt-2 text-xs text-hygge-earth/60">
+                <span>0%</span>
+                <span className="font-medium text-hygge-moss">{Math.round(progressPercentage)}%</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            {/* Task Status Cards */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Meditation Status */}
+              <div className={`relative p-3 rounded-xl border transition-all duration-300 ${
+                meditationComplete 
+                  ? 'bg-hygge-moss/20 border-hygge-moss/30 shadow-lg' 
+                  : 'bg-white/5 border-white/10'
+              }`}>
+                <div className="flex items-center space-x-2">
+                  <div className={`p-1.5 rounded-full transition-colors ${
+                    meditationComplete ? 'bg-hygge-moss text-white' : 'bg-hygge-moss/20 text-hygge-moss'
+                  }`}>
+                    {meditationComplete ? <Check size={12} /> : <Brain size={12} />}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-hygge-moss">Meditation</p>
+                    <p className="text-xs text-hygge-earth/60">
+                      {meditationComplete ? 'Complete' : 'Pending'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Reading Status */}
+              <div className={`relative p-3 rounded-xl border transition-all duration-300 ${
+                readingComplete 
+                  ? 'bg-hygge-sky/20 border-hygge-sky/30 shadow-lg' 
+                  : 'bg-white/5 border-white/10'
+              }`}>
+                <div className="flex items-center space-x-2">
+                  <div className={`p-1.5 rounded-full transition-colors ${
+                    readingComplete ? 'bg-hygge-sky text-white' : 'bg-hygge-sky/20 text-hygge-moss'
+                  }`}>
+                    {readingComplete ? <Check size={12} /> : <BookOpen size={12} />}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-hygge-moss">Reading</p>
+                    <p className="text-xs text-hygge-earth/60">
+                      {readingComplete ? 'Complete' : 'Pending'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bubble Buttons in Vertical Layout - Smaller Size */}
+        <div className="flex-1 flex flex-col items-center justify-center space-y-12 max-w-sm mx-auto">
           {/* Meditation Bubble */}
           <div 
             className="animate-float cursor-pointer group w-full"
@@ -96,17 +176,17 @@ const Dashboard = () => {
               {/* Outer glow ring */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               
-              {/* Main bubble */}
-              <div className="relative w-72 h-72 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
+              {/* Main bubble - smaller size */}
+              <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/20 to-hygge-sage/10 opacity-50"></div>
                 
                 {/* Content */}
-                <div className="relative flex flex-col items-center justify-center h-full p-8 text-center">
-                  <div className="mb-6 p-4 rounded-full bg-hygge-moss/20 backdrop-blur-sm group-hover:bg-hygge-moss/30 transition-all duration-300">
-                    <Brain size={48} className="text-hygge-moss" />
+                <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
+                  <div className="mb-4 p-3 rounded-full bg-hygge-moss/20 backdrop-blur-sm group-hover:bg-hygge-moss/30 transition-all duration-300">
+                    <Brain size={36} className="text-hygge-moss" />
                   </div>
-                  <h3 className="font-display text-2xl md:text-3xl text-hygge-moss mb-3 font-semibold">Meditate</h3>
-                  <p className="text-hygge-earth/80 text-sm md:text-base leading-relaxed">Find your inner peace and clarity</p>
+                  <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Meditate</h3>
+                  <p className="text-hygge-earth/80 text-xs leading-relaxed">Find your inner peace and clarity</p>
                 </div>
               </div>
             </div>
@@ -122,17 +202,17 @@ const Dashboard = () => {
               {/* Outer glow ring */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               
-              {/* Main bubble */}
-              <div className="relative w-72 h-72 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
+              {/* Main bubble - smaller size */}
+              <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/20 to-hygge-stone/10 opacity-50"></div>
                 
                 {/* Content */}
-                <div className="relative flex flex-col items-center justify-center h-full p-8 text-center">
-                  <div className="mb-6 p-4 rounded-full bg-hygge-sky/20 backdrop-blur-sm group-hover:bg-hygge-sky/30 transition-all duration-300">
-                    <BookOpen size={48} className="text-hygge-moss" />
+                <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
+                  <div className="mb-4 p-3 rounded-full bg-hygge-sky/20 backdrop-blur-sm group-hover:bg-hygge-sky/30 transition-all duration-300">
+                    <BookOpen size={36} className="text-hygge-moss" />
                   </div>
-                  <h3 className="font-display text-2xl md:text-3xl text-hygge-moss mb-3 font-semibold">Today's Reading</h3>
-                  <p className="text-hygge-earth/80 text-sm md:text-base leading-relaxed">Nourish your mind with wisdom</p>
+                  <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Today's Reading</h3>
+                  <p className="text-hygge-earth/80 text-xs leading-relaxed">Nourish your mind with wisdom</p>
                 </div>
               </div>
             </div>
