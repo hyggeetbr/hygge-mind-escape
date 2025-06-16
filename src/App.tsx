@@ -11,6 +11,7 @@ import Meditate from "./pages/Meditate";
 import TodaysReading from "./pages/TodaysReading";
 import ArticleDetail from "./pages/ArticleDetail";
 import Yoga from "./pages/Yoga";
+import AskAI from "./pages/AskAI";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/todays-reading" element={<TodaysReading />} />
           <Route path="/todays-reading/:articleId" element={<ArticleDetail />} />
           <Route path="/yoga" element={<Yoga />} />
+          <Route path="/ask-ai" element={<AskAI />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
