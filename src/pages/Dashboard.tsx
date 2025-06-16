@@ -1,8 +1,7 @@
-
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LogOut, BookOpen, Brain, Check, Lotus } from "lucide-react";
+import { LogOut, BookOpen, Brain, Check, Flower2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
@@ -177,7 +176,7 @@ const Dashboard = () => {
                   <div className={`p-1.5 rounded-full transition-colors ${
                     yogaComplete ? 'bg-hygge-stone text-white' : 'bg-hygge-stone/20 text-hygge-moss'
                   }`}>
-                    {yogaComplete ? <Check size={12} /> : <Lotus size={12} />}
+                    {yogaComplete ? <Check size={12} /> : <Flower2 size={12} />}
                   </div>
                   <div className="text-center">
                     <p className="text-xs font-medium text-hygge-moss">Yoga</p>
@@ -262,7 +261,7 @@ const Dashboard = () => {
                 {/* Content */}
                 <div className="relative flex flex-col items-center justify-center h-full p-4 text-center">
                   <div className="mb-3 p-3 rounded-full bg-hygge-stone/20 backdrop-blur-sm group-hover:bg-hygge-stone/30 transition-all duration-300">
-                    <Lotus size={36} className="text-hygge-moss" />
+                    <Flower2 size={36} className="text-hygge-moss" />
                   </div>
                   <h3 className="font-display text-lg text-hygge-moss mb-3 font-semibold">Yoga for the Day</h3>
                   
