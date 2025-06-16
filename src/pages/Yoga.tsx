@@ -1,9 +1,16 @@
 
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Flower2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 const Yoga = () => {
   const { user, loading } = useAuth();
@@ -15,13 +22,14 @@ const Yoga = () => {
     }
   }, [user, loading, navigate]);
 
+  const [showPranayama, setShowPranayama] = useState(false);
+
   const handleBack = () => {
     navigate("/dashboard");
   };
 
   const handlePranayama = () => {
-    console.log("Pranayama practice started");
-    // In real app, would implement pranayama session
+    setShowPranayama(true);
   };
 
   const handleDharana = () => {
@@ -151,6 +159,27 @@ const Yoga = () => {
             </div>
           </div>
         </div>
+
+        {/* Pranayama Info Dialog */}
+        <Dialog open={showPranayama} onOpenChange={setShowPranayama}>
+          <DialogContent className="max-w-md bg-white/80">
+            <DialogHeader>
+              <DialogTitle className="text-hygge-moss font-display text-xl">
+                Pranayama
+              </DialogTitle>
+            </DialogHeader>
+            <p className="text-hygge-earth/80 text-sm">
+              Pranayama is the yogic practice of mindful breathing. By guiding
+              the flow of inhalation and exhalation, it cultivates calmness and
+              vitality throughout the body and mind.
+            </p>
+            <DialogClose asChild>
+              <button className="mt-4 px-4 py-2 rounded bg-hygge-moss text-hygge-cream w-full">
+                Close
+              </button>
+            </DialogClose>
+          </DialogContent>
+        </Dialog>
 
         {/* Subtle Footer */}
         <div className="text-center pb-12 animate-fade-in" style={{ animationDelay: "1.2s" }}>
