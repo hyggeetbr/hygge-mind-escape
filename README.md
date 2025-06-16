@@ -64,6 +64,20 @@ This project is built with:
 
 Simply open [Lovable](https://lovable.dev/projects/09048803-86eb-481a-a8e7-278a433936e0) and click on Share -> Publish.
 
+## Deploying the `ask-ai` Supabase function
+
+If you want to run the AI chat feature through Supabase, deploy the
+`supabase/functions/ask-ai` function. First set your OpenAI key as a
+Supabase secret and then deploy the function:
+
+```sh
+supabase secrets set OPENAI_API_KEY=YOUR_KEY_HERE
+supabase functions deploy ask-ai
+```
+
+Once deployed, the frontend will call this function so `VITE_OPENAI_API_KEY`
+is no longer required.
+
 ## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!
