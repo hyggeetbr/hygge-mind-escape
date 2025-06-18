@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import HomeButton from "@/components/HomeButton";
+import { supabase } from "@/lib/supabase";
 
 const AskAI = () => {
   const [question, setQuestion] = useState("");
@@ -9,58 +10,30 @@ const AskAI = () => {
 
   const handleAsk = async () => {
     if (!question.trim()) return;
+    
     setLoading(true);
     try {
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-      console.log("API Key exists:", !!apiKey);
+      console.log("Calling ask-ai edge function...");
       
-      if (!apiKey) {
-        setAnswer("OpenAI key not configured.");
-        return;
-      }
-      
-      console.log("Making request to OpenAI...");
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content: "You are a helpful assistant for a mindfulness app.",
-            },
-            { role: "user", content: question },
-          ],
-          temperature: 0.7,
-          max_tokens: 200,
-        }),
+      const { data, error } = await supabase.functions.invoke('ask-ai', {
+        body: { question: question.trim() }
       });
-      
-      console.log("Response status:", res.status);
-      console.log("Response ok:", res.ok);
-      
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("API Error:", errorText);
-        setAnswer(`Error: ${res.status} - ${errorText}`);
+
+      console.log("Edge function response:", { data, error });
+
+      if (error) {
+        console.error("Edge function error:", error);
+        setAnswer(`Error: ${error.message || 'Failed to get response from AI'}`);
         return;
       }
-      
-      const data = await res.json();
-      console.log("Full API response:", data);
-      
-      const text = data.choices?.[0]?.message?.content;
-      console.log("Extracted text:", text);
-      
-      if (text) {
-        setAnswer(text.trim());
+
+      if (data?.answer) {
+        setAnswer(data.answer);
+      } else if (data?.error) {
+        setAnswer(`Error: ${data.error}`);
       } else {
-        console.error("No content in response:", data);
-        setAnswer("Error: No response content received from AI.");
+        console.error("Unexpected response format:", data);
+        setAnswer("Error: Unexpected response format from server");
       }
     } catch (err) {
       console.error("Request failed:", err);
