@@ -75,3 +75,13 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Supabase Edge Function environment variables
+
+The Edge Function at `supabase/functions/summarize-article/index.ts` relies on three environment variables:
+
+- `OPENAI_API_KEY` – OpenAI API key used to generate article summaries.
+- `SUPABASE_URL` – URL of your Supabase project.
+- `SUPABASE_SERVICE_ROLE_KEY` – service role key used to update the database.
+
+Ensure these are configured in your Supabase dashboard or set via the Supabase CLI; otherwise the function will fail when deployed.
