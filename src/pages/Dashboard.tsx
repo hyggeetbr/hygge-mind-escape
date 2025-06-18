@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -196,9 +197,9 @@ const Dashboard = () => {
         </div>
 
         {/* Bubble Buttons in 2x2 Grid Layout */}
-        <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto">
-          {/* First Row: Meditation and Today's Reading */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 mb-8 md:mb-16 w-full">
+        <div className="flex-1 flex flex-col items-center justify-center max-w-6xl mx-auto py-8">
+          {/* Top Row: Meditation and Today's Reading */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 mb-12 md:mb-20 w-full max-w-4xl place-items-center">
             {/* Meditation Bubble */}
             <div 
               className="animate-float cursor-pointer group"
@@ -209,7 +210,7 @@ const Dashboard = () => {
                 {/* Outer glow ring */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 
-                {/* Main bubble - smaller size */}
+                {/* Main bubble */}
                 <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/20 to-hygge-sage/10 opacity-50"></div>
                   
@@ -235,7 +236,7 @@ const Dashboard = () => {
                 {/* Outer glow ring */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 
-                {/* Main bubble - smaller size */}
+                {/* Main bubble */}
                 <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/20 to-hygge-stone/10 opacity-50"></div>
                   
@@ -252,8 +253,8 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Second Row: Yoga and Ask AI */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 w-full">
+          {/* Bottom Row: Yoga and Ask AI */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 w-full max-w-4xl place-items-center">
             {/* Yoga for the Day Bubble */}
             <div
               className="animate-float cursor-pointer group"
@@ -264,7 +265,7 @@ const Dashboard = () => {
                 {/* Outer glow ring */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/30 to-hygge-mist/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 
-                {/* Main bubble - smaller size */}
+                {/* Main bubble */}
                 <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/20 to-hygge-mist/10 opacity-50"></div>
                   
@@ -290,7 +291,7 @@ const Dashboard = () => {
                 {/* Outer glow ring */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-mist/30 to-hygge-sky/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
 
-                {/* Main bubble - smaller size */}
+                {/* Main bubble */}
                 <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-mist/20 to-hygge-sage/10 opacity-50"></div>
 
