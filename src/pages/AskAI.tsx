@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import HomeButton from "@/components/HomeButton";
 
@@ -11,10 +12,14 @@ const AskAI = () => {
     setLoading(true);
     try {
       const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      console.log("API Key exists:", !!apiKey);
+      
       if (!apiKey) {
         setAnswer("OpenAI key not configured.");
         return;
       }
+      
+      console.log("Making request to OpenAI...");
       const res = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -34,12 +39,32 @@ const AskAI = () => {
           max_tokens: 200,
         }),
       });
+      
+      console.log("Response status:", res.status);
+      console.log("Response ok:", res.ok);
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("API Error:", errorText);
+        setAnswer(`Error: ${res.status} - ${errorText}`);
+        return;
+      }
+      
       const data = await res.json();
-      const text = data.choices?.[0]?.message?.content?.trim();
-      setAnswer(text || "No response.");
+      console.log("Full API response:", data);
+      
+      const text = data.choices?.[0]?.message?.content;
+      console.log("Extracted text:", text);
+      
+      if (text) {
+        setAnswer(text.trim());
+      } else {
+        console.error("No content in response:", data);
+        setAnswer("Error: No response content received from AI.");
+      }
     } catch (err) {
-      console.error(err);
-      setAnswer("Error contacting AI.");
+      console.error("Request failed:", err);
+      setAnswer(`Error: ${err instanceof Error ? err.message : 'Unknown error occurred'}`);
     } finally {
       setLoading(false);
     }
