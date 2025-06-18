@@ -195,107 +195,113 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Bubble Buttons in Vertical Layout - Smaller Size */}
-        <div className="flex-1 flex flex-col items-center justify-center space-y-12 max-w-sm mx-auto">
-          {/* Meditation Bubble */}
-          <div 
-            className="animate-float cursor-pointer group w-full"
-            onClick={handleMeditate}
-            style={{ animationDelay: "0.5s" }}
-          >
-            <div className="relative">
-              {/* Outer glow ring */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-              
-              {/* Main bubble - smaller size */}
-              <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/20 to-hygge-sage/10 opacity-50"></div>
+        {/* Bubble Buttons in 2x2 Grid Layout */}
+        <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto">
+          {/* First Row: Meditation and Today's Reading */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 mb-8 md:mb-16 w-full">
+            {/* Meditation Bubble */}
+            <div 
+              className="animate-float cursor-pointer group"
+              onClick={handleMeditate}
+              style={{ animationDelay: "0.5s" }}
+            >
+              <div className="relative">
+                {/* Outer glow ring */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 
-                {/* Content */}
-                <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
-                  <div className="mb-4 p-3 rounded-full bg-hygge-moss/20 backdrop-blur-sm group-hover:bg-hygge-moss/30 transition-all duration-300">
-                    <Brain size={36} className="text-hygge-moss" />
+                {/* Main bubble - smaller size */}
+                <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/20 to-hygge-sage/10 opacity-50"></div>
+                  
+                  {/* Content */}
+                  <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
+                    <div className="mb-4 p-3 rounded-full bg-hygge-moss/20 backdrop-blur-sm group-hover:bg-hygge-moss/30 transition-all duration-300">
+                      <Brain size={36} className="text-hygge-moss" />
+                    </div>
+                    <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Meditate</h3>
+                    <p className="text-hygge-earth/80 text-xs leading-relaxed">Find your inner peace and clarity</p>
                   </div>
-                  <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Meditate</h3>
-                  <p className="text-hygge-earth/80 text-xs leading-relaxed">Find your inner peace and clarity</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Today's Reading Bubble */}
+            <div 
+              className="animate-float cursor-pointer group"
+              onClick={handleTodaysReading}
+              style={{ animationDelay: "1.2s" }}
+            >
+              <div className="relative">
+                {/* Outer glow ring */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                
+                {/* Main bubble - smaller size */}
+                <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/20 to-hygge-stone/10 opacity-50"></div>
+                  
+                  {/* Content */}
+                  <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
+                    <div className="mb-4 p-3 rounded-full bg-hygge-sky/20 backdrop-blur-sm group-hover:bg-hygge-sky/30 transition-all duration-300">
+                      <BookOpen size={36} className="text-hygge-moss" />
+                    </div>
+                    <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Today's Reading</h3>
+                    <p className="text-hygge-earth/80 text-xs leading-relaxed">Nourish your mind with wisdom</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Today's Reading Bubble */}
-          <div 
-            className="animate-float cursor-pointer group w-full"
-            onClick={handleTodaysReading}
-            style={{ animationDelay: "1.2s" }}
-          >
-            <div className="relative">
-              {/* Outer glow ring */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-              
-              {/* Main bubble - smaller size */}
-              <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/20 to-hygge-stone/10 opacity-50"></div>
+          {/* Second Row: Yoga and Ask AI */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 w-full">
+            {/* Yoga for the Day Bubble */}
+            <div
+              className="animate-float cursor-pointer group"
+              onClick={handleYoga}
+              style={{ animationDelay: "1.8s" }}
+            >
+              <div className="relative">
+                {/* Outer glow ring */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/30 to-hygge-mist/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 
-                {/* Content */}
-                <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
-                  <div className="mb-4 p-3 rounded-full bg-hygge-sky/20 backdrop-blur-sm group-hover:bg-hygge-sky/30 transition-all duration-300">
-                    <BookOpen size={36} className="text-hygge-moss" />
+                {/* Main bubble - smaller size */}
+                <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/20 to-hygge-mist/10 opacity-50"></div>
+                  
+                  {/* Content */}
+                  <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
+                    <div className="mb-4 p-3 rounded-full bg-hygge-stone/20 backdrop-blur-sm group-hover:bg-hygge-stone/30 transition-all duration-300">
+                      <Flower2 size={36} className="text-hygge-moss" />
+                    </div>
+                    <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Yoga for the Day</h3>
+                    <p className="text-hygge-earth/80 text-xs leading-relaxed">Harmonize body, mind, and spirit</p>
                   </div>
-                  <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Today's Reading</h3>
-                  <p className="text-hygge-earth/80 text-xs leading-relaxed">Nourish your mind with wisdom</p>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Yoga for the Day Bubble */}
-          <div
-            className="animate-float cursor-pointer group w-full"
-            onClick={handleYoga}
-            style={{ animationDelay: "1.8s" }}
-          >
-            <div className="relative">
-              {/* Outer glow ring */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/30 to-hygge-mist/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-              
-              {/* Main bubble - smaller size */}
-              <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/20 to-hygge-mist/10 opacity-50"></div>
-                
-                {/* Content */}
-                <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
-                  <div className="mb-4 p-3 rounded-full bg-hygge-stone/20 backdrop-blur-sm group-hover:bg-hygge-stone/30 transition-all duration-300">
-                    <Flower2 size={36} className="text-hygge-moss" />
+            {/* Ask from AI Bubble */}
+            <div
+              className="animate-float cursor-pointer group"
+              onClick={handleAskAI}
+              style={{ animationDelay: "2.4s" }}
+            >
+              <div className="relative">
+                {/* Outer glow ring */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-mist/30 to-hygge-sky/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+
+                {/* Main bubble - smaller size */}
+                <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-mist/20 to-hygge-sage/10 opacity-50"></div>
+
+                  {/* Content */}
+                  <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
+                    <div className="mb-4 p-3 rounded-full bg-hygge-sky/20 backdrop-blur-sm group-hover:bg-hygge-sky/30 transition-all duration-300">
+                      <Sparkles size={36} className="text-hygge-moss" />
+                    </div>
+                    <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Ask from AI</h3>
+                    <p className="text-hygge-earth/80 text-xs leading-relaxed">Get mindful guidance from AI</p>
                   </div>
-                  <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Yoga for the Day</h3>
-                  <p className="text-hygge-earth/80 text-xs leading-relaxed">Harmonize body, mind, and spirit</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Ask from AI Bubble */}
-          <div
-            className="animate-float cursor-pointer group w-full"
-            onClick={handleAskAI}
-            style={{ animationDelay: "2.4s" }}
-          >
-            <div className="relative">
-              {/* Outer glow ring */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-mist/30 to-hygge-sky/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-
-              {/* Main bubble - smaller size */}
-              <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-mist/20 to-hygge-sage/10 opacity-50"></div>
-
-                {/* Content */}
-                <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
-                  <div className="mb-4 p-3 rounded-full bg-hygge-sky/20 backdrop-blur-sm group-hover:bg-hygge-sky/30 transition-all duration-300">
-                    <Sparkles size={36} className="text-hygge-moss" />
-                  </div>
-                  <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Ask from AI</h3>
-                  <p className="text-hygge-earth/80 text-xs leading-relaxed">Get mindful guidance from AI</p>
                 </div>
               </div>
             </div>
