@@ -83,9 +83,11 @@ The Edge Functions rely on several environment variables:
 
 ### `ask-ai`
 - `OPENAI_API_KEY` – OpenAI API key used to generate answers.
+  - When running locally with `.env`, the edge functions also fall back to `VITE_OPENAI_API_KEY`.
 
 ### `summarize-article`
 - `OPENAI_API_KEY` – OpenAI API key used to generate article summaries.
+  - Falls back to `VITE_OPENAI_API_KEY` when developing locally.
 - `SUPABASE_URL` – URL of your Supabase project.
 - `SUPABASE_SERVICE_ROLE_KEY` – service role key used to update the database.
 
