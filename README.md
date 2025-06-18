@@ -78,8 +78,13 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-trick
 
 ## Supabase Edge Function environment variables
 
-The Edge Function at `supabase/functions/summarize-article/index.ts` relies on three environment variables:
 
+The Edge Functions rely on several environment variables:
+
+### `ask-ai`
+- `OPENAI_API_KEY` – OpenAI API key used to generate answers.
+
+### `summarize-article`
 - `OPENAI_API_KEY` – OpenAI API key used to generate article summaries.
 - `SUPABASE_URL` – URL of your Supabase project.
 - `SUPABASE_SERVICE_ROLE_KEY` – service role key used to update the database.

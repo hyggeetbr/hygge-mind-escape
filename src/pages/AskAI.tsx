@@ -15,15 +15,19 @@ const AskAI = () => {
     try {
       console.log("Calling ask-ai edge function...");
       
-      const { data, error } = await supabase.functions.invoke('ask-ai', {
-        body: { question: question.trim() }
+      const { data, error } = await supabase.functions.invoke("ask-ai", {
+        body: { question: question.trim() },
       });
 
       console.log("Edge function response:", { data, error });
 
       if (error) {
-        console.error("Edge function error:", error);
-        setAnswer(`Error: ${error.message || 'Failed to get response from AI'}`);
+        console.error("Edge function error:", error, data);
+        const errMsg =
+          typeof data === "object" && data?.error
+            ? data.error
+            : error.message;
+        setAnswer(`Error: ${errMsg || "Failed to get response from AI"}`);
         return;
       }
 
