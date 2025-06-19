@@ -33,6 +33,22 @@ const Premium = () => {
     }
   ];
 
+  const handleDashboard = () => {
+    navigate("/dashboard");
+  };
+
+  const handleSleep = () => {
+    navigate("/sleep");
+  };
+
+  const handleDiscover = () => {
+    navigate("/discover");
+  };
+
+  const handleProfile = () => {
+    navigate("/profile");
+  };
+
   return (
     <div className="min-h-screen calm-gradient relative overflow-hidden">
       {/* Floating background elements */}
@@ -151,6 +167,48 @@ const Premium = () => {
           <p className="text-white/60 text-sm">
             7-day free trial • Cancel anytime • No hidden fees
           </p>
+        </div>
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
+        <div className="flex justify-around py-4 px-2">
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handleDashboard}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <div className="w-4 h-4 bg-white/60 rounded-sm"></div>
+            </div>
+            <span className="text-white/60 text-xs">Home</span>
+          </div>
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handleSleep}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">🌙</div>
+            <span className="text-white/60 text-xs">Sleep</span>
+          </div>
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handleDiscover}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">🔍</div>
+            <span className="text-white/60 text-xs">Discover</span>
+          </div>
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handleProfile}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">👤</div>
+            <span className="text-white/60 text-xs">Profile</span>
+          </div>
+          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-calm-purple rounded-sm"></div>
+            </div>
+            <span className="text-white text-xs font-medium">Premium</span>
+          </div>
         </div>
       </div>
     </div>
