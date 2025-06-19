@@ -43,6 +43,22 @@ const Dashboard = () => {
     navigate("/ask-ai");
   };
 
+  const handleSleep = () => {
+    navigate("/sleep");
+  };
+
+  const handleDiscover = () => {
+    navigate("/discover");
+  };
+
+  const handleProfile = () => {
+    navigate("/profile");
+  };
+
+  const handlePremium = () => {
+    navigate("/premium");
+  };
+
   const handleLogout = async () => {
     await signOut();
     navigate("/", { replace: true });
@@ -80,7 +96,10 @@ const Dashboard = () => {
         </div>
         <div className="text-white text-xl font-medium">Hygge</div>
         <div className="flex items-center space-x-4">
-          <Gift className="w-6 h-6 text-calm-orange" />
+          <Gift 
+            className="w-6 h-6 text-calm-orange cursor-pointer hover:scale-110 transition-transform" 
+            onClick={handlePremium}
+          />
           <Button
             variant="ghost"
             size="icon"
@@ -103,7 +122,10 @@ const Dashboard = () => {
 
         {/* Premium Banner */}
         <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <div className="calm-card p-4 flex items-center justify-between">
+          <div 
+            className="calm-card p-4 flex items-center justify-between cursor-pointer transform transition-all duration-300 hover:scale-105"
+            onClick={handlePremium}
+          >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-calm-orange rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
@@ -296,19 +318,31 @@ const Dashboard = () => {
             </div>
             <span className="text-white text-xs font-medium">Home</span>
           </div>
-          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handleSleep}
+          >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">🌙</div>
             <span className="text-white/60 text-xs">Sleep</span>
           </div>
-          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handleDiscover}
+          >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">🔍</div>
             <span className="text-white/60 text-xs">Discover</span>
           </div>
-          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handleProfile}
+          >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">👤</div>
             <span className="text-white/60 text-xs">Profile</span>
           </div>
-          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handlePremium}
+          >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">⭐</div>
             <span className="text-white/60 text-xs">Premium</span>
           </div>
