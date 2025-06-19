@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import LandingPage from "@/components/LandingPage";
 import AuthPage from "@/components/AuthPage";
@@ -24,23 +25,25 @@ const Index = () => {
   const handleAuthSuccess = () => {
     console.log("Auth success, user:", user);
     setShowAuth(false);
-    // Redirect to dashboard if login successful
     navigate("/dashboard");
   };
 
   if (loading) {
     console.log("Showing loading state");
     return (
-      <div className="min-h-screen flex items-center justify-center bg-hygge-cream">
-        <div className="text-hygge-moss text-xl">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center calm-gradient">
+        <div className="relative">
+          <div className="absolute inset-0 animate-ping">
+            <span className="text-5xl text-white/30 font-light">Hygge</span>
+          </div>
+          <span className="relative text-5xl text-white font-light animate-fade-in">Hygge</span>
+        </div>
       </div>
     );
   }
 
   if (user) {
     console.log("User is authenticated, showing welcome page");
-    // If Auth success, redirect to dashboard (if not already there)
-    // But to avoid accidental redirect loop on dashboard, only redirect if not already there
     if (window.location.pathname !== "/dashboard") {
       navigate("/dashboard");
       return null;

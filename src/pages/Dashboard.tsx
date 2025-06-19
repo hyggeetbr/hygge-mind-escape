@@ -2,7 +2,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LogOut, BookOpen, Brain, Check, Flower2, Sparkles } from "lucide-react";
+import { LogOut, BookOpen, Brain, Check, Flower2, Sparkles, Gift, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
@@ -10,7 +10,7 @@ const Dashboard = () => {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   
-  // Mock completion status - in real app this would come from your database
+  // Mock completion status
   const [meditationComplete, setMeditationComplete] = useState(false);
   const [readingComplete, setReadingComplete] = useState(false);
   const [yogaComplete, setYogaComplete] = useState(false);
@@ -26,19 +26,16 @@ const Dashboard = () => {
 
   const handleMeditate = () => {
     navigate("/meditate");
-    // In real app, you would track completion here
     setMeditationComplete(true);
   };
 
   const handleTodaysReading = () => {
     navigate("/todays-reading");
-    // In real app, you would track completion here
     setReadingComplete(true);
   };
 
   const handleYoga = () => {
     navigate("/yoga");
-    // In real app, you would track completion here
     setYogaComplete(true);
   };
 
@@ -53,140 +50,148 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-hygge-cream via-hygge-mist to-hygge-sage/20">
-        <div className="relative">
-          <div className="absolute inset-0 animate-ping">
-            <span className="font-display text-5xl text-hygge-moss/30">Hygge</span>
-          </div>
-          <span className="relative font-display text-5xl text-hygge-moss animate-fade-in">Hygge</span>
-        </div>
+      <div className="min-h-screen flex items-center justify-center calm-gradient">
+        <div className="text-white text-2xl font-light animate-pulse">Hygge</div>
       </div>
     );
   }
 
+  const currentHour = new Date().getHours();
+  const getGreeting = () => {
+    if (currentHour < 12) return "Good Morning";
+    if (currentHour < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-hygge-cream via-hygge-mist to-hygge-sage/20">
-      {/* Advanced Background Effects */}
+    <div className="min-h-screen calm-gradient relative overflow-hidden">
+      {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Primary floating elements */}
-        <div className="absolute top-20 left-8 w-64 h-64 bg-gradient-to-br from-hygge-sage/30 to-hygge-sky/20 rounded-full blur-3xl animate-float opacity-60" />
-        <div className="absolute top-40 right-16 w-80 h-80 bg-gradient-to-br from-hygge-sky/25 to-hygge-mist/30 rounded-full blur-3xl animate-float opacity-50" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute bottom-32 left-20 w-48 h-48 bg-gradient-to-br from-hygge-stone/40 to-hygge-sage/20 rounded-full blur-2xl animate-pulse-soft opacity-40" />
-        <div className="absolute bottom-20 right-32 w-56 h-56 bg-gradient-to-br from-hygge-moss/20 to-hygge-sky/25 rounded-full blur-3xl animate-float opacity-45" style={{ animationDelay: "2.5s" }} />
-        
-        {/* Secondary ambient particles */}
-        <div className="absolute top-1/3 left-1/4 w-32 h-32 bg-hygge-sage/15 rounded-full blur-xl animate-pulse-soft opacity-30" style={{ animationDelay: "3s" }} />
-        <div className="absolute top-2/3 right-1/4 w-40 h-40 bg-hygge-sky/20 rounded-full blur-2xl animate-float opacity-25" style={{ animationDelay: "4s" }} />
-        
-        {/* Subtle overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-hygge-cream/50 via-transparent to-hygge-mist/30 pointer-events-none" />
+        <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
+        <div className="floating-element absolute top-40 right-20 w-48 h-48 bg-white/3 rounded-full blur-2xl" />
+        <div className="floating-element absolute bottom-32 left-32 w-24 h-24 bg-white/4 rounded-full blur-lg" />
+        <div className="floating-element absolute bottom-20 right-16 w-40 h-40 bg-white/2 rounded-full blur-xl" />
       </div>
 
-      {/* Logout Button */}
-      <div className="absolute top-6 right-8 z-20">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleLogout}
-          className="border-hygge-sage/50 text-hygge-moss hover:bg-hygge-sage/30 bg-white/70 backdrop-blur-md shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-        >
-          <LogOut size={20} />
-        </Button>
+      {/* Header */}
+      <div className="relative z-20 flex justify-between items-center p-6">
+        <div className="flex items-center space-x-4">
+          <Settings className="w-6 h-6 text-white/80" />
+        </div>
+        <div className="text-white text-xl font-medium">Hygge</div>
+        <div className="flex items-center space-x-4">
+          <Gift className="w-6 h-6 text-calm-orange" />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+            className="text-white/80 hover:bg-white/10 hover:text-white"
+          >
+            <LogOut size={20} />
+          </Button>
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col min-h-screen px-4">
-        {/* Welcome Text at Top */}
-        <div className="text-center pt-16 pb-8 animate-fade-in">
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-hygge-moss mb-4 drop-shadow-lg">
-            Welcome to your
+      <div className="relative z-10 px-6 pb-6">
+        {/* Greeting */}
+        <div className="mb-6 animate-fade-in">
+          <h1 className="text-white text-2xl font-light mb-2">
+            {getGreeting()}, {user?.email?.split('@')[0] || 'Friend'}
           </h1>
-          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl text-gradient bg-gradient-to-r from-hygge-sage to-hygge-sky bg-clip-text text-transparent drop-shadow-sm">
-            daily tasks
-          </h2>
-          <div className="mt-6 w-24 h-1 bg-gradient-to-r from-hygge-sage to-hygge-sky mx-auto rounded-full opacity-60"></div>
         </div>
 
-        {/* Progress Tracker */}
-        <div className="max-w-lg mx-auto mb-12 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-          <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl">
+        {/* Premium Banner */}
+        <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+          <div className="calm-card p-4 flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-calm-orange rounded-lg flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="font-medium text-gray-800">Unlock everything with</div>
+                <div className="font-semibold text-gray-800">Hygge Premium</div>
+              </div>
+            </div>
+            <div className="text-gray-400">›</div>
+          </div>
+        </div>
+
+        {/* Progress Section */}
+        <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          <div className="calm-card p-6">
             <div className="text-center mb-4">
-              <h3 className="font-display text-xl text-hygge-moss mb-2">Today's Progress</h3>
-              <p className="text-hygge-earth/70 text-sm">{completedTasks} of 3 tasks completed</p>
+              <h3 className="text-xl font-medium text-gray-800 mb-2">Today's Progress</h3>
+              <p className="text-gray-600 text-sm">{completedTasks} of 3 mindful tasks completed</p>
             </div>
             
-            {/* Progress Bar */}
             <div className="mb-6">
               <Progress 
                 value={progressPercentage} 
-                className="h-3 bg-hygge-mist/50"
+                className="h-2 bg-gray-100"
               />
-              <div className="flex justify-between mt-2 text-xs text-hygge-earth/60">
+              <div className="flex justify-between mt-2 text-xs text-gray-500">
                 <span>0%</span>
-                <span className="font-medium text-hygge-moss">{Math.round(progressPercentage)}%</span>
+                <span className="font-medium text-calm-purple">{Math.round(progressPercentage)}%</span>
                 <span>100%</span>
               </div>
             </div>
 
-            {/* Task Status Cards */}
             <div className="grid grid-cols-3 gap-3">
-              {/* Meditation Status */}
-              <div className={`relative p-3 rounded-xl border transition-all duration-300 ${
+              <div className={`p-3 rounded-lg border transition-all duration-300 ${
                 meditationComplete 
-                  ? 'bg-hygge-moss/20 border-hygge-moss/30 shadow-lg' 
-                  : 'bg-white/5 border-white/10'
+                  ? 'bg-calm-purple/10 border-calm-purple/30' 
+                  : 'bg-gray-50 border-gray-200'
               }`}>
                 <div className="flex flex-col items-center space-y-2">
-                  <div className={`p-1.5 rounded-full transition-colors ${
-                    meditationComplete ? 'bg-hygge-moss text-white' : 'bg-hygge-moss/20 text-hygge-moss'
+                  <div className={`p-1.5 rounded-full ${
+                    meditationComplete ? 'bg-calm-purple text-white' : 'bg-gray-200 text-gray-500'
                   }`}>
                     {meditationComplete ? <Check size={12} /> : <Brain size={12} />}
                   </div>
                   <div className="text-center">
-                    <p className="text-xs font-medium text-hygge-moss">Meditation</p>
-                    <p className="text-xs text-hygge-earth/60">
+                    <p className="text-xs font-medium text-gray-700">Meditation</p>
+                    <p className="text-xs text-gray-500">
                       {meditationComplete ? 'Complete' : 'Pending'}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Reading Status */}
-              <div className={`relative p-3 rounded-xl border transition-all duration-300 ${
+              <div className={`p-3 rounded-lg border transition-all duration-300 ${
                 readingComplete 
-                  ? 'bg-hygge-sky/20 border-hygge-sky/30 shadow-lg' 
-                  : 'bg-white/5 border-white/10'
+                  ? 'bg-calm-blue/10 border-calm-blue/30' 
+                  : 'bg-gray-50 border-gray-200'
               }`}>
                 <div className="flex flex-col items-center space-y-2">
-                  <div className={`p-1.5 rounded-full transition-colors ${
-                    readingComplete ? 'bg-hygge-sky text-white' : 'bg-hygge-sky/20 text-hygge-moss'
+                  <div className={`p-1.5 rounded-full ${
+                    readingComplete ? 'bg-calm-blue text-white' : 'bg-gray-200 text-gray-500'
                   }`}>
                     {readingComplete ? <Check size={12} /> : <BookOpen size={12} />}
                   </div>
                   <div className="text-center">
-                    <p className="text-xs font-medium text-hygge-moss">Reading</p>
-                    <p className="text-xs text-hygge-earth/60">
+                    <p className="text-xs font-medium text-gray-700">Reading</p>
+                    <p className="text-xs text-gray-500">
                       {readingComplete ? 'Complete' : 'Pending'}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Yoga Status */}
-              <div className={`relative p-3 rounded-xl border transition-all duration-300 ${
+              <div className={`p-3 rounded-lg border transition-all duration-300 ${
                 yogaComplete 
-                  ? 'bg-hygge-stone/20 border-hygge-stone/30 shadow-lg' 
-                  : 'bg-white/5 border-white/10'
+                  ? 'bg-calm-orange/10 border-calm-orange/30' 
+                  : 'bg-gray-50 border-gray-200'
               }`}>
                 <div className="flex flex-col items-center space-y-2">
-                  <div className={`p-1.5 rounded-full transition-colors ${
-                    yogaComplete ? 'bg-hygge-stone text-white' : 'bg-hygge-stone/20 text-hygge-moss'
+                  <div className={`p-1.5 rounded-full ${
+                    yogaComplete ? 'bg-calm-orange text-white' : 'bg-gray-200 text-gray-500'
                   }`}>
                     {yogaComplete ? <Check size={12} /> : <Flower2 size={12} />}
                   </div>
                   <div className="text-center">
-                    <p className="text-xs font-medium text-hygge-moss">Yoga</p>
-                    <p className="text-xs text-hygge-earth/60">
+                    <p className="text-xs font-medium text-gray-700">Yoga</p>
+                    <p className="text-xs text-gray-500">
                       {yogaComplete ? 'Complete' : 'Pending'}
                     </p>
                   </div>
@@ -196,128 +201,116 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Bubble Buttons in 2x2 Grid Layout */}
-        <div className="flex-1 flex flex-col items-center justify-center max-w-6xl mx-auto py-8">
-          {/* Top Row: Meditation and Today's Reading */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 mb-12 md:mb-20 w-full max-w-4xl place-items-center">
-            {/* Meditation Bubble */}
-            <div 
-              className="animate-float cursor-pointer group"
-              onClick={handleMeditate}
-              style={{ animationDelay: "0.5s" }}
-            >
-              <div className="relative">
-                {/* Outer glow ring */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                
-                {/* Main bubble */}
-                <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-moss/20 to-hygge-sage/10 opacity-50"></div>
-                  
-                  {/* Content */}
-                  <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
-                    <div className="mb-4 p-3 rounded-full bg-hygge-moss/20 backdrop-blur-sm group-hover:bg-hygge-moss/30 transition-all duration-300">
-                      <Brain size={36} className="text-hygge-moss" />
-                    </div>
-                    <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Meditate</h3>
-                    <p className="text-hygge-earth/80 text-xs leading-relaxed">Find your inner peace and clarity</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Today's Reading Bubble */}
-            <div 
-              className="animate-float cursor-pointer group"
-              onClick={handleTodaysReading}
-              style={{ animationDelay: "1.2s" }}
-            >
-              <div className="relative">
-                {/* Outer glow ring */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/30 to-hygge-sage/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                
-                {/* Main bubble */}
-                <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-sky/20 to-hygge-stone/10 opacity-50"></div>
-                  
-                  {/* Content */}
-                  <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
-                    <div className="mb-4 p-3 rounded-full bg-hygge-sky/20 backdrop-blur-sm group-hover:bg-hygge-sky/30 transition-all duration-300">
-                      <BookOpen size={36} className="text-hygge-moss" />
-                    </div>
-                    <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Today's Reading</h3>
-                    <p className="text-hygge-earth/80 text-xs leading-relaxed">Nourish your mind with wisdom</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Popular Section */}
+        <div className="mb-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-white text-lg font-medium">Popular on Hygge</h2>
+            <span className="text-white/60 text-sm">See All</span>
           </div>
 
-          {/* Bottom Row: Yoga and Ask AI */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 w-full max-w-4xl place-items-center">
-            {/* Yoga for the Day Bubble */}
-            <div
-              className="animate-float cursor-pointer group"
-              onClick={handleYoga}
-              style={{ animationDelay: "1.8s" }}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Meditation Card */}
+            <div 
+              className="calm-card p-0 overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={handleMeditate}
             >
-              <div className="relative">
-                {/* Outer glow ring */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/30 to-hygge-mist/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                
-                {/* Main bubble */}
-                <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-stone/20 to-hygge-mist/10 opacity-50"></div>
-                  
-                  {/* Content */}
-                  <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
-                    <div className="mb-4 p-3 rounded-full bg-hygge-stone/20 backdrop-blur-sm group-hover:bg-hygge-stone/30 transition-all duration-300">
-                      <Flower2 size={36} className="text-hygge-moss" />
-                    </div>
-                    <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Yoga for the Day</h3>
-                    <p className="text-hygge-earth/80 text-xs leading-relaxed">Harmonize body, mind, and spirit</p>
-                  </div>
+              <div className="relative h-32 bg-gradient-to-br from-calm-purple to-calm-purple-light flex items-center justify-center">
+                <Brain className="w-8 h-8 text-white" />
+                <div className="absolute bottom-2 left-3 flex items-center space-x-1 text-white/80 text-xs">
+                  <div className="w-3 h-3 rounded bg-white/20" />
+                  <span>88.7K</span>
                 </div>
+              </div>
+              <div className="p-3">
+                <div className="font-medium text-gray-800 text-sm mb-1">Mindful Meditation</div>
+                <div className="text-gray-600 text-xs">Meditation • 3 minutes</div>
               </div>
             </div>
 
-            {/* Ask from AI Bubble */}
-            <div
-              className="animate-float cursor-pointer group"
-              onClick={handleAskAI}
-              style={{ animationDelay: "2.4s" }}
+            {/* Reading Card */}
+            <div 
+              className="calm-card p-0 overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={handleTodaysReading}
             >
-              <div className="relative">
-                {/* Outer glow ring */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-mist/30 to-hygge-sky/20 blur-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-
-                {/* Main bubble */}
-                <div className="relative w-56 h-56 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 group-hover:bg-white/15">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-hygge-mist/20 to-hygge-sage/10 opacity-50"></div>
-
-                  {/* Content */}
-                  <div className="relative flex flex-col items-center justify-center h-full p-6 text-center">
-                    <div className="mb-4 p-3 rounded-full bg-hygge-sky/20 backdrop-blur-sm group-hover:bg-hygge-sky/30 transition-all duration-300">
-                      <Sparkles size={36} className="text-hygge-moss" />
-                    </div>
-                    <h3 className="font-display text-xl text-hygge-moss mb-2 font-semibold">Ask from AI</h3>
-                    <p className="text-hygge-earth/80 text-xs leading-relaxed">Get mindful guidance from AI</p>
-                  </div>
+              <div className="relative h-32 bg-gradient-to-br from-calm-blue to-blue-400 flex items-center justify-center">
+                <BookOpen className="w-8 h-8 text-white" />
+                <div className="absolute bottom-2 left-3 flex items-center space-x-1 text-white/80 text-xs">
+                  <div className="w-3 h-3 rounded bg-white/20" />
+                  <span>47.6K</span>
                 </div>
+              </div>
+              <div className="p-3">
+                <div className="font-medium text-gray-800 text-sm mb-1">Daily Reading</div>
+                <div className="text-gray-600 text-xs">Wisdom • Today</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Subtle Call to Action at Bottom */}
-        <div className="text-center pb-12 animate-fade-in" style={{ animationDelay: "2s" }}>
-          <p className="text-hygge-earth/60 text-sm font-light tracking-wide">
-            Choose your path to mindfulness
-          </p>
-          <div className="mt-2 flex justify-center space-x-1">
-            <div className="w-2 h-2 rounded-full bg-hygge-sage/40 animate-pulse"></div>
-            <div className="w-2 h-2 rounded-full bg-hygge-sky/40 animate-pulse" style={{ animationDelay: "0.5s" }}></div>
-            <div className="w-2 h-2 rounded-full bg-hygge-stone/40 animate-pulse" style={{ animationDelay: "1s" }}></div>
+        {/* Today's Dailies */}
+        <div className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
+          <h2 className="text-white text-lg font-medium mb-4">Today's Dailies</h2>
+          
+          <div className="space-y-4">
+            <div 
+              className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={handleYoga}
+            >
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-calm-orange/20 rounded-lg flex items-center justify-center">
+                  <Flower2 className="w-6 h-6 text-calm-orange" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-800">Yoga Practice</div>
+                  <div className="text-gray-600 text-sm">Harmonize body and mind</div>
+                </div>
+                <div className="text-gray-400">›</div>
+              </div>
+            </div>
+
+            <div 
+              className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={handleAskAI}
+            >
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-calm-purple/20 rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-6 h-6 text-calm-purple" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-800">Ask from AI</div>
+                  <div className="text-gray-600 text-sm">Get mindful guidance</div>
+                </div>
+                <div className="text-gray-400">›</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20">
+        <div className="flex justify-around py-3">
+          <div className="flex flex-col items-center space-y-1">
+            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-calm-purple rounded-sm"></div>
+            </div>
+            <span className="text-white text-xs font-medium">Home</span>
+          </div>
+          <div className="flex flex-col items-center space-y-1">
+            <div className="w-6 h-6 text-white/60">🌙</div>
+            <span className="text-white/60 text-xs">Sleep</span>
+          </div>
+          <div className="flex flex-col items-center space-y-1">
+            <div className="w-6 h-6 text-white/60">🔍</div>
+            <span className="text-white/60 text-xs">Discover</span>
+          </div>
+          <div className="flex flex-col items-center space-y-1">
+            <div className="w-6 h-6 text-white/60">👤</div>
+            <span className="text-white/60 text-xs">Profile</span>
+          </div>
+          <div className="flex flex-col items-center space-y-1">
+            <div className="w-6 h-6 text-white/60">⭐</div>
+            <span className="text-white/60 text-xs">Premium</span>
           </div>
         </div>
       </div>

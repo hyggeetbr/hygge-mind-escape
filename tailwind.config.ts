@@ -63,20 +63,21 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Hygge-inspired colors
-				hygge: {
-					cream: '#FDF6E8',
-					sage: '#A8B5A0',
-					moss: '#7A8471',
-					stone: '#C7B8A1',
-					mist: '#E8E6E1',
-					earth: '#8B7355',
-					sky: '#B8C5D1'
+				// Calm-inspired colors
+				calm: {
+					'purple-dark': 'rgb(88 28 135)',
+					'purple': 'rgb(139 69 255)',
+					'purple-light': 'rgb(196 181 253)',
+					'blue': 'rgb(59 130 246)',
+					'orange': 'rgb(251 146 60)',
+					'white': 'rgb(255 255 255)',
+					'text-light': 'rgb(255 255 255 / 0.8)',
+					'text-muted': 'rgb(255 255 255 / 0.6)',
 				}
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
-				display: ['Playfair Display', 'serif'],
+				display: ['Inter', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -105,23 +106,23 @@ export default {
 						transform: 'translateY(0px)'
 					},
 					'50%': {
-						transform: 'translateY(-10px)'
+						transform: 'translateY(-20px)'
 					}
 				},
 				'pulse-soft': {
 					'0%, 100%': {
-						opacity: '1',
+						opacity: '0.8',
 						transform: 'scale(1)'
 					},
 					'50%': {
-						opacity: '0.8',
+						opacity: '1',
 						transform: 'scale(1.05)'
 					}
 				},
 				'fade-in': {
 					'0%': {
 						opacity: '0',
-						transform: 'translateY(20px)'
+						transform: 'translateY(30px)'
 					},
 					'100%': {
 						opacity: '1',
@@ -137,15 +138,26 @@ export default {
 						transform: 'translateX(0)',
 						opacity: '1'
 					}
+				},
+				'scale-in': {
+					'0%': {
+						transform: 'scale(0.95)',
+						opacity: '0'
+					},
+					'100%': {
+						transform: 'scale(1)',
+						opacity: '1'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 6s ease-in-out infinite',
-				'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
-				'fade-in': 'fade-in 0.6s ease-out',
-				'slide-in-right': 'slide-in-right 0.5s ease-out'
+				'pulse-soft': 'pulse-soft 3s ease-in-out infinite',
+				'fade-in': 'fade-in 0.8s ease-out',
+				'slide-in-right': 'slide-in-right 0.5s ease-out',
+				'scale-in': 'scale-in 0.6s ease-out'
 			}
 		}
 	},
