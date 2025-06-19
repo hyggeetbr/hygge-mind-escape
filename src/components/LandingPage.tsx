@@ -11,17 +11,17 @@ const LandingPage = ({ onEnterApp }: LandingPageProps) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden">
       {/* Background decorative elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-hygge-sage/20 rounded-full blur-xl animate-pulse-soft"></div>
-      <div className="absolute bottom-32 right-16 w-24 h-24 bg-hygge-stone/30 rounded-full blur-lg"></div>
-      <div className="absolute top-1/3 right-20 w-16 h-16 bg-hygge-sky/25 rounded-full blur-md animate-pulse-soft delay-1000"></div>
+      <div className="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse-soft"></div>
+      <div className="absolute bottom-32 right-16 w-24 h-24 bg-white/15 rounded-full blur-lg"></div>
+      <div className="absolute top-1/3 right-20 w-16 h-16 bg-white/8 rounded-full blur-md animate-pulse-soft delay-1000"></div>
       
       {/* Main content */}
       <div className="text-center z-10 animate-fade-in">
-        <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-bold mb-8 text-gradient">
+        <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-bold mb-8 text-white">
           Hygge
         </h1>
         
-        <p className="text-hygge-earth/80 text-lg md:text-xl mb-16 font-light max-w-md mx-auto leading-relaxed">
+        <p className="text-white/80 text-lg md:text-xl mb-16 font-light max-w-md mx-auto leading-relaxed">
           Find peace in the digital chaos. Meditate, move mindfully, and rediscover meaningful content.
         </p>
         
@@ -33,20 +33,20 @@ const LandingPage = ({ onEnterApp }: LandingPageProps) => {
             onMouseLeave={() => setIsHovered(false)}
             className={`
               relative w-48 h-48 
-              bg-gradient-to-br from-white/30 to-white/10 
-              backdrop-blur-sm border border-white/40
-              text-hygge-earth font-medium
+              bg-gradient-to-br from-white/20 to-white/10 
+              backdrop-blur-sm border border-white/30
+              text-white font-medium
               rounded-full 
               transition-all duration-300 ease-out
-              hover:scale-110 hover:shadow-xl hover:shadow-hygge-sage/30
+              hover:scale-110 hover:shadow-xl hover:shadow-white/20
               flex items-center justify-center
               ${isHovered ? 'animate-pulse-soft' : ''}
             `}
             style={{
               boxShadow: `
-                0 8px 32px rgba(168, 181, 160, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5),
-                inset 0 -1px 0 rgba(255, 255, 255, 0.2)
+                0 8px 32px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.1)
               `
             }}
           >
@@ -62,13 +62,13 @@ const LandingPage = ({ onEnterApp }: LandingPageProps) => {
         </div>
         
         {/* Subtle call to action */}
-        <p className="text-hygge-moss/60 text-sm mt-8 animate-fade-in delay-500">
+        <p className="text-white/60 text-sm mt-8 animate-fade-in delay-500">
           Click the bubble to begin your journey
         </p>
       </div>
       
       {/* Bottom decorative text */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-hygge-stone/60 text-sm font-light">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60 text-sm font-light">
         Your mindful companion
       </div>
     </div>

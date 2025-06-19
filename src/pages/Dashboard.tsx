@@ -93,7 +93,7 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 px-6 pb-6">
+      <div className="relative z-10 px-6 pb-32">
         {/* Greeting */}
         <div className="mb-6 animate-fade-in">
           <h1 className="text-white text-2xl font-light mb-2">
@@ -248,7 +248,7 @@ const Dashboard = () => {
         </div>
 
         {/* Today's Dailies */}
-        <div className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
+        <div className="animate-fade-in mb-16" style={{ animationDelay: "0.4s" }}>
           <h2 className="text-white text-lg font-medium mb-4">Today's Dailies</h2>
           
           <div className="space-y-4">
@@ -288,28 +288,28 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20">
-        <div className="flex justify-around py-3">
-          <div className="flex flex-col items-center space-y-1">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
+        <div className="flex justify-around py-4 px-2">
+          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
               <div className="w-4 h-4 bg-calm-purple rounded-sm"></div>
             </div>
             <span className="text-white text-xs font-medium">Home</span>
           </div>
-          <div className="flex flex-col items-center space-y-1">
-            <div className="w-6 h-6 text-white/60">🌙</div>
+          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">🌙</div>
             <span className="text-white/60 text-xs">Sleep</span>
           </div>
-          <div className="flex flex-col items-center space-y-1">
-            <div className="w-6 h-6 text-white/60">🔍</div>
+          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">🔍</div>
             <span className="text-white/60 text-xs">Discover</span>
           </div>
-          <div className="flex flex-col items-center space-y-1">
-            <div className="w-6 h-6 text-white/60">👤</div>
+          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">👤</div>
             <span className="text-white/60 text-xs">Profile</span>
           </div>
-          <div className="flex flex-col items-center space-y-1">
-            <div className="w-6 h-6 text-white/60">⭐</div>
+          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">⭐</div>
             <span className="text-white/60 text-xs">Premium</span>
           </div>
         </div>
