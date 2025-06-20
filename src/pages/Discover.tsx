@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Sparkles, BookOpen, Music, Heart } from "lucide-react";
+import { ArrowLeft, Search, Sparkles, BookOpen, Music, Heart, TrendingUp, Brain, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Discover = () => {
