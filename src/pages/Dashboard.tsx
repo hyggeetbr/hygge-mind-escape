@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -62,6 +61,10 @@ const Dashboard = () => {
   const handleLogout = async () => {
     await signOut();
     navigate("/", { replace: true });
+  };
+
+  const handleCommunity = () => {
+    navigate("/community");
   };
 
   if (loading) {
@@ -274,6 +277,7 @@ const Dashboard = () => {
           <h2 className="text-white text-lg font-medium mb-4">Today's Dailies</h2>
           
           <div className="space-y-4">
+            {/* Yoga Card */}
             <div 
               className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
               onClick={handleYoga}
@@ -290,6 +294,7 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {/* Ask AI Card */}
             <div 
               className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
               onClick={handleAskAI}
@@ -301,6 +306,23 @@ const Dashboard = () => {
                 <div className="flex-1">
                   <div className="font-medium text-gray-800">Ask from AI</div>
                   <div className="text-gray-600 text-sm">Get mindful guidance</div>
+                </div>
+                <div className="text-gray-400">›</div>
+              </div>
+            </div>
+
+            {/* Community Card */}
+            <div 
+              className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={handleCommunity}
+            >
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-calm-blue/20 rounded-lg flex items-center justify-center">
+                  <div className="text-xl">👥</div>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-800">Community</div>
+                  <div className="text-gray-600 text-sm">Connect with mindful souls</div>
                 </div>
                 <div className="text-gray-400">›</div>
               </div>
@@ -331,6 +353,13 @@ const Dashboard = () => {
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">🔍</div>
             <span className="text-white/60 text-xs">Discover</span>
+          </div>
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handleCommunity}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">👥</div>
+            <span className="text-white/60 text-xs">Community</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
