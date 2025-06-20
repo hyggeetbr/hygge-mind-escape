@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Settings, Award, Calendar, Clock, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,6 +35,10 @@ const Profile = () => {
 
   const handleDiscover = () => {
     navigate("/discover");
+  };
+
+  const handleCommunity = () => {
+    navigate("/community");
   };
 
   const handlePremium = () => {
@@ -184,10 +187,17 @@ const Profile = () => {
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">🔍</div>
             <span className="text-white/60 text-xs">Discover</span>
           </div>
-          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
-            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-calm-purple rounded-sm"></div>
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={handleCommunity}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <div className="w-4 h-4 bg-white/60 rounded-sm"></div>
             </div>
+            <span className="text-white/60 text-xs">Community</span>
+          </div>
+          <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
+            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">👤</div>
             <span className="text-white text-xs font-medium">Profile</span>
           </div>
           <div 
