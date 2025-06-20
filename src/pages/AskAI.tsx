@@ -1,52 +1,47 @@
 
-import { useState } from "react";
-import { ArrowLeft, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+import { ArrowLeft, Send, Sparkles, Home, Users, Bot } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 
 const AskAI = () => {
   const navigate = useNavigate();
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleBack = () => {
+  const handleSend = () => {
+    if (message.trim()) {
+      // Here you would typically send the message to your AI service
+      console.log("Sending message:", message);
+      setMessage("");
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleDashboard = () => {
     navigate("/dashboard");
   };
 
-  const handleAsk = async () => {
-    if (!question.trim()) return;
-    
-    setLoading(true);
-    try {
-      console.log("Calling ask-ai edge function...");
-      
-      const { data, error } = await supabase.functions.invoke('ask-ai', {
-        body: { question: question.trim() }
-      });
+  const handleSleep = () => {
+    navigate("/sleep");
+  };
 
-      console.log("Edge function response:", { data, error });
+  const handleDiscover = () => {
+    navigate("/discover");
+  };
 
-      if (error) {
-        console.error("Edge function error:", error);
-        setAnswer(`Error: ${error.message || 'Failed to get response from AI'}`);
-        return;
-      }
+  const handleCommunity = () => {
+    navigate("/community");
+  };
 
-      if (data?.answer) {
-        setAnswer(data.answer);
-      } else if (data?.error) {
-        setAnswer(`Error: ${data.error}`);
-      } else {
-        console.error("Unexpected response format:", data);
-        setAnswer("Error: Unexpected response format from server");
-      }
-    } catch (err) {
-      console.error("Request failed:", err);
-      setAnswer(`Error: ${err instanceof Error ? err.message : 'Unknown error occurred'}`);
-    } finally {
-      setLoading(false);
-    }
+  const handlePremium = () => {
+    navigate("/premium");
   };
 
   return (
@@ -60,209 +55,128 @@ const AskAI = () => {
 
       {/* Header */}
       <div className="relative z-20 flex items-center justify-between p-6">
-        <button 
-          onClick={handleBack}
-          className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/20 transition-all"
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate("/dashboard")}
+          className="text-white/80 hover:bg-white/10 hover:text-white"
         >
           <ArrowLeft size={20} />
-        </button>
-        <div className="text-white text-xl font-medium">Ask Lumina</div>
+        </Button>
+        <h1 className="text-white text-xl font-medium">Ask Lumina</h1>
         <div className="w-10"></div>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 px-6 pb-24">
-        <div className="mb-8 text-center animate-fade-in">
-          <h1 className="text-white text-2xl font-light mb-2">
-            Hygge's AI Assistant
-          </h1>
-          <p className="text-white/60 text-sm">
-            Get mindful guidance and wisdom
-          </p>
-        </div>
-
-        {/* Search Bar */}
-        <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <div className="calm-card p-1 flex items-center">
-            <div className="flex-1 flex items-center">
-              <div className="text-gray-400 ml-3">🔍</div>
-              <input
-                type="text"
-                placeholder="Ask your question here..."
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                className="flex-1 px-3 py-3 bg-transparent border-0 outline-none text-gray-800 placeholder-gray-500"
-                onKeyPress={(e) => e.key === 'Enter' && handleAsk()}
-              />
+      {/* Main Content */}
+      <div className="relative z-10 px-6 pb-32">
+        <div className="mb-8 animate-fade-in">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-10 h-10 text-white" />
             </div>
-            <button
-              onClick={handleAsk}
-              disabled={loading || !question.trim()}
-              className="w-10 h-10 rounded-full bg-calm-purple text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-calm-purple/90 transition-all mr-1"
-            >
-              {loading ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              ) : (
-                <Send size={16} />
-              )}
-            </button>
+            <h2 className="text-white text-3xl font-light mb-4">Hygge's AI Assistant</h2>
+            <p className="text-white/70 text-lg leading-relaxed">
+              Get personalized mindfulness guidance, meditation tips, and wellness advice.
+            </p>
           </div>
-        </div>
 
-        {/* Answer Section */}
-        {answer && (
-          <div className="mb-8 animate-fade-in">
-            <h2 className="text-white text-lg font-medium mb-4">Response</h2>
+          {/* Chat Interface */}
+          <div className="space-y-4 mb-6">
             <div className="calm-card p-4">
-              <div className="text-gray-800 whitespace-pre-wrap leading-relaxed">
-                {answer}
-              </div>
+              <p className="text-gray-700">
+                Hello! I'm Lumina, your personal mindfulness companion. How can I help you today? 
+                I can assist with meditation guidance, stress management techniques, sleep improvement tips, and more.
+              </p>
             </div>
           </div>
-        )}
 
-        {/* Suggested Questions */}
-        {!answer && !loading && (
-          <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <h2 className="text-white text-lg font-medium mb-4">Popular Questions</h2>
-            
-            <div className="space-y-3">
+          {/* Input Area */}
+          <div className="calm-card p-4">
+            <div className="flex items-end space-x-3">
+              <Textarea
+                placeholder="Ask me anything about mindfulness, meditation, or wellness..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="flex-1 min-h-[60px] resize-none border-none bg-transparent focus:ring-0 text-gray-700"
+              />
+              <Button
+                onClick={handleSend}
+                disabled={!message.trim()}
+                className="bg-calm-purple hover:bg-calm-purple/90 text-white px-4 py-2"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Quick Suggestions */}
+          <div className="mt-6 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            <h3 className="text-white text-lg font-medium mb-4">Quick Questions</h3>
+            <div className="grid grid-cols-1 gap-3">
               {[
-                "How can I find inner peace?",
-                "What is the best way to start meditating?",
-                "How do I deal with stress and anxiety?",
-                "What are some mindfulness techniques?",
-                "How can I improve my sleep quality?"
-              ].map((suggestedQuestion, index) => (
+                "How can I reduce stress at work?",
+                "What's a good bedtime meditation?",
+                "Help me build a morning routine",
+                "I'm feeling anxious, what should I do?"
+              ].map((suggestion, index) => (
                 <button
                   key={index}
-                  onClick={() => setQuestion(suggestedQuestion)}
-                  className="w-full calm-card p-4 text-left text-gray-800 hover:bg-white/90 transition-all duration-300 transform hover:scale-105"
+                  onClick={() => setMessage(suggestion)}
+                  className="calm-card p-3 text-left hover:bg-white/5 transition-colors"
                 >
-                  <div className="flex items-center justify-between">
-                    <span>{suggestedQuestion}</span>
-                    <div className="text-gray-400">›</div>
-                  </div>
+                  <span className="text-gray-700">{suggestion}</span>
                 </button>
               ))}
-            </div>
-          </div>
-        )}
-
-        {/* Categories */}
-        <div className="mt-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="calm-card p-4 text-center">
-              <div className="w-12 h-12 bg-calm-blue/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <span className="text-calm-blue text-xl">🧠</span>
-              </div>
-              <div className="font-medium text-gray-800 text-xs">Mindful Tools</div>
-            </div>
-
-            <div className="calm-card p-4 text-center">
-              <div className="w-12 h-12 bg-calm-purple/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <span className="text-calm-purple text-xl">⭐</span>
-              </div>
-              <div className="font-medium text-gray-800 text-xs">Videos</div>
-            </div>
-
-            <div className="calm-card p-4 text-center">
-              <div className="w-12 h-12 bg-calm-orange/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <span className="text-calm-orange text-xl">✍️</span>
-              </div>
-              <div className="font-medium text-gray-800 text-xs">Reflections</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
         <div className="flex justify-around py-4 px-2">
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={() => navigate("/dashboard")}
+            onClick={handleDashboard}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-white/60"
-              >
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9,22 9,12 15,12 15,22"/>
-              </svg>
+              <Home className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Home</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={() => navigate("/sleep")}
+            onClick={handleSleep}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">🌙</div>
             <span className="text-white/60 text-xs">Sleep</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={() => navigate("/discover")}
+            onClick={handleDiscover}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">🔍</div>
             <span className="text-white/60 text-xs">Discover</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={() => navigate("/community")}
+            onClick={handleCommunity}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-white/60"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="m22 21-3-3"/>
-                <path d="m16 18 3 3"/>
-              </svg>
+              <Users className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Community</span>
           </div>
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-calm-purple"
-              >
-                <path d="M12 8V4M4 8H20M6.9 15H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2M17 15h1.9a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2M15 8a3 3 0 1 0-6 0"/>
-              </svg>
+              <Bot className="w-4 h-4 text-calm-purple" />
             </div>
             <span className="text-white text-xs font-medium">Lumina</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={() => navigate("/premium")}
+            onClick={handlePremium}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">⭐</div>
             <span className="text-white/60 text-xs">Premium</span>

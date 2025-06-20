@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import { CalendarDays, BarChart4, ListChecks, Sparkles, BookOpen, User } from "lucide-react";
+import { CalendarDays, BarChart4, ListChecks, Sparkles, BookOpen, User, Home, Users, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
@@ -74,7 +74,7 @@ const Dashboard = () => {
             className="calm-card p-6 cursor-pointer transform transition-all duration-300 hover:scale-105"
             onClick={handleMeditate}
           >
-            <h2 className="text-xl font-medium mb-2">Meditate</h2>
+            <h2 className="text-xl font-medium mb-2 text-black">Meditate</h2>
             <p className="text-gray-500 mb-4">Find your inner peace with guided meditation.</p>
             <Sparkles className="w-6 h-6 text-calm-blue" />
           </div>
@@ -83,7 +83,7 @@ const Dashboard = () => {
             className="calm-card p-6 cursor-pointer transform transition-all duration-300 hover:scale-105"
             onClick={handleTodaysReading}
           >
-            <h2 className="text-xl font-medium mb-2">Today's Reading</h2>
+            <h2 className="text-xl font-medium mb-2 text-black">Today's Reading</h2>
             <p className="text-gray-500 mb-4">Enlighten your mind with today's curated article.</p>
             <BookOpen className="w-6 h-6 text-calm-orange" />
           </div>
@@ -92,13 +92,13 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
           <div className="calm-card p-4">
             <BarChart4 className="w-5 h-5 text-gray-500 mb-2" />
-            <h3 className="text-lg font-medium">Mood Tracker</h3>
+            <h3 className="text-lg font-medium text-black">Mood Tracker</h3>
             <p className="text-gray-500">Track your daily mood and identify patterns.</p>
           </div>
 
           <div className="calm-card p-4">
             <ListChecks className="w-5 h-5 text-gray-500 mb-2" />
-            <h3 className="text-lg font-medium">Goal Setting</h3>
+            <h3 className="text-lg font-medium text-black">Goal Setting</h3>
             <p className="text-gray-500">Set and achieve your personal growth goals.</p>
           </div>
 
@@ -120,12 +120,12 @@ const Dashboard = () => {
             >
               <path d="M4 4v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2V4"/>
               <path d="M4 12v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2v-4"/>
-              <path d="M4 20v-2c0-1.5 1-2 2.5-2h0c1.5 0 2.5.5 2.5 2v2"/>
+              <path d="M4 20v-2c0-1.5 1-2 2.5 2h0c1.5 0 2.5.5 2.5 2v2"/>
               <path d="M12 4v16"/>
               <path d="M12 12H20"/>
               <path d="M16 8v8"/>
             </svg>
-            <h3 className="text-lg font-medium">Yoga</h3>
+            <h3 className="text-lg font-medium text-black">Yoga</h3>
             <p className="text-gray-500">Rejuvenate your body and mind with yoga sessions.</p>
           </div>
 
@@ -133,21 +133,8 @@ const Dashboard = () => {
             className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
             onClick={handleAskAI}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-bot w-5 h-5 text-gray-500 mb-2"
-            >
-              <path d="M12 8V4M4 8H20M6.9 15H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2M17 15h1.9a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2M15 8a3 3 0 1 0-6 0"/>
-            </svg>
-            <h3 className="text-lg font-medium">Ask Lumina</h3>
+            <Bot className="w-5 h-5 text-gray-500 mb-2" />
+            <h3 className="text-lg font-medium text-black">Ask Lumina</h3>
             <p className="text-gray-500">Get personalized advice from our AI assistant.</p>
           </div>
         </div>
@@ -158,21 +145,7 @@ const Dashboard = () => {
         <div className="flex justify-around py-4 px-2">
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-calm-purple"
-              >
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9,22 9,12 15,12 15,22"/>
-              </svg>
+              <Home className="w-4 h-4 text-calm-purple" />
             </div>
             <span className="text-white text-xs font-medium">Home</span>
           </div>
@@ -195,23 +168,7 @@ const Dashboard = () => {
             onClick={handleCommunity}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-white/60"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="m22 21-3-3"/>
-                <path d="m16 18 3 3"/>
-              </svg>
+              <Users className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Community</span>
           </div>
@@ -220,20 +177,7 @@ const Dashboard = () => {
             onClick={handleAskAI}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-white/60"
-              >
-                <path d="M12 8V4M4 8H20M6.9 15H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2M17 15h1.9a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2M15 8a3 3 0 1 0-6 0"/>
-              </svg>
+              <Bot className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Lumina</span>
           </div>
