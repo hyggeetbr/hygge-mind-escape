@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Heart, MessageCircle, Share2, Star, Trophy, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -93,10 +92,6 @@ const Community = () => {
 
   const handleDiscover = () => {
     navigate("/discover");
-  };
-
-  const handleProfile = () => {
-    navigate("/profile");
   };
 
   const handlePremium = () => {
@@ -275,7 +270,21 @@ const Community = () => {
             onClick={handleDashboard}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <div className="w-4 h-4 bg-white/60 rounded-sm"></div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-white/60"
+              >
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9,22 9,12 15,12 15,22"/>
+              </svg>
             </div>
             <span className="text-white/60 text-xs">Home</span>
           </div>
@@ -295,16 +304,47 @@ const Community = () => {
           </div>
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-calm-purple rounded-sm"></div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-calm-purple"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="m22 21-3-3"/>
+                <path d="m16 18 3 3"/>
+              </svg>
             </div>
             <span className="text-white text-xs font-medium">Community</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handleProfile}
+            onClick={() => navigate("/ask-ai")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">👤</div>
-            <span className="text-white/60 text-xs">Profile</span>
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-white/60"
+              >
+                <path d="M12 8V4M4 8H20M6.9 15H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2M17 15h1.9a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2M15 8a3 3 0 1 0-6 0"/>
+              </svg>
+            </div>
+            <span className="text-white/60 text-xs">Lumina</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
