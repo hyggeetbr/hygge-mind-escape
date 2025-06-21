@@ -59,10 +59,14 @@ const AskAI = () => {
       });
       
       // Add error message to conversation
-      setConversation([...newConversation, { 
-        role: "assistant", 
-        content: "I apologize, but I'm experiencing some technical difficulties. Please try asking your question again in a moment." 
-      }]);
+        setConversation([
+          ...newConversation,
+          {
+            role: "assistant",
+            content:
+              "Hmm, I'm having trouble responding right now. Please try again later."
+          }
+        ]);
     } finally {
       setIsLoading(false);
     }
@@ -132,17 +136,22 @@ const AskAI = () => {
           </div>
 
           {/* Chat Interface */}
-          <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
+          <div className="flex flex-col space-y-3 mb-6 max-h-96 overflow-y-auto">
             {conversation.map((msg, index) => (
-              <div key={index} className="calm-card p-4">
-                <p className="text-black">
-                  {msg.content}
-                </p>
+              <div
+                key={index}
+                className={`rounded-lg p-3 max-w-[75%] ${
+                  msg.role === "user"
+                    ? "self-end bg-calm-purple text-white"
+                    : "self-start bg-white/20 text-white"
+                }`}
+              >
+                {msg.content}
               </div>
             ))}
             {isLoading && (
-              <div className="calm-card p-4">
-                <p className="text-black">Lumina is thinking...</p>
+              <div className="self-start rounded-lg p-3 bg-white/20 text-white max-w-[75%]">
+                Lumina is thinking...
               </div>
             )}
           </div>
