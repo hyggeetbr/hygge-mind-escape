@@ -12,7 +12,7 @@ import TodaysReading from "./pages/TodaysReading";
 import ArticleDetail from "./pages/ArticleDetail";
 import Yoga from "./pages/Yoga";
 import AskAI from "./pages/AskAI";
-import Sleep from "./pages/Sleep";
+import Sounds from "./pages/Sounds";
 import Discover from "./pages/Discover";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
@@ -36,7 +36,7 @@ const App = () => (
           <Route path="/todays-reading/:articleId" element={<ArticleDetail />} />
           <Route path="/yoga" element={<Yoga />} />
           <Route path="/ask-ai" element={<AskAI />} />
-          <Route path="/sleep" element={<Sleep />} />
+          <Route path="/sounds" element={<Sounds />} />
           <Route path="/discover" element={<Discover />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/premium" element={<Premium />} />

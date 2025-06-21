@@ -1,19 +1,70 @@
 
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, Sparkles, Home, Users, Bot } from "lucide-react";
+import { ArrowLeft, Send, Sparkles, Home, Users, Bot, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const AskAI = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [conversation, setConversation] = useState([
+    {
+      role: "assistant",
+      content: "Hello! I'm Lumina, your personal mindfulness companion. How can I help you today? I can assist with meditation guidance, stress management techniques, sleep improvement tips, and more."
+    }
+  ]);
+  const { toast } = useToast();
 
-  const handleSend = () => {
-    if (message.trim()) {
-      // Here you would typically send the message to your AI service
-      console.log("Sending message:", message);
-      setMessage("");
+  const handleSend = async () => {
+    if (!message.trim() || isLoading) return;
+
+    const userMessage = message.trim();
+    setMessage("");
+    setIsLoading(true);
+
+    // Add user message to conversation
+    const newConversation = [...conversation, { role: "user", content: userMessage }];
+    setConversation(newConversation);
+
+    try {
+      const response = await fetch('/functions/v1/ask-ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: userMessage }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Add AI response to conversation
+      setConversation([...newConversation, { role: "assistant", content: data.answer }]);
+    } catch (error) {
+      console.error('Error calling AI:', error);
+      toast({
+        title: "Error",
+        description: "Sorry, I'm having trouble responding right now. Please try again.",
+        variant: "destructive",
+      });
+      
+      // Add error message to conversation
+      setConversation([...newConversation, { 
+        role: "assistant", 
+        content: "I apologize, but I'm experiencing some technical difficulties. Please try asking your question again in a moment." 
+      }]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -28,8 +79,8 @@ const AskAI = () => {
     navigate("/dashboard");
   };
 
-  const handleSleep = () => {
-    navigate("/sleep");
+  const handleSounds = () => {
+    navigate("/sounds");
   };
 
   const handleDiscover = () => {
@@ -81,28 +132,35 @@ const AskAI = () => {
           </div>
 
           {/* Chat Interface */}
-          <div className="space-y-4 mb-6">
-            <div className="calm-card p-4">
-              <p className="text-gray-700">
-                Hello! I'm Lumina, your personal mindfulness companion. How can I help you today? 
-                I can assist with meditation guidance, stress management techniques, sleep improvement tips, and more.
-              </p>
-            </div>
+          <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
+            {conversation.map((msg, index) => (
+              <div key={index} className="calm-card p-4">
+                <p className="text-black">
+                  {msg.content}
+                </p>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="calm-card p-4">
+                <p className="text-black">Lumina is thinking...</p>
+              </div>
+            )}
           </div>
 
           {/* Input Area */}
-          <div className="calm-card p-4">
+          <div className="calm-card p-4 border-black">
             <div className="flex items-end space-x-3">
               <Textarea
                 placeholder="Ask me anything about mindfulness, meditation, or wellness..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1 min-h-[60px] resize-none border-none bg-transparent focus:ring-0 text-gray-700"
+                className="flex-1 min-h-[60px] resize-none border-black bg-transparent focus:ring-0 text-black placeholder:text-black/60"
+                disabled={isLoading}
               />
               <Button
                 onClick={handleSend}
-                disabled={!message.trim()}
+                disabled={!message.trim() || isLoading}
                 className="bg-calm-purple hover:bg-calm-purple/90 text-white px-4 py-2"
               >
                 <Send className="w-4 h-4" />
@@ -124,8 +182,9 @@ const AskAI = () => {
                   key={index}
                   onClick={() => setMessage(suggestion)}
                   className="calm-card p-3 text-left hover:bg-white/5 transition-colors"
+                  disabled={isLoading}
                 >
-                  <span className="text-gray-700">{suggestion}</span>
+                  <span className="text-black">{suggestion}</span>
                 </button>
               ))}
             </div>
@@ -147,10 +206,12 @@ const AskAI = () => {
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handleSleep}
+            onClick={handleSounds}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">🌙</div>
-            <span className="text-white/60 text-xs">Sleep</span>
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <Volume2 className="w-4 h-4 text-white/60" />
+            </div>
+            <span className="text-white/60 text-xs">Sounds</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
