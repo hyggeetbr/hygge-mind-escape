@@ -37,6 +37,8 @@ const App = () => (
           <Route path="/yoga" element={<Yoga />} />
           <Route path="/ask-ai" element={<AskAI />} />
           <Route path="/sounds" element={<Sounds />} />
+          {/* Temporary alias for older links */}
+          <Route path="/sleep" element={<Sounds />} />
           <Route path="/discover" element={<Discover />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/premium" element={<Premium />} />

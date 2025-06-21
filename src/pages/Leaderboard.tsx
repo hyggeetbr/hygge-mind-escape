@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Trophy, Star, Crown, Award, Heart, MessageCircle } from "lucide-react";
+import { ArrowLeft, Trophy, Star, Crown, Award, Heart, MessageCircle, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Leaderboard = () => {
@@ -107,8 +107,8 @@ const Leaderboard = () => {
     navigate("/dashboard");
   };
 
-  const handleSleep = () => {
-    navigate("/sleep");
+  const handleSounds = () => {
+    navigate("/sounds");
   };
 
   const handleDiscover = () => {
@@ -288,12 +288,14 @@ const Leaderboard = () => {
             </div>
             <span className="text-white/60 text-xs">Home</span>
           </div>
-          <div 
+          <div
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handleSleep}
+            onClick={handleSounds}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">🌙</div>
-            <span className="text-white/60 text-xs">Sleep</span>
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <Volume2 className="w-4 h-4 text-white/60" />
+            </div>
+            <span className="text-white/60 text-xs">Sounds</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
