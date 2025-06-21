@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 const AskAI = () => {
   const navigate = useNavigate();
@@ -30,22 +31,25 @@ const AskAI = () => {
     setConversation(newConversation);
 
     try {
-      const response = await fetch('/functions/v1/ask-ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question: userMessage }),
+      const { data, error } = await supabase.functions.invoke("ask-ai", {
+        body: { question: userMessage},
       });
+      // const response = await fetch('/functions/v1/ask-ai', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ question: userMessage }),
+      // });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (error) {
+        throw new Error(error.message || "Unknown error from Backend");
       }
 
-      const data = await response.json();
+      //const data = await response.json();
       
-      if (data.error) {
-        throw new Error(data.error);
+      if (!data ||data.error) {
+        throw new Error(data?.error || "No response from AI");
       }
 
       // Add AI response to conversation
