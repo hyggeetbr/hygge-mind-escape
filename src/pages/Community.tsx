@@ -30,6 +30,7 @@ const Community = () => {
 
   useEffect(() => {
     const checkForFirstTimeUser = async () => {
+      // Only check after we have user and userProfile is not undefined (meaning it's loaded)
       if (user && userProfile !== undefined) {
         console.log('Checking user profile for username...', userProfile);
         
@@ -43,6 +44,11 @@ const Community = () => {
           setIsFirstTimeUser(false);
           setShowUsernameDialog(false);
         }
+      } else if (user && userProfile === undefined) {
+        // Profile is still loading, don't show dialog yet
+        console.log('Profile still loading, waiting...');
+        setIsFirstTimeUser(false);
+        setShowUsernameDialog(false);
       }
     };
 
@@ -106,6 +112,18 @@ const Community = () => {
     userProfile,
     hasUsername: hasValidUsername
   });
+
+  // Show loading if we're still waiting for user profile to load
+  if (userProfile === undefined && loading) {
+    return (
+      <div className="min-h-screen calm-gradient flex items-center justify-center">
+        <div className="text-center text-white">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Loading community...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen calm-gradient relative overflow-hidden">
