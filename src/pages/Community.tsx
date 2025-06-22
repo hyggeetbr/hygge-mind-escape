@@ -1,33 +1,64 @@
+
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Volume2 } from "lucide-react";
+import { ArrowLeft, Plus, Volume2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
 import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { PostCard } from "@/components/PostCard";
+import { UsernameDialog } from "@/components/UsernameDialog";
 import { useAuth } from "@/hooks/useAuth";
 
 const Community = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const [showUsernameDialog, setShowUsernameDialog] = useState(false);
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
   const [activeTab, setActiveTab] = useState<'community' | 'yours'>('community');
   
   const {
     allPosts,
     userPosts,
     loading,
+    userProfile,
     createPost,
     toggleLike,
     addComment,
-    getPostComments
+    getPostComments,
+    checkUserProfile
   } = useCommunityPosts();
+
+  useEffect(() => {
+    const checkForFirstTimeUser = async () => {
+      if (user) {
+        const profile = await checkUserProfile();
+        if (!profile?.username) {
+          setIsFirstTimeUser(true);
+          setShowUsernameDialog(true);
+        }
+      }
+    };
+
+    checkForFirstTimeUser();
+  }, [user]);
 
   const handleCreatePost = async (title: string, description: string, image?: File) => {
     console.log('Community handleCreatePost called with:', { title, description, hasImage: !!image });
     const success = await createPost(title, description, image);
     console.log('Create post success:', success);
     return success;
+  };
+
+  const handleUsernameSet = (username: string) => {
+    setIsFirstTimeUser(false);
+    // Reload posts to update the username display
+    window.location.reload();
+  };
+
+  const handleUsernameChange = () => {
+    setIsFirstTimeUser(false);
+    setShowUsernameDialog(true);
   };
 
   const handleShare = (post: any) => {
@@ -42,22 +73,6 @@ const Community = () => {
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' - Shared from Hygge Community')}`;
       window.open(whatsappUrl, '_blank');
     }
-  };
-
-  const handleDashboard = () => {
-    navigate("/dashboard");
-  };
-
-  const handleSounds = () => {
-    navigate("/sounds");
-  };
-
-  const handleDiscover = () => {
-    navigate("/discover");
-  };
-
-  const handlePremium = () => {
-    navigate("/premium");
   };
 
   if (!user) {
@@ -99,7 +114,19 @@ const Community = () => {
         >
           <ArrowLeft size={20} />
         </Button>
-        <h1 className="text-white text-xl font-medium">Community</h1>
+        
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleUsernameChange}
+            className="text-white/80 hover:bg-white/10 hover:text-white"
+          >
+            <User size={20} />
+          </Button>
+          <h1 className="text-white text-xl font-medium">Community</h1>
+        </div>
+        
         <Button
           variant="ghost"
           size="icon"
@@ -223,6 +250,15 @@ const Community = () => {
           )}
         </div>
       </div>
+
+      {/* Username Dialog */}
+      <UsernameDialog
+        open={showUsernameDialog}
+        onClose={() => setShowUsernameDialog(false)}
+        onUsernameSet={handleUsernameSet}
+        isFirstTime={isFirstTimeUser}
+        currentUsername={userProfile?.username || ''}
+      />
 
       {/* Create Post Dialog */}
       <CreatePostDialog

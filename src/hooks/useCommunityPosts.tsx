@@ -32,17 +32,31 @@ export interface PostComment {
   };
 }
 
-const extractUsernameFromEmail = (email: string): string => {
-  if (!email) return 'User';
-  return email.split('@')[0];
-};
-
 export const useCommunityPosts = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [allPosts, setAllPosts] = useState<CommunityPost[]>([]);
   const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
+
+  const checkUserProfile = async () => {
+    if (!user) return null;
+
+    const { data: profile, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching profile:', error);
+      return null;
+    }
+
+    setUserProfile(profile);
+    return profile;
+  };
 
   const loadPosts = async () => {
     if (!user) {
@@ -67,23 +81,12 @@ export const useCommunityPosts = () => {
 
       console.log('Raw posts loaded:', posts);
 
-      // Get user profiles for all posts and extract usernames from emails
+      // Get user profiles for all posts
       const postsWithProfiles = await Promise.all(
         (posts || []).map(async (post: any) => {
-          // Get user email from auth admin API
-          const { data: authData, error: authError } = await supabase.auth.admin.getUserById(post.user_id);
-          
-          let username = 'User';
-          if (authData?.user?.email) {
-            username = extractUsernameFromEmail(authData.user.email);
-            console.log('Extracted username:', username, 'from email:', authData.user.email);
-          } else {
-            console.log('No email found for user:', post.user_id, 'Auth error:', authError);
-          }
-
           const { data: profile } = await supabase
             .from('user_profiles')
-            .select('avatar_url')
+            .select('username, avatar_url')
             .eq('id', post.user_id)
             .single();
 
@@ -107,7 +110,7 @@ export const useCommunityPosts = () => {
           return {
             ...post,
             user_profiles: { 
-              full_name: username, 
+              full_name: profile?.username || 'User', 
               avatar_url: profile?.avatar_url || null 
             },
             likes_count: likesResult.count || 0,
@@ -317,30 +320,19 @@ export const useCommunityPosts = () => {
         return [];
       }
 
-      // Then get user emails and extract usernames for each comment
+      // Then get user profiles for each comment
       const commentsWithProfiles = await Promise.all(
         comments.map(async (comment: any) => {
-          // Get user email from auth admin API
-          const { data: authData, error: authError } = await supabase.auth.admin.getUserById(comment.user_id);
-          
-          let username = 'User';
-          if (authData?.user?.email) {
-            username = extractUsernameFromEmail(authData.user.email);
-            console.log('Comment username:', username, 'from email:', authData.user.email);
-          } else {
-            console.log('No email found for comment user:', comment.user_id, 'Auth error:', authError);
-          }
-
           const { data: profile } = await supabase
             .from('user_profiles')
-            .select('avatar_url')
+            .select('username, avatar_url')
             .eq('id', comment.user_id)
             .single();
 
           return {
             ...comment,
             user_profiles: { 
-              full_name: username, 
+              full_name: profile?.username || 'User', 
               avatar_url: profile?.avatar_url || null 
             }
           } as PostComment;
@@ -369,10 +361,12 @@ export const useCommunityPosts = () => {
     allPosts,
     userPosts,
     loading,
+    userProfile,
     createPost,
     toggleLike,
     addComment,
     getPostComments,
-    loadPosts
+    loadPosts,
+    checkUserProfile
   };
 };
