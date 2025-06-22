@@ -21,44 +21,64 @@ export const CommunityLeaderboard = () => {
   const loadTopContributors = async () => {
     setLoading(true);
     try {
-      // Query to get likes count for all posts (all-time)
-      const { data: likesData, error } = await supabase
-        .from('post_likes')
+      // First, get all community posts with their user information
+      const { data: postsData, error: postsError } = await supabase
+        .from('community_posts')
         .select(`
-          post_id,
-          community_posts!inner(
-            user_id,
-            created_at,
-            user_profiles!inner(username)
-          )
+          id,
+          user_id,
+          user_profiles!inner(username)
         `);
 
-      if (error) {
-        console.error('Error loading leaderboard data:', error);
+      if (postsError) {
+        console.error('Error loading posts:', postsError);
         return;
       }
 
-      // Process the data to count likes per user
+      console.log('Posts data:', postsData);
+
+      if (!postsData || postsData.length === 0) {
+        setTopContributors([]);
+        setLoading(false);
+        return;
+      }
+
+      // Now get likes count for each post
       const userLikesMap = new Map<string, { username: string; likes_count: number }>();
 
-      likesData?.forEach((like: any) => {
-        const userId = like.community_posts.user_id;
-        const username = like.community_posts.user_profiles.username || 'User';
-        
-        if (userLikesMap.has(userId)) {
-          userLikesMap.get(userId)!.likes_count += 1;
-        } else {
-          userLikesMap.set(userId, { username, likes_count: 1 });
+      for (const post of postsData) {
+        const { data: likesData, error: likesError } = await supabase
+          .from('post_likes')
+          .select('id')
+          .eq('post_id', post.id);
+
+        if (likesError) {
+          console.error('Error loading likes for post:', post.id, likesError);
+          continue;
         }
-      });
+
+        const likesCount = likesData?.length || 0;
+        const userId = post.user_id;
+        const username = post.user_profiles?.username || 'User';
+
+        console.log(`Post ${post.id} by ${username}: ${likesCount} likes`);
+
+        if (userLikesMap.has(userId)) {
+          userLikesMap.get(userId)!.likes_count += likesCount;
+        } else {
+          userLikesMap.set(userId, { username, likes_count: likesCount });
+        }
+      }
+
+      console.log('User likes map:', userLikesMap);
 
       // Convert to array and sort by likes count
       const sortedContributors = Array.from(userLikesMap.entries())
-        .map(([user_id, data], index) => ({
+        .map(([user_id, data]) => ({
           user_id,
           username: data.username,
           likes_count: data.likes_count,
-          rank: index + 1
+          rank: 0
         }))
         .sort((a, b) => b.likes_count - a.likes_count)
         .slice(0, 3) // Top 3 only
@@ -67,6 +87,7 @@ export const CommunityLeaderboard = () => {
           rank: index + 1
         }));
 
+      console.log('Sorted contributors:', sortedContributors);
       setTopContributors(sortedContributors);
     } catch (error) {
       console.error('Error processing leaderboard data:', error);
