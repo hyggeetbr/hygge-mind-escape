@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,13 @@ const Community = () => {
     addComment,
     getPostComments
   } = useCommunityPosts();
+
+  const handleCreatePost = async (title: string, description: string, image?: File) => {
+    console.log('Community handleCreatePost called with:', { title, description, hasImage: !!image });
+    const success = await createPost(title, description, image);
+    console.log('Create post success:', success);
+    return success;
+  };
 
   const handleShare = (post: any) => {
     const shareText = `${post.title}\n\n${post.description}`;
@@ -66,6 +72,13 @@ const Community = () => {
   }
 
   const communityPosts = allPosts.filter(post => post.user_id !== user.id);
+
+  console.log('Community render - Posts:', { 
+    allPosts: allPosts.length, 
+    userPosts: userPosts.length, 
+    communityPosts: communityPosts.length,
+    activeTab 
+  });
 
   return (
     <div className="min-h-screen calm-gradient relative overflow-hidden">
@@ -113,7 +126,7 @@ const Community = () => {
               onClick={() => setActiveTab('community')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'community'
-                  ? 'bg-white text-calm-purple'
+                  ? 'bg-white text-purple-700 font-semibold'
                   : 'text-white/80 hover:text-white'
               }`}
             >
@@ -123,7 +136,7 @@ const Community = () => {
               onClick={() => setActiveTab('yours')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'yours'
-                  ? 'bg-white text-calm-purple'
+                  ? 'bg-white text-purple-700 font-semibold'
                   : 'text-white/80 hover:text-white'
               }`}
             >
@@ -145,11 +158,11 @@ const Community = () => {
                 <div>
                   {communityPosts.length === 0 ? (
                     <div className="text-center py-12">
-                      <div className="calm-card p-8">
-                        <p className="text-gray-600 text-lg">
+                      <div className="bg-white rounded-lg p-8 border border-gray-200">
+                        <p className="text-black text-lg font-medium">
                           There are no posts from any community members yet.
                         </p>
-                        <p className="text-gray-500 text-sm mt-2">
+                        <p className="text-gray-600 text-sm mt-2">
                           Be the first to share something inspiring!
                         </p>
                       </div>
@@ -175,16 +188,16 @@ const Community = () => {
                 <div>
                   {userPosts.length === 0 ? (
                     <div className="text-center py-12">
-                      <div className="calm-card p-8">
-                        <p className="text-gray-600 text-lg">
+                      <div className="bg-white rounded-lg p-8 border border-gray-200">
+                        <p className="text-black text-lg font-medium">
                           You haven't posted anything yet.
                         </p>
-                        <p className="text-gray-500 text-sm mt-2">
+                        <p className="text-gray-600 text-sm mt-2">
                           Share your mindfulness journey with the community!
                         </p>
                         <Button 
                           onClick={() => setShowCreatePost(true)}
-                          className="mt-4 bg-calm-purple hover:bg-calm-purple/90"
+                          className="mt-4 bg-purple-600 hover:bg-purple-700 text-white"
                         >
                           Create Your First Post
                         </Button>
@@ -215,7 +228,7 @@ const Community = () => {
       <CreatePostDialog
         open={showCreatePost}
         onClose={() => setShowCreatePost(false)}
-        onSubmit={createPost}
+        onSubmit={handleCreatePost}
       />
 
       {/* Bottom Navigation */}
@@ -223,7 +236,7 @@ const Community = () => {
         <div className="flex justify-around py-4 px-2">
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handleDashboard}
+            onClick={() => navigate("/dashboard")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
               <svg
@@ -246,7 +259,7 @@ const Community = () => {
           </div>
           <div
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handleSounds}
+            onClick={() => navigate("/sounds")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
               <Volume2 className="w-4 h-4 text-white/60" />
@@ -255,7 +268,7 @@ const Community = () => {
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handleDiscover}
+            onClick={() => navigate("/discover")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">🔍</div>
             <span className="text-white/60 text-xs">Discover</span>
@@ -272,7 +285,7 @@ const Community = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-calm-purple"
+                className="text-purple-600"
               >
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
                 <circle cx="9" cy="7" r="4"/>
@@ -306,7 +319,7 @@ const Community = () => {
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handlePremium}
+            onClick={() => navigate("/premium")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">⭐</div>
             <span className="text-white/60 text-xs">Premium</span>

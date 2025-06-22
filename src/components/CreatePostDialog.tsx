@@ -51,18 +51,26 @@ export const CreatePostDialog = ({ open, onClose, onSubmit }: CreatePostDialogPr
   const handleSubmit = async () => {
     if (!title.trim() || !description.trim()) return;
 
+    console.log('Submitting post with:', { title, description, hasImage: !!selectedImage });
     setIsSubmitting(true);
-    const success = await onSubmit(title, description, selectedImage || undefined);
     
-    if (success) {
-      setTitle('');
-      setDescription('');
-      setSelectedImage(null);
-      setImagePreview(null);
-      setShowEmojis(false);
-      onClose();
+    try {
+      const success = await onSubmit(title, description, selectedImage || undefined);
+      console.log('Post submission result:', success);
+      
+      if (success) {
+        setTitle('');
+        setDescription('');
+        setSelectedImage(null);
+        setImagePreview(null);
+        setShowEmojis(false);
+        onClose();
+      }
+    } catch (error) {
+      console.error('Error in handleSubmit:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   const handleClose = () => {
@@ -76,20 +84,20 @@ export const CreatePostDialog = ({ open, onClose, onSubmit }: CreatePostDialogPr
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px] bg-white">
+      <DialogContent className="sm:max-w-[500px] bg-white border border-gray-200">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-gray-800">Create New Post</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-black">Create New Post</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           {/* Title Input */}
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">Title</label>
+            <label className="text-sm font-medium text-black block mb-2">Title</label>
             <Input
               placeholder="What's your post about?"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="border-gray-300 focus:border-calm-purple"
+              className="border-gray-300 focus:border-purple-500 bg-white text-black placeholder:text-gray-500"
             />
           </div>
 
@@ -99,7 +107,7 @@ export const CreatePostDialog = ({ open, onClose, onSubmit }: CreatePostDialogPr
               <img 
                 src={imagePreview} 
                 alt="Preview" 
-                className="w-full h-48 object-cover rounded-lg border"
+                className="w-full h-48 object-cover rounded-lg border border-gray-300"
               />
               <Button
                 onClick={removeImage}
@@ -114,20 +122,20 @@ export const CreatePostDialog = ({ open, onClose, onSubmit }: CreatePostDialogPr
 
           {/* Description Input */}
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">
+            <label className="text-sm font-medium text-black block mb-2">
               {selectedImage ? "Say something about this picture..." : "Description"}
             </label>
             <Textarea
               placeholder={selectedImage ? "Share your thoughts..." : "What's on your mind?"}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[100px] border-gray-300 focus:border-calm-purple resize-none"
+              className="min-h-[100px] border-gray-300 focus:border-purple-500 resize-none bg-white text-black placeholder:text-gray-500"
             />
           </div>
 
           {/* Emoji Picker */}
           {showEmojis && (
-            <div className="bg-gray-50 p-3 rounded-lg border">
+            <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
               <div className="grid grid-cols-8 gap-2">
                 {EMOJI_LIST.map((emoji, index) => (
                   <button
@@ -143,13 +151,13 @@ export const CreatePostDialog = ({ open, onClose, onSubmit }: CreatePostDialogPr
           )}
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between pt-4 border-t">
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
             <div className="flex items-center space-x-2">
               <Button
                 onClick={() => fileInputRef.current?.click()}
                 variant="ghost"
                 size="sm"
-                className="text-calm-purple hover:bg-calm-purple/10"
+                className="text-purple-600 hover:bg-purple-50 hover:text-purple-700"
               >
                 <Image className="h-4 w-4 mr-1" />
                 Photo
@@ -159,7 +167,7 @@ export const CreatePostDialog = ({ open, onClose, onSubmit }: CreatePostDialogPr
                 onClick={() => setShowEmojis(!showEmojis)}
                 variant="ghost"
                 size="sm"
-                className="text-calm-purple hover:bg-calm-purple/10"
+                className="text-purple-600 hover:bg-purple-50 hover:text-purple-700"
               >
                 <Smile className="h-4 w-4 mr-1" />
                 Emoji
@@ -171,13 +179,14 @@ export const CreatePostDialog = ({ open, onClose, onSubmit }: CreatePostDialogPr
                 onClick={handleClose}
                 variant="outline"
                 size="sm"
+                className="border-gray-300 text-black hover:bg-gray-50"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSubmit}
                 disabled={!title.trim() || !description.trim() || isSubmitting}
-                className="bg-calm-purple hover:bg-calm-purple/90"
+                className="bg-purple-600 hover:bg-purple-700 text-white"
                 size="sm"
               >
                 {isSubmitting ? 'Posting...' : 'Post'}

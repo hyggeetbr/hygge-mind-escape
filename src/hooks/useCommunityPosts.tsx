@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -40,19 +39,19 @@ export const useCommunityPosts = () => {
   const [loading, setLoading] = useState(true);
 
   const loadPosts = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('No user, skipping post load');
+      return;
+    }
+
+    console.log('Loading posts for user:', user.id);
+    setLoading(true);
 
     try {
-      // Load all posts with user profiles and counts
+      // Load all posts
       const { data: posts, error } = await supabase
-        .from('community_posts' as any)
-        .select(`
-          *,
-          user_profiles (
-            full_name,
-            avatar_url
-          )
-        `)
+        .from('community_posts')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -60,20 +59,28 @@ export const useCommunityPosts = () => {
         return;
       }
 
-      // Get likes and comments counts for each post
-      const postsWithCounts = await Promise.all(
+      console.log('Raw posts loaded:', posts);
+
+      // Get user profiles for all posts
+      const postsWithProfiles = await Promise.all(
         (posts || []).map(async (post: any) => {
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('full_name, avatar_url')
+            .eq('id', post.user_id)
+            .single();
+
           const [likesResult, commentsResult, userLikeResult] = await Promise.all([
             supabase
-              .from('post_likes' as any)
+              .from('post_likes')
               .select('id', { count: 'exact' })
               .eq('post_id', post.id),
             supabase
-              .from('post_comments' as any)
+              .from('post_comments')
               .select('id', { count: 'exact' })
               .eq('post_id', post.id),
             supabase
-              .from('post_likes' as any)
+              .from('post_likes')
               .select('id')
               .eq('post_id', post.id)
               .eq('user_id', user.id)
@@ -82,6 +89,7 @@ export const useCommunityPosts = () => {
 
           return {
             ...post,
+            user_profiles: profile || { full_name: 'Anonymous User', avatar_url: null },
             likes_count: likesResult.count || 0,
             comments_count: commentsResult.count || 0,
             user_has_liked: !userLikeResult.error
@@ -89,8 +97,9 @@ export const useCommunityPosts = () => {
         })
       );
 
-      setAllPosts(postsWithCounts);
-      setUserPosts(postsWithCounts.filter(post => post.user_id === user.id));
+      console.log('Posts with profiles:', postsWithProfiles);
+      setAllPosts(postsWithProfiles);
+      setUserPosts(postsWithProfiles.filter(post => post.user_id === user.id));
     } catch (error) {
       console.error('Error loading posts:', error);
     } finally {
@@ -99,7 +108,12 @@ export const useCommunityPosts = () => {
   };
 
   const createPost = async (title: string, description: string, imageFile?: File) => {
-    if (!user) return false;
+    if (!user) {
+      console.log('No user, cannot create post');
+      return false;
+    }
+
+    console.log('Creating post:', { title, description, hasImage: !!imageFile });
 
     try {
       let imageUrl = null;
@@ -109,6 +123,7 @@ export const useCommunityPosts = () => {
         const fileExt = imageFile.name.split('.').pop();
         const fileName = `${user.id}/${Date.now()}.${fileExt}`;
         
+        console.log('Uploading image:', fileName);
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('post-images')
           .upload(fileName, imageFile);
@@ -128,10 +143,12 @@ export const useCommunityPosts = () => {
           .getPublicUrl(uploadData.path);
         
         imageUrl = urlData.publicUrl;
+        console.log('Image uploaded successfully:', imageUrl);
       }
 
-      const { error } = await supabase
-        .from('community_posts' as any)
+      console.log('Inserting post into database...');
+      const { data: newPost, error } = await supabase
+        .from('community_posts')
         .insert([
           {
             user_id: user.id,
@@ -139,7 +156,9 @@ export const useCommunityPosts = () => {
             description,
             image_url: imageUrl
           }
-        ]);
+        ])
+        .select()
+        .single();
 
       if (error) {
         console.error('Error creating post:', error);
@@ -151,15 +170,22 @@ export const useCommunityPosts = () => {
         return false;
       }
 
+      console.log('Post created successfully:', newPost);
       toast({
         title: "Success",
         description: "Your post has been created!",
       });
       
+      // Reload posts to get the new one
       await loadPosts();
       return true;
     } catch (error) {
       console.error('Error creating post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create post. Please try again.",
+        variant: "destructive",
+      });
       return false;
     }
   };
@@ -174,7 +200,7 @@ export const useCommunityPosts = () => {
       if (post.user_has_liked) {
         // Unlike
         const { error } = await supabase
-          .from('post_likes' as any)
+          .from('post_likes')
           .delete()
           .eq('post_id', postId)
           .eq('user_id', user.id);
@@ -186,7 +212,7 @@ export const useCommunityPosts = () => {
       } else {
         // Like
         const { error } = await supabase
-          .from('post_likes' as any)
+          .from('post_likes')
           .insert([
             {
               post_id: postId,
@@ -211,7 +237,7 @@ export const useCommunityPosts = () => {
 
     try {
       const { error } = await supabase
-        .from('post_comments' as any)
+        .from('post_comments')
         .insert([
           {
             post_id: postId,
@@ -237,7 +263,7 @@ export const useCommunityPosts = () => {
     try {
       // First get the comments
       const { data: comments, error: commentsError } = await supabase
-        .from('post_comments' as any)
+        .from('post_comments')
         .select('*')
         .eq('post_id', postId)
         .order('created_at', { ascending: true });
@@ -255,7 +281,7 @@ export const useCommunityPosts = () => {
       const commentsWithProfiles = await Promise.all(
         comments.map(async (comment: any) => {
           const { data: profile } = await supabase
-            .from('user_profiles' as any)
+            .from('user_profiles')
             .select('full_name, avatar_url')
             .eq('id', comment.user_id)
             .single();
@@ -276,7 +302,12 @@ export const useCommunityPosts = () => {
 
   useEffect(() => {
     if (user) {
+      console.log('User changed, loading posts...');
       loadPosts();
+    } else {
+      setAllPosts([]);
+      setUserPosts([]);
+      setLoading(false);
     }
   }, [user]);
 
@@ -285,8 +316,73 @@ export const useCommunityPosts = () => {
     userPosts,
     loading,
     createPost,
-    toggleLike,
-    addComment,
+    toggleLike: async (postId: string) => {
+      if (!user) return;
+
+      try {
+        const post = allPosts.find(p => p.id === postId);
+        if (!post) return;
+
+        if (post.user_has_liked) {
+          // Unlike
+          const { error } = await supabase
+            .from('post_likes')
+            .delete()
+            .eq('post_id', postId)
+            .eq('user_id', user.id);
+
+          if (error) {
+            console.error('Error unliking post:', error);
+            return;
+          }
+        } else {
+          // Like
+          const { error } = await supabase
+            .from('post_likes')
+            .insert([
+              {
+                post_id: postId,
+                user_id: user.id
+              }
+            ]);
+
+          if (error) {
+            console.error('Error liking post:', error);
+            return;
+          }
+        }
+
+        await loadPosts();
+      } catch (error) {
+        console.error('Error toggling like:', error);
+      }
+    },
+    addComment: async (postId: string, content: string) => {
+      if (!user) return false;
+
+      try {
+        const { error } = await supabase
+          .from('post_comments')
+          .insert([
+            {
+              post_id: postId,
+              user_id: user.id,
+              content
+            }
+          ]);
+
+        if (error) {
+          console.error('Error adding comment:', error);
+          return false;
+        }
+
+        await loadPosts();
+        return true;
+      } catch (error) {
+        console.error('Error adding comment:', error);
+        return false;
+      }
+    },
     getPostComments,
     loadPosts
   };
