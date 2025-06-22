@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Volume2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,18 +30,16 @@ const Community = () => {
 
   useEffect(() => {
     const checkForFirstTimeUser = async () => {
-      if (user) {
-        console.log('Checking user profile for username...');
-        const profile = await checkUserProfile();
-        console.log('User profile:', profile);
+      if (user && userProfile !== undefined) {
+        console.log('Checking user profile for username...', userProfile);
         
         // Check if username exists and is not empty
-        if (!profile?.username || profile.username.trim() === '') {
+        if (!userProfile || !userProfile.username || userProfile.username.trim() === '') {
           console.log('No username found, showing dialog for first time user');
           setIsFirstTimeUser(true);
           setShowUsernameDialog(true);
         } else {
-          console.log('Username exists:', profile.username);
+          console.log('Username exists:', userProfile.username);
           setIsFirstTimeUser(false);
           setShowUsernameDialog(false);
         }
@@ -50,7 +47,7 @@ const Community = () => {
     };
 
     checkForFirstTimeUser();
-  }, [user, checkUserProfile]);
+  }, [user, userProfile]);
 
   const handleCreatePost = async (title: string, description: string, image?: File) => {
     console.log('Community handleCreatePost called with:', { title, description, hasImage: !!image });
@@ -99,6 +96,7 @@ const Community = () => {
   }
 
   const communityPosts = allPosts.filter(post => post.user_id !== user.id);
+  const hasValidUsername = userProfile && userProfile.username && userProfile.username.trim() !== '';
 
   console.log('Community render - Posts:', { 
     allPosts: allPosts.length, 
@@ -106,7 +104,7 @@ const Community = () => {
     communityPosts: communityPosts.length,
     activeTab,
     userProfile,
-    hasUsername: !!userProfile?.username
+    hasUsername: hasValidUsername
   });
 
   return (
@@ -133,7 +131,7 @@ const Community = () => {
         
         <div className="flex items-center space-x-2">
           {/* Profile button - only show if user has username */}
-          {userProfile?.username && userProfile.username.trim() !== '' && (
+          {hasValidUsername && (
             <Button
               variant="ghost"
               size="icon"

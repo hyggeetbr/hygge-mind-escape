@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -37,11 +38,12 @@ export const useCommunityPosts = () => {
   const [allPosts, setAllPosts] = useState<CommunityPost[]>([]);
   const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(undefined);
 
   const checkUserProfile = async () => {
     if (!user) {
       console.log('No user found, returning null');
+      setUserProfile(null);
       return null;
     }
 
@@ -61,6 +63,7 @@ export const useCommunityPosts = () => {
           return null;
         } else {
           console.error('Error fetching profile:', error);
+          setUserProfile(null);
           return null;
         }
       }
@@ -70,6 +73,7 @@ export const useCommunityPosts = () => {
       return profile;
     } catch (error) {
       console.error('Exception while checking user profile:', error);
+      setUserProfile(null);
       return null;
     }
   };
@@ -364,7 +368,7 @@ export const useCommunityPosts = () => {
 
   useEffect(() => {
     if (user) {
-      console.log('User changed, loading posts...');
+      console.log('User changed, loading posts and profile...');
       loadPosts();
       checkUserProfile();
     } else {
