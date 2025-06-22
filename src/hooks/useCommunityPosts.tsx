@@ -48,7 +48,7 @@ export const useCommunityPosts = () => {
         .from('community_posts' as any)
         .select(`
           *,
-          user_profiles!community_posts_user_id_fkey (
+          user_profiles (
             full_name,
             avatar_url
           )
@@ -239,7 +239,7 @@ export const useCommunityPosts = () => {
         .from('post_comments' as any)
         .select(`
           *,
-          user_profiles!post_comments_user_id_fkey (
+          user_profiles (
             full_name,
             avatar_url
           )
