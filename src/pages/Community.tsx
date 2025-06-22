@@ -14,7 +14,6 @@ const Community = () => {
   const { user } = useAuth();
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showUsernameDialog, setShowUsernameDialog] = useState(false);
-  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
   const [activeTab, setActiveTab] = useState<'community' | 'yours'>('community');
   
   const {
@@ -32,33 +31,6 @@ const Community = () => {
 
   const { unreadCount } = useNotifications();
 
-  useEffect(() => {
-    const checkForFirstTimeUser = async () => {
-      // Only check after we have user and userProfile is not undefined (meaning it's loaded)
-      if (user && userProfile !== undefined) {
-        console.log('Checking user profile for username...', userProfile);
-        
-        // Check if username exists and is not empty
-        if (!userProfile || !userProfile.username || userProfile.username.trim() === '') {
-          console.log('No username found, showing dialog for first time user');
-          setIsFirstTimeUser(true);
-          setShowUsernameDialog(true);
-        } else {
-          console.log('Username exists:', userProfile.username);
-          setIsFirstTimeUser(false);
-          setShowUsernameDialog(false);
-        }
-      } else if (user && userProfile === undefined) {
-        // Profile is still loading, don't show dialog yet
-        console.log('Profile still loading, waiting...');
-        setIsFirstTimeUser(false);
-        setShowUsernameDialog(false);
-      }
-    };
-
-    checkForFirstTimeUser();
-  }, [user, userProfile]);
-
   const handleCreatePost = async (title: string, description: string, image?: File) => {
     console.log('Community handleCreatePost called with:', { title, description, hasImage: !!image });
     const success = await createPost(title, description, image);
@@ -68,7 +40,6 @@ const Community = () => {
 
   const handleUsernameSet = (username: string) => {
     console.log('Username set:', username);
-    setIsFirstTimeUser(false);
     setShowUsernameDialog(false);
     // Reload posts to update the username display
     window.location.reload();
@@ -76,7 +47,6 @@ const Community = () => {
 
   const handleUsernameChange = () => {
     console.log('Opening username change dialog');
-    setIsFirstTimeUser(false);
     setShowUsernameDialog(true);
   };
 
@@ -106,15 +76,13 @@ const Community = () => {
   }
 
   const communityPosts = allPosts.filter(post => post.user_id !== user.id);
-  const hasValidUsername = userProfile && userProfile.username && userProfile.username.trim() !== '';
 
   console.log('Community render - Posts:', { 
     allPosts: allPosts.length, 
     userPosts: userPosts.length, 
     communityPosts: communityPosts.length,
     activeTab,
-    userProfile,
-    hasUsername: hasValidUsername
+    userProfile
   });
 
   // Show loading if we're still waiting for user profile to load
@@ -152,36 +120,33 @@ const Community = () => {
         <h1 className="text-white text-xl font-medium">Community</h1>
         
         <div className="flex items-center space-x-2">
-          {/* Notifications bell - only show if user has username */}
-          {hasValidUsername && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/notifications")}
-              className="text-white/80 hover:bg-white/10 hover:text-white relative"
-            >
-              <Bell size={20} />
-              {unreadCount > 0 && (
-                <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-medium">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                </div>
-              )}
-            </Button>
-          )}
+          {/* Notifications bell */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/notifications")}
+            className="text-white/80 hover:bg-white/10 hover:text-white relative"
+          >
+            <Bell size={20} />
+            {unreadCount > 0 && (
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-medium">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              </div>
+            )}
+          </Button>
           
-          {/* Profile button - only show if user has username */}
-          {hasValidUsername && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleUsernameChange}
-              className="text-white/80 hover:bg-white/10 hover:text-white w-8 h-8 rounded-full bg-white/20"
-            >
-              <User size={16} />
-            </Button>
-          )}
+          {/* Profile button - always visible */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleUsernameChange}
+            className="text-white/80 hover:bg-white/10 hover:text-white w-8 h-8 rounded-full bg-white/20"
+          >
+            <User size={16} />
+          </Button>
+          
           <Button
             variant="ghost"
             size="icon"
@@ -313,13 +278,9 @@ const Community = () => {
       {/* Username Dialog */}
       <UsernameDialog
         open={showUsernameDialog}
-        onClose={() => {
-          if (!isFirstTimeUser) {
-            setShowUsernameDialog(false);
-          }
-        }}
+        onClose={() => setShowUsernameDialog(false)}
         onUsernameSet={handleUsernameSet}
-        isFirstTime={isFirstTimeUser}
+        isFirstTime={false}
         currentUsername={userProfile?.username || ''}
       />
 
