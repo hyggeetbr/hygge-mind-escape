@@ -3,16 +3,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { useCommunityPosts } from "@/hooks/useCommunityPosts";
 import { useAuth } from "@/hooks/useAuth";
 import { formatDistanceToNow } from 'date-fns';
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const PostDetail = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const { user } = useAuth();
-  const { allPosts, toggleLike, addComment, getPostComments } = useCommunityPosts();
+  const { toast } = useToast();
   const [post, setPost] = useState<any>(null);
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState('');
@@ -23,53 +24,224 @@ const PostDetail = () => {
     return name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
   };
 
-  useEffect(() => {
-    const loadPost = async () => {
-      if (!postId) return;
-      
-      setLoading(true);
-      const foundPost = allPosts.find(p => p.id === postId);
-      setPost(foundPost);
-      
-      if (foundPost) {
-        const postComments = await getPostComments(postId);
-        setComments(postComments);
-      }
-      setLoading(false);
-    };
+  const loadPost = async () => {
+    if (!postId) return;
+    
+    setLoading(true);
+    try {
+      // Fetch the specific post with user profile
+      const { data: postData, error: postError } = await supabase
+        .from('community_posts')
+        .select('*')
+        .eq('id', postId)
+        .single();
 
-    loadPost();
-  }, [postId, allPosts, getPostComments]);
+      if (postError) {
+        console.error('Error loading post:', postError);
+        setPost(null);
+        setLoading(false);
+        return;
+      }
+
+      if (!postData) {
+        setPost(null);
+        setLoading(false);
+        return;
+      }
+
+      // Get user profile for the post
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('username, avatar_url')
+        .eq('id', postData.user_id)
+        .single();
+
+      // Get likes count and user's like status
+      const [likesResult, commentsResult, userLikeResult] = await Promise.all([
+        supabase
+          .from('post_likes')
+          .select('id', { count: 'exact' })
+          .eq('post_id', postId),
+        supabase
+          .from('post_comments')
+          .select('id', { count: 'exact' })
+          .eq('post_id', postId),
+        user ? supabase
+          .from('post_likes')
+          .select('id')
+          .eq('post_id', postId)
+          .eq('user_id', user.id)
+          .single() : Promise.resolve({ error: true })
+      ]);
+
+      const enrichedPost = {
+        ...postData,
+        user_profiles: { 
+          full_name: profile?.username || 'User', 
+          avatar_url: profile?.avatar_url || null 
+        },
+        likes_count: likesResult.count || 0,
+        comments_count: commentsResult.count || 0,
+        user_has_liked: !userLikeResult.error
+      };
+
+      setPost(enrichedPost);
+      
+      // Load comments
+      await loadComments();
+    } catch (error) {
+      console.error('Error loading post:', error);
+      setPost(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadComments = async () => {
+    if (!postId) return;
+
+    try {
+      const { data: comments, error } = await supabase
+        .from('post_comments')
+        .select('*')
+        .eq('post_id', postId)
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Error loading comments:', error);
+        return;
+      }
+
+      if (!comments || comments.length === 0) {
+        setComments([]);
+        return;
+      }
+
+      const commentsWithProfiles = await Promise.all(
+        comments.map(async (comment: any) => {
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('username, avatar_url')
+            .eq('id', comment.user_id)
+            .single();
+
+          return {
+            ...comment,
+            user_profiles: { 
+              full_name: profile?.username || 'User', 
+              avatar_url: profile?.avatar_url || null 
+            }
+          };
+        })
+      );
+
+      setComments(commentsWithProfiles);
+    } catch (error) {
+      console.error('Error loading comments:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadPost();
+    }
+  }, [postId, user]);
 
   const handleLike = async () => {
-    if (!post) return;
-    await toggleLike(post.id);
-    // Update local post state
-    setPost((prev: any) => ({
-      ...prev,
-      user_has_liked: !prev.user_has_liked,
-      likes_count: prev.user_has_liked ? prev.likes_count - 1 : prev.likes_count + 1
-    }));
+    if (!post || !user) return;
+
+    try {
+      if (post.user_has_liked) {
+        // Unlike
+        const { error } = await supabase
+          .from('post_likes')
+          .delete()
+          .eq('post_id', post.id)
+          .eq('user_id', user.id);
+
+        if (error) {
+          console.error('Error unliking post:', error);
+          return;
+        }
+
+        setPost(prev => ({
+          ...prev,
+          user_has_liked: false,
+          likes_count: Math.max((prev.likes_count || 0) - 1, 0)
+        }));
+      } else {
+        // Like
+        const { error } = await supabase
+          .from('post_likes')
+          .insert([
+            {
+              post_id: post.id,
+              user_id: user.id
+            }
+          ]);
+
+        if (error) {
+          console.error('Error liking post:', error);
+          return;
+        }
+
+        setPost(prev => ({
+          ...prev,
+          user_has_liked: true,
+          likes_count: (prev.likes_count || 0) + 1
+        }));
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
   };
 
   const handleSubmitComment = async () => {
-    if (!newComment.trim() || !post) return;
+    if (!newComment.trim() || !post || !user) return;
     
     setIsSubmittingComment(true);
-    const success = await addComment(post.id, newComment.trim());
-    
-    if (success) {
+    try {
+      const { error } = await supabase
+        .from('post_comments')
+        .insert([
+          {
+            post_id: post.id,
+            user_id: user.id,
+            content: newComment.trim()
+          }
+        ]);
+
+      if (error) {
+        console.error('Error adding comment:', error);
+        toast({
+          title: "Error",
+          description: "Failed to add comment. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       setNewComment('');
-      // Reload comments
-      const updatedComments = await getPostComments(post.id);
-      setComments(updatedComments);
-      // Update comment count
-      setPost((prev: any) => ({
+      await loadComments();
+      setPost(prev => ({
         ...prev,
         comments_count: prev.comments_count + 1
       }));
+
+      toast({
+        title: "Success",
+        description: "Comment added successfully!",
+      });
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add comment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingComment(false);
     }
-    setIsSubmittingComment(false);
   };
 
   const handleShare = () => {
