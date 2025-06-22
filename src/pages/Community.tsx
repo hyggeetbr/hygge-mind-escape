@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Volume2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,8 @@ const Community = () => {
     toggleLike,
     addComment,
     getPostComments,
-    checkUserProfile
+    checkUserProfile,
+    deletePost
   } = useCommunityPosts();
 
   useEffect(() => {
@@ -237,6 +239,7 @@ const Community = () => {
                           onComment={addComment}
                           onShare={handleShare}
                           onGetComments={getPostComments}
+                          isOwnPost={false}
                         />
                       ))}
                     </div>
@@ -273,6 +276,8 @@ const Community = () => {
                           onComment={addComment}
                           onShare={handleShare}
                           onGetComments={getPostComments}
+                          onDelete={deletePost}
+                          isOwnPost={true}
                         />
                       ))}
                     </div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -366,6 +365,64 @@ export const useCommunityPosts = () => {
     }
   };
 
+  const deletePost = async (postId: string) => {
+    if (!user) {
+      console.log('No user, cannot delete post');
+      return false;
+    }
+
+    console.log('Deleting post:', postId);
+
+    try {
+      // First check if the post belongs to the current user
+      const post = allPosts.find(p => p.id === postId);
+      if (!post || post.user_id !== user.id) {
+        console.error('Cannot delete post: not owned by current user');
+        toast({
+          title: "Error",
+          description: "You can only delete your own posts.",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      // Delete the post from the database
+      const { error } = await supabase
+        .from('community_posts')
+        .delete()
+        .eq('id', postId)
+        .eq('user_id', user.id); // Double check ownership
+
+      if (error) {
+        console.error('Error deleting post:', error);
+        toast({
+          title: "Error",
+          description: "Failed to delete post. Please try again.",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      console.log('Post deleted successfully');
+      toast({
+        title: "Success",
+        description: "Your post has been deleted.",
+      });
+      
+      // Reload posts to update the UI
+      await loadPosts();
+      return true;
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete post. Please try again.",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (user) {
       console.log('User changed, loading posts and profile...');
@@ -389,6 +446,7 @@ export const useCommunityPosts = () => {
     addComment,
     getPostComments,
     loadPosts,
-    checkUserProfile
+    checkUserProfile,
+    deletePost
   };
 };

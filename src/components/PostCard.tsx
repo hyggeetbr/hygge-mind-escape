@@ -1,10 +1,26 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, MessageCircle, Share2 } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2 } from 'lucide-react';
 import { CommunityPost } from '@/hooks/useCommunityPosts';
 import { formatDistanceToNow } from 'date-fns';
 import { CommentsDialog } from './CommentsDialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface PostCardProps {
   post: CommunityPost;
@@ -12,13 +28,39 @@ interface PostCardProps {
   onComment: (postId: string, content: string) => Promise<boolean>;
   onShare: (post: CommunityPost) => void;
   onGetComments: (postId: string) => Promise<any[]>;
+  onDelete?: (postId: string) => Promise<boolean>;
+  isOwnPost?: boolean;
 }
 
-export const PostCard = ({ post, onLike, onComment, onShare, onGetComments }: PostCardProps) => {
+export const PostCard = ({ 
+  post, 
+  onLike, 
+  onComment, 
+  onShare, 
+  onGetComments, 
+  onDelete,
+  isOwnPost = false 
+}: PostCardProps) => {
   const [showCommentsDialog, setShowCommentsDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const getInitials = (name: string) => {
     return name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
+  };
+
+  const handleDelete = async () => {
+    if (!onDelete) return;
+    
+    setIsDeleting(true);
+    try {
+      const success = await onDelete(post.id);
+      if (success) {
+        setShowDeleteDialog(false);
+      }
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -44,6 +86,26 @@ export const PostCard = ({ post, onLike, onComment, onShare, onGetComments }: Po
             {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
           </p>
         </div>
+        
+        {/* Three dots menu for own posts */}
+        {isOwnPost && onDelete && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-white">
+              <DropdownMenuItem 
+                onClick={() => setShowDeleteDialog(true)}
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Post
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       {/* Post Content */}
@@ -117,6 +179,35 @@ export const PostCard = ({ post, onLike, onComment, onShare, onGetComments }: Po
         onGetComments={onGetComments}
         onAddComment={onComment}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="bg-white border border-gray-200">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-black">
+              Are you sure you want to delete this post?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600">
+              This action cannot be undone. This will permanently delete your post and remove all associated comments and likes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setShowDeleteDialog(false)}
+              className="bg-gray-100 text-black hover:bg-gray-200"
+            >
+              NO
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              {isDeleting ? 'Deleting...' : 'YES'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
