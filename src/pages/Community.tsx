@@ -115,26 +115,29 @@ const Community = () => {
           <ArrowLeft size={20} />
         </Button>
         
-        <div className="flex items-center space-x-4">
+        <h1 className="text-white text-xl font-medium">Community</h1>
+        
+        <div className="flex items-center space-x-2">
+          {/* Profile button - only show if user has username */}
+          {userProfile?.username && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleUsernameChange}
+              className="text-white/80 hover:bg-white/10 hover:text-white w-8 h-8 rounded-full bg-white/20"
+            >
+              <User size={16} />
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="icon"
-            onClick={handleUsernameChange}
+            onClick={() => setShowCreatePost(true)}
             className="text-white/80 hover:bg-white/10 hover:text-white"
           >
-            <User size={20} />
+            <Plus size={20} />
           </Button>
-          <h1 className="text-white text-xl font-medium">Community</h1>
         </div>
-        
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setShowCreatePost(true)}
-          className="text-white/80 hover:bg-white/10 hover:text-white"
-        >
-          <Plus size={20} />
-        </Button>
       </div>
 
       {/* Main Content */}
