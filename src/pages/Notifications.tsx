@@ -19,8 +19,8 @@ const Notifications = () => {
     if (!notification.is_read) {
       markAsRead(notification.id);
     }
-    // Navigate to the post or user profile
-    navigate(`/user/${notification.actor_id}`);
+    // Navigate to the community page (since we don't have individual post pages yet)
+    navigate("/community");
   };
 
   if (!user) {
@@ -112,6 +112,14 @@ const Notifications = () => {
                         <span className="text-gray-600">: "{notification.post.title}"</span>
                       )}
                     </p>
+                    
+                    {/* Show comment content if it's a comment notification */}
+                    {notification.type === 'comment' && notification.comment?.content && (
+                      <p className="text-gray-700 text-sm mt-1 italic">
+                        "{notification.comment.content}"
+                      </p>
+                    )}
+                    
                     <p className="text-gray-500 text-xs mt-1">
                       {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                     </p>

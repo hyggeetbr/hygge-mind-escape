@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -19,6 +18,9 @@ export interface Notification {
   };
   post?: {
     title: string;
+  };
+  comment?: {
+    content: string;
   };
 }
 
@@ -45,10 +47,10 @@ export const useNotifications = () => {
         return;
       }
 
-      // Get actor profiles and post titles
+      // Get actor profiles, post titles, and comment content
       const notificationsWithDetails = await Promise.all(
         (notificationsData || []).map(async (notification: any) => {
-          const [actorResult, postResult] = await Promise.all([
+          const [actorResult, postResult, commentResult] = await Promise.all([
             supabase
               .from('user_profiles')
               .select('username, avatar_url')
@@ -58,7 +60,12 @@ export const useNotifications = () => {
               .from('community_posts')
               .select('title')
               .eq('id', notification.post_id)
-              .single()
+              .single(),
+            notification.comment_id ? supabase
+              .from('post_comments')
+              .select('content')
+              .eq('id', notification.comment_id)
+              .single() : Promise.resolve({ data: null })
           ]);
 
           return {
@@ -69,7 +76,10 @@ export const useNotifications = () => {
             },
             post: {
               title: postResult.data?.title || 'Post'
-            }
+            },
+            comment: commentResult.data ? {
+              content: commentResult.data.content
+            } : undefined
           } as Notification;
         })
       );
