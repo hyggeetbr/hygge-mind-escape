@@ -62,7 +62,7 @@ export const PostCard = ({ post, onLike, onComment, onShare, onGetComments }: Po
           )}
         </div>
         <div className="flex-1">
-          <h4 className="font-semibold text-gray-800">
+          <h4 className="font-semibold text-black">
             {post.user_profiles?.full_name || 'Anonymous User'}
           </h4>
           <p className="text-gray-500 text-sm">
@@ -73,8 +73,8 @@ export const PostCard = ({ post, onLike, onComment, onShare, onGetComments }: Po
 
       {/* Post Content */}
       <div className="mb-4">
-        <h3 className="font-semibold text-lg text-gray-800 mb-2">{post.title}</h3>
-        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{post.description}</p>
+        <h3 className="font-semibold text-lg text-black mb-2">{post.title}</h3>
+        <p className="text-black leading-relaxed whitespace-pre-wrap">{post.description}</p>
       </div>
 
       {/* Post Image */}
@@ -138,7 +138,7 @@ export const PostCard = ({ post, onLike, onComment, onShare, onGetComments }: Po
               placeholder="Write a comment..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="flex-1 min-h-[40px] resize-none"
+              className="flex-1 min-h-[40px] resize-none bg-white text-black border-gray-300 placeholder:text-gray-500"
               rows={1}
             />
             <Button
@@ -162,11 +162,11 @@ export const PostCard = ({ post, onLike, onComment, onShare, onGetComments }: Po
                     {getInitials(comment.user_profiles?.full_name || 'User')}
                   </div>
                   <div className="flex-1">
-                    <div className="bg-gray-50 rounded-lg px-3 py-2">
-                      <p className="font-semibold text-sm text-gray-800">
+                    <div className="bg-white border border-gray-200 rounded-lg px-3 py-2">
+                      <p className="font-semibold text-sm text-black">
                         {comment.user_profiles?.full_name || 'Anonymous User'}
                       </p>
-                      <p className="text-gray-700 text-sm">{comment.content}</p>
+                      <p className="text-black text-sm">{comment.content}</p>
                     </div>
                     <p className="text-gray-500 text-xs mt-1">
                       {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}

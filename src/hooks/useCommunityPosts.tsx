@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -31,6 +32,10 @@ export interface PostComment {
   };
 }
 
+const extractUsernameFromEmail = (email: string): string => {
+  return email.split('@')[0];
+};
+
 export const useCommunityPosts = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -61,9 +66,13 @@ export const useCommunityPosts = () => {
 
       console.log('Raw posts loaded:', posts);
 
-      // Get user profiles for all posts
+      // Get user profiles for all posts and extract usernames from emails
       const postsWithProfiles = await Promise.all(
         (posts || []).map(async (post: any) => {
+          // Get user email from auth.users
+          const { data: authUser } = await supabase.auth.admin.getUserById(post.user_id);
+          const username = authUser?.user?.email ? extractUsernameFromEmail(authUser.user.email) : 'Anonymous User';
+
           const { data: profile } = await supabase
             .from('user_profiles')
             .select('full_name, avatar_url')
@@ -89,7 +98,10 @@ export const useCommunityPosts = () => {
 
           return {
             ...post,
-            user_profiles: profile || { full_name: 'Anonymous User', avatar_url: null },
+            user_profiles: { 
+              full_name: username, 
+              avatar_url: profile?.avatar_url || null 
+            },
             likes_count: likesResult.count || 0,
             comments_count: commentsResult.count || 0,
             user_has_liked: !userLikeResult.error
@@ -197,6 +209,22 @@ export const useCommunityPosts = () => {
       const post = allPosts.find(p => p.id === postId);
       if (!post) return;
 
+      // Optimistically update the UI
+      const updatedPosts = allPosts.map(p => {
+        if (p.id === postId) {
+          const newLiked = !p.user_has_liked;
+          return {
+            ...p,
+            user_has_liked: newLiked,
+            likes_count: newLiked ? (p.likes_count || 0) + 1 : Math.max((p.likes_count || 0) - 1, 0)
+          };
+        }
+        return p;
+      });
+      
+      setAllPosts(updatedPosts);
+      setUserPosts(updatedPosts.filter(p => p.user_id === user.id));
+
       if (post.user_has_liked) {
         // Unlike
         const { error } = await supabase
@@ -207,6 +235,8 @@ export const useCommunityPosts = () => {
 
         if (error) {
           console.error('Error unliking post:', error);
+          // Revert optimistic update on error
+          await loadPosts();
           return;
         }
       } else {
@@ -222,13 +252,15 @@ export const useCommunityPosts = () => {
 
         if (error) {
           console.error('Error liking post:', error);
+          // Revert optimistic update on error
+          await loadPosts();
           return;
         }
       }
-
-      await loadPosts();
     } catch (error) {
       console.error('Error toggling like:', error);
+      // Revert optimistic update on error
+      await loadPosts();
     }
   };
 
@@ -277,18 +309,25 @@ export const useCommunityPosts = () => {
         return [];
       }
 
-      // Then get user profiles for each comment
+      // Then get user emails and extract usernames for each comment
       const commentsWithProfiles = await Promise.all(
         comments.map(async (comment: any) => {
+          // Get user email from auth.users
+          const { data: authUser } = await supabase.auth.admin.getUserById(comment.user_id);
+          const username = authUser?.user?.email ? extractUsernameFromEmail(authUser.user.email) : 'Anonymous User';
+
           const { data: profile } = await supabase
             .from('user_profiles')
-            .select('full_name, avatar_url')
+            .select('avatar_url')
             .eq('id', comment.user_id)
             .single();
 
           return {
             ...comment,
-            user_profiles: profile || { full_name: 'Anonymous User', avatar_url: null }
+            user_profiles: { 
+              full_name: username, 
+              avatar_url: profile?.avatar_url || null 
+            }
           } as PostComment;
         })
       );
@@ -316,73 +355,8 @@ export const useCommunityPosts = () => {
     userPosts,
     loading,
     createPost,
-    toggleLike: async (postId: string) => {
-      if (!user) return;
-
-      try {
-        const post = allPosts.find(p => p.id === postId);
-        if (!post) return;
-
-        if (post.user_has_liked) {
-          // Unlike
-          const { error } = await supabase
-            .from('post_likes')
-            .delete()
-            .eq('post_id', postId)
-            .eq('user_id', user.id);
-
-          if (error) {
-            console.error('Error unliking post:', error);
-            return;
-          }
-        } else {
-          // Like
-          const { error } = await supabase
-            .from('post_likes')
-            .insert([
-              {
-                post_id: postId,
-                user_id: user.id
-              }
-            ]);
-
-          if (error) {
-            console.error('Error liking post:', error);
-            return;
-          }
-        }
-
-        await loadPosts();
-      } catch (error) {
-        console.error('Error toggling like:', error);
-      }
-    },
-    addComment: async (postId: string, content: string) => {
-      if (!user) return false;
-
-      try {
-        const { error } = await supabase
-          .from('post_comments')
-          .insert([
-            {
-              post_id: postId,
-              user_id: user.id,
-              content
-            }
-          ]);
-
-        if (error) {
-          console.error('Error adding comment:', error);
-          return false;
-        }
-
-        await loadPosts();
-        return true;
-      } catch (error) {
-        console.error('Error adding comment:', error);
-        return false;
-      }
-    },
+    toggleLike,
+    addComment,
     getPostComments,
     loadPosts
   };
