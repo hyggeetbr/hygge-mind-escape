@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Volume2, User, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { PostCard } from "@/components/PostCard";
 import { UsernameDialog } from "@/components/UsernameDialog";
+import { CommunityLeaderboard } from "@/components/CommunityLeaderboard";
 import { useAuth } from "@/hooks/useAuth";
 
 const Community = () => {
@@ -14,7 +16,7 @@ const Community = () => {
   const { user } = useAuth();
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showUsernameDialog, setShowUsernameDialog] = useState(false);
-  const [activeTab, setActiveTab] = useState<'community' | 'yours'>('community');
+  const [activeTab, setActiveTab] = useState<'community' | 'yours' | 'leaderboard'>('community');
   
   const {
     allPosts,
@@ -172,7 +174,7 @@ const Community = () => {
           <div className="flex space-x-1 bg-white/10 backdrop-blur-md rounded-lg p-1">
             <button
               onClick={() => setActiveTab('community')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'community'
                   ? 'bg-white text-purple-700 font-semibold'
                   : 'text-white/80 hover:text-white'
@@ -182,7 +184,7 @@ const Community = () => {
             </button>
             <button
               onClick={() => setActiveTab('yours')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'yours'
                   ? 'bg-white text-purple-700 font-semibold'
                   : 'text-white/80 hover:text-white'
@@ -190,12 +192,24 @@ const Community = () => {
             >
               Your Posts
             </button>
+            <button
+              onClick={() => setActiveTab('leaderboard')}
+              className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'leaderboard'
+                  ? 'bg-white text-purple-700 font-semibold'
+                  : 'text-white/80 hover:text-white'
+              }`}
+            >
+              Leaderboard
+            </button>
           </div>
         </div>
 
         {/* Posts Content */}
         <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-          {loading ? (
+          {activeTab === 'leaderboard' ? (
+            <CommunityLeaderboard />
+          ) : loading ? (
             <div className="text-center text-white py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
               <p>Loading posts...</p>
