@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send, Sparkles, Home, Users, Bot, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -231,15 +230,14 @@ const AskAI = () => {
             </div>
 
             {/* Input Area */}
-            <div className="calm-card p-4" style={{ borderColor: 'black' }}>
+            <div className="calm-card p-4 border-black">
               <div className="flex items-end space-x-3">
                 <Textarea
                   placeholder="Ask me anything about mindfulness, meditation, or wellness..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="flex-1 min-h-[60px] resize-none border-black bg-transparent focus:ring-0 text-black placeholder:text-black/60"
-                  style={{ borderColor: 'black', color: 'black' }}
+                  className="flex-1 min-h-[60px] resize-none border-black bg-transparent focus:ring-0 text-black placeholder:text-black/60 focus:border-black"
                   disabled={isLoading}
                 />
                 <Button

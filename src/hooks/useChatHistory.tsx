@@ -1,8 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from './useAuth';
 
 export interface ChatMessage {
   id: string;
@@ -20,11 +19,9 @@ export interface ChatSession {
 
 export const useChatHistory = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Load chat sessions
   const loadSessions = async () => {
@@ -37,95 +34,102 @@ export const useChatHistory = () => {
         .eq('user_id', user.id)
         .order('updated_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading sessions:', error);
+        return;
+      }
+
       setSessions(data || []);
     } catch (error) {
       console.error('Error loading sessions:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load chat history",
-        variant: "destructive",
-      });
     }
   };
 
   // Load messages for a session
   const loadMessages = async (sessionId: string) => {
+    if (!user) return;
+
     try {
+      setCurrentSessionId(sessionId);
+      
       const { data, error } = await supabase
         .from('chat_messages')
         .select('*')
         .eq('session_id', sessionId)
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
-      setMessages(data || []);
-      setCurrentSessionId(sessionId);
+      if (error) {
+        console.error('Error loading messages:', error);
+        return;
+      }
+
+      // Type assertion to ensure proper typing
+      const typedMessages: ChatMessage[] = (data || []).map(msg => ({
+        id: msg.id,
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content,
+        created_at: msg.created_at
+      }));
+
+      setMessages(typedMessages);
     } catch (error) {
       console.error('Error loading messages:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load conversation",
-        variant: "destructive",
-      });
     }
   };
 
-  // Create a new chat session
-  const createNewSession = async (firstMessage: string): Promise<string | null> => {
+  // Create new session
+  const createNewSession = async (firstMessage: string) => {
     if (!user) return null;
 
     try {
-      // Generate a title from the first message (first 50 chars)
+      // Generate title from first message (first 50 chars)
       const title = firstMessage.length > 50 
-        ? firstMessage.substring(0, 50) + '...' 
+        ? firstMessage.substring(0, 50) + '...'
         : firstMessage;
 
       const { data, error } = await supabase
         .from('chat_sessions')
-        .insert({
-          user_id: user.id,
-          title: title
-        })
+        .insert([
+          {
+            user_id: user.id,
+            title: title
+          }
+        ])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating session:', error);
+        return null;
+      }
 
-      const newSession = data as ChatSession;
-      setSessions(prev => [newSession, ...prev]);
-      setCurrentSessionId(newSession.id);
-      setMessages([]);
-      
-      return newSession.id;
+      await loadSessions(); // Refresh sessions list
+      return data.id;
     } catch (error) {
       console.error('Error creating session:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create new conversation",
-        variant: "destructive",
-      });
       return null;
     }
   };
 
-  // Save a message to the current session
+  // Save message to database
   const saveMessage = async (sessionId: string, role: 'user' | 'assistant', content: string) => {
+    if (!user) return;
+
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('chat_messages')
-        .insert({
-          session_id: sessionId,
-          role,
-          content
-        })
-        .select()
-        .single();
+        .insert([
+          {
+            session_id: sessionId,
+            role: role,
+            content: content
+          }
+        ]);
 
-      if (error) throw error;
-
-      const newMessage = data as ChatMessage;
-      setMessages(prev => [...prev, newMessage]);
+      if (error) {
+        console.error('Error saving message:', error);
+        return;
+      }
 
       // Update session's updated_at timestamp
       await supabase
@@ -133,61 +137,53 @@ export const useChatHistory = () => {
         .update({ updated_at: new Date().toISOString() })
         .eq('id', sessionId);
 
-      // Refresh sessions to update order
-      loadSessions();
-      
-      return newMessage;
+      await loadSessions(); // Refresh sessions to update order
     } catch (error) {
       console.error('Error saving message:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save message",
-        variant: "destructive",
-      });
-      return null;
     }
   };
 
-  // Delete a session
+  // Delete session
   const deleteSession = async (sessionId: string) => {
+    if (!user) return;
+
     try {
       const { error } = await supabase
         .from('chat_sessions')
         .delete()
         .eq('id', sessionId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error deleting session:', error);
+        return;
+      }
 
-      setSessions(prev => prev.filter(s => s.id !== sessionId));
-      
+      // If we deleted the current session, clear it
       if (currentSessionId === sessionId) {
         setCurrentSessionId(null);
         setMessages([]);
       }
 
-      toast({
-        title: "Success",
-        description: "Conversation deleted",
-      });
+      await loadSessions(); // Refresh sessions list
     } catch (error) {
       console.error('Error deleting session:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete conversation",
-        variant: "destructive",
-      });
     }
   };
 
-  // Start a new conversation
+  // Start new conversation
   const startNewConversation = () => {
     setCurrentSessionId(null);
     setMessages([]);
   };
 
+  // Load sessions when user changes
   useEffect(() => {
     if (user) {
       loadSessions();
+    } else {
+      setSessions([]);
+      setCurrentSessionId(null);
+      setMessages([]);
     }
   }, [user]);
 
@@ -195,7 +191,6 @@ export const useChatHistory = () => {
     sessions,
     currentSessionId,
     messages,
-    isLoading,
     loadMessages,
     createNewSession,
     saveMessage,
