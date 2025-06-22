@@ -1,9 +1,9 @@
-
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Volume2, User } from "lucide-react";
+import { ArrowLeft, Plus, Volume2, User, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
+import { useNotifications } from "@/hooks/useNotifications";
 import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { PostCard } from "@/components/PostCard";
 import { UsernameDialog } from "@/components/UsernameDialog";
@@ -29,6 +29,8 @@ const Community = () => {
     checkUserProfile,
     deletePost
   } = useCommunityPosts();
+
+  const { unreadCount } = useNotifications();
 
   useEffect(() => {
     const checkForFirstTimeUser = async () => {
@@ -150,6 +152,25 @@ const Community = () => {
         <h1 className="text-white text-xl font-medium">Community</h1>
         
         <div className="flex items-center space-x-2">
+          {/* Notifications bell - only show if user has username */}
+          {hasValidUsername && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/notifications")}
+              className="text-white/80 hover:bg-white/10 hover:text-white relative"
+            >
+              <Bell size={20} />
+              {unreadCount > 0 && (
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-medium">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                </div>
+              )}
+            </Button>
+          )}
+          
           {/* Profile button - only show if user has username */}
           {hasValidUsername && (
             <Button
