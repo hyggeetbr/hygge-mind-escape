@@ -235,24 +235,39 @@ export const useCommunityPosts = () => {
 
   const getPostComments = async (postId: string): Promise<PostComment[]> => {
     try {
-      const { data, error } = await supabase
+      // First get the comments
+      const { data: comments, error: commentsError } = await supabase
         .from('post_comments' as any)
-        .select(`
-          *,
-          user_profiles (
-            full_name,
-            avatar_url
-          )
-        `)
+        .select('*')
         .eq('post_id', postId)
         .order('created_at', { ascending: true });
 
-      if (error) {
-        console.error('Error loading comments:', error);
+      if (commentsError) {
+        console.error('Error loading comments:', commentsError);
         return [];
       }
 
-      return (data || []) as PostComment[];
+      if (!comments || comments.length === 0) {
+        return [];
+      }
+
+      // Then get user profiles for each comment
+      const commentsWithProfiles = await Promise.all(
+        comments.map(async (comment: any) => {
+          const { data: profile } = await supabase
+            .from('user_profiles' as any)
+            .select('full_name, avatar_url')
+            .eq('id', comment.user_id)
+            .single();
+
+          return {
+            ...comment,
+            user_profiles: profile || { full_name: 'Anonymous User', avatar_url: null }
+          } as PostComment;
+        })
+      );
+
+      return commentsWithProfiles;
     } catch (error) {
       console.error('Error loading comments:', error);
       return [];
