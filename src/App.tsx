@@ -19,6 +19,7 @@ import Community from "./pages/Community";
 import UserProfile from "./pages/UserProfile";
 import Leaderboard from "./pages/Leaderboard";
 import Notifications from "./pages/Notifications";
+import PostDetail from "./pages/PostDetail";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
         <Route path="/user/:userId" element={<UserProfile />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/post/:postId" element={<PostDetail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

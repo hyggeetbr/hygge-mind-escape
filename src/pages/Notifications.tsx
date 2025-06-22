@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,8 +18,8 @@ const Notifications = () => {
     if (!notification.is_read) {
       markAsRead(notification.id);
     }
-    // Navigate to the community page (since we don't have individual post pages yet)
-    navigate("/community");
+    // Navigate to the specific post detail page
+    navigate(`/post/${notification.post_id}`);
   };
 
   if (!user) {
