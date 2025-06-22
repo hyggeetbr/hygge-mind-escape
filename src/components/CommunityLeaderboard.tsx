@@ -21,13 +21,7 @@ export const CommunityLeaderboard = () => {
   const loadTopContributors = async () => {
     setLoading(true);
     try {
-      // Get the start of this week (Sunday)
-      const now = new Date();
-      const startOfWeek = new Date(now);
-      startOfWeek.setDate(now.getDate() - now.getDay());
-      startOfWeek.setHours(0, 0, 0, 0);
-
-      // Query to get likes count for posts created this week
+      // Query to get likes count for all posts (all-time)
       const { data: likesData, error } = await supabase
         .from('post_likes')
         .select(`
@@ -37,8 +31,7 @@ export const CommunityLeaderboard = () => {
             created_at,
             user_profiles!inner(username)
           )
-        `)
-        .gte('community_posts.created_at', startOfWeek.toISOString());
+        `);
 
       if (error) {
         console.error('Error loading leaderboard data:', error);
@@ -123,7 +116,7 @@ export const CommunityLeaderboard = () => {
         <div className="bg-white rounded-lg p-8 border border-gray-200">
           <Trophy className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <p className="text-black text-lg font-medium">
-            No contributions this week yet.
+            No contributions yet.
           </p>
           <p className="text-gray-600 text-sm mt-2">
             Be the first to share a post and get likes!
@@ -137,7 +130,7 @@ export const CommunityLeaderboard = () => {
     <div className="space-y-4">
       <div className="bg-white rounded-lg p-6 border border-gray-200">
         <h3 className="text-black text-xl font-semibold mb-6 text-center">
-          🏆 Top Contributors of This Week
+          🏆 Top Contributors
         </h3>
         
         <div className="space-y-4">
@@ -170,7 +163,7 @@ export const CommunityLeaderboard = () => {
                     {contributor.likes_count}
                   </div>
                   <div className="text-xs text-gray-500">
-                    likes this week
+                    total likes
                   </div>
                 </div>
               </div>
@@ -180,7 +173,7 @@ export const CommunityLeaderboard = () => {
         
         <div className="mt-6 pt-4 border-t border-gray-200">
           <p className="text-center text-gray-500 text-sm">
-            Rankings are based on likes received on posts created this week
+            Rankings are based on total likes received on all posts
           </p>
         </div>
       </div>
