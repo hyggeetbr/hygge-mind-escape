@@ -1,4 +1,3 @@
-
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -392,7 +391,7 @@ const PostDetail = () => {
               placeholder="Write a comment..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="mb-3"
+              className="mb-3 bg-white border-gray-300 text-black placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500"
             />
             <Button
               onClick={handleSubmitComment}
