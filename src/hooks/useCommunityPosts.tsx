@@ -33,6 +33,7 @@ export interface PostComment {
 }
 
 const extractUsernameFromEmail = (email: string): string => {
+  if (!email) return 'User';
   return email.split('@')[0];
 };
 
@@ -69,13 +70,20 @@ export const useCommunityPosts = () => {
       // Get user profiles for all posts and extract usernames from emails
       const postsWithProfiles = await Promise.all(
         (posts || []).map(async (post: any) => {
-          // Get user email from auth.users
-          const { data: authUser } = await supabase.auth.admin.getUserById(post.user_id);
-          const username = authUser?.user?.email ? extractUsernameFromEmail(authUser.user.email) : 'Anonymous User';
+          // Get user email from auth admin API
+          const { data: authData, error: authError } = await supabase.auth.admin.getUserById(post.user_id);
+          
+          let username = 'User';
+          if (authData?.user?.email) {
+            username = extractUsernameFromEmail(authData.user.email);
+            console.log('Extracted username:', username, 'from email:', authData.user.email);
+          } else {
+            console.log('No email found for user:', post.user_id, 'Auth error:', authError);
+          }
 
           const { data: profile } = await supabase
             .from('user_profiles')
-            .select('full_name, avatar_url')
+            .select('avatar_url')
             .eq('id', post.user_id)
             .single();
 
@@ -312,9 +320,16 @@ export const useCommunityPosts = () => {
       // Then get user emails and extract usernames for each comment
       const commentsWithProfiles = await Promise.all(
         comments.map(async (comment: any) => {
-          // Get user email from auth.users
-          const { data: authUser } = await supabase.auth.admin.getUserById(comment.user_id);
-          const username = authUser?.user?.email ? extractUsernameFromEmail(authUser.user.email) : 'Anonymous User';
+          // Get user email from auth admin API
+          const { data: authData, error: authError } = await supabase.auth.admin.getUserById(comment.user_id);
+          
+          let username = 'User';
+          if (authData?.user?.email) {
+            username = extractUsernameFromEmail(authData.user.email);
+            console.log('Comment username:', username, 'from email:', authData.user.email);
+          } else {
+            console.log('No email found for comment user:', comment.user_id, 'Auth error:', authError);
+          }
 
           const { data: profile } = await supabase
             .from('user_profiles')
