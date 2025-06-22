@@ -32,16 +32,25 @@ const Community = () => {
   useEffect(() => {
     const checkForFirstTimeUser = async () => {
       if (user) {
+        console.log('Checking user profile for username...');
         const profile = await checkUserProfile();
-        if (!profile?.username) {
+        console.log('User profile:', profile);
+        
+        // Check if username exists and is not empty
+        if (!profile?.username || profile.username.trim() === '') {
+          console.log('No username found, showing dialog for first time user');
           setIsFirstTimeUser(true);
           setShowUsernameDialog(true);
+        } else {
+          console.log('Username exists:', profile.username);
+          setIsFirstTimeUser(false);
+          setShowUsernameDialog(false);
         }
       }
     };
 
     checkForFirstTimeUser();
-  }, [user]);
+  }, [user, checkUserProfile]);
 
   const handleCreatePost = async (title: string, description: string, image?: File) => {
     console.log('Community handleCreatePost called with:', { title, description, hasImage: !!image });
@@ -51,12 +60,15 @@ const Community = () => {
   };
 
   const handleUsernameSet = (username: string) => {
+    console.log('Username set:', username);
     setIsFirstTimeUser(false);
+    setShowUsernameDialog(false);
     // Reload posts to update the username display
     window.location.reload();
   };
 
   const handleUsernameChange = () => {
+    console.log('Opening username change dialog');
     setIsFirstTimeUser(false);
     setShowUsernameDialog(true);
   };
@@ -92,7 +104,9 @@ const Community = () => {
     allPosts: allPosts.length, 
     userPosts: userPosts.length, 
     communityPosts: communityPosts.length,
-    activeTab 
+    activeTab,
+    userProfile,
+    hasUsername: !!userProfile?.username
   });
 
   return (
@@ -119,7 +133,7 @@ const Community = () => {
         
         <div className="flex items-center space-x-2">
           {/* Profile button - only show if user has username */}
-          {userProfile?.username && (
+          {userProfile?.username && userProfile.username.trim() !== '' && (
             <Button
               variant="ghost"
               size="icon"
@@ -257,7 +271,11 @@ const Community = () => {
       {/* Username Dialog */}
       <UsernameDialog
         open={showUsernameDialog}
-        onClose={() => setShowUsernameDialog(false)}
+        onClose={() => {
+          if (!isFirstTimeUser) {
+            setShowUsernameDialog(false);
+          }
+        }}
         onUsernameSet={handleUsernameSet}
         isFirstTime={isFirstTimeUser}
         currentUsername={userProfile?.username || ''}

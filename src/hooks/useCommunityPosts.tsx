@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -41,21 +40,38 @@ export const useCommunityPosts = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
 
   const checkUserProfile = async () => {
-    if (!user) return null;
-
-    const { data: profile, error } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-
-    if (error && error.code !== 'PGRST116') {
-      console.error('Error fetching profile:', error);
+    if (!user) {
+      console.log('No user found, returning null');
       return null;
     }
 
-    setUserProfile(profile);
-    return profile;
+    console.log('Checking user profile for user:', user.id);
+
+    try {
+      const { data: profile, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          console.log('No profile found for user, will need to create one');
+          setUserProfile(null);
+          return null;
+        } else {
+          console.error('Error fetching profile:', error);
+          return null;
+        }
+      }
+
+      console.log('Profile found:', profile);
+      setUserProfile(profile);
+      return profile;
+    } catch (error) {
+      console.error('Exception while checking user profile:', error);
+      return null;
+    }
   };
 
   const loadPosts = async () => {
@@ -350,9 +366,11 @@ export const useCommunityPosts = () => {
     if (user) {
       console.log('User changed, loading posts...');
       loadPosts();
+      checkUserProfile();
     } else {
       setAllPosts([]);
       setUserPosts([]);
+      setUserProfile(null);
       setLoading(false);
     }
   }, [user]);
