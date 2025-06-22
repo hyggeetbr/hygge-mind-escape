@@ -16,6 +16,7 @@ import Discover from "./pages/Discover";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
 import Community from "./pages/Community";
+import UserProfile from "./pages/UserProfile";
 import Leaderboard from "./pages/Leaderboard";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
         <Route path="/profile" element={<Profile />} />
         <Route path="/premium" element={<Premium />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/user/:userId" element={<UserProfile />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

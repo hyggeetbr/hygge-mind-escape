@@ -4,6 +4,7 @@ import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2 } from 'lucide-rea
 import { CommunityPost } from '@/hooks/useCommunityPosts';
 import { formatDistanceToNow } from 'date-fns';
 import { CommentsDialog } from './CommentsDialog';
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +41,7 @@ export const PostCard = ({
   onDelete,
   isOwnPost = false 
 }: PostCardProps) => {
+  const navigate = useNavigate();
   const [showCommentsDialog, setShowCommentsDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -62,6 +64,13 @@ export const PostCard = ({
     }
   };
 
+  const handleUsernameClick = () => {
+    // Don't navigate if it's the user's own post or if viewing from profile page
+    if (!isOwnPost && post.user_id) {
+      navigate(`/user/${post.user_id}`);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
       {/* Post Header */}
@@ -78,7 +87,10 @@ export const PostCard = ({
           )}
         </div>
         <div className="flex-1">
-          <h4 className="font-semibold text-black">
+          <h4 
+            className={`font-semibold text-black ${!isOwnPost ? 'cursor-pointer hover:text-purple-600' : ''}`}
+            onClick={handleUsernameClick}
+          >
             {post.user_profiles?.full_name || 'User'}
           </h4>
           <p className="text-gray-500 text-sm">
