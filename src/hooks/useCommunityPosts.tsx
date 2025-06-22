@@ -45,7 +45,7 @@ export const useCommunityPosts = () => {
     try {
       // Load all posts with user profiles and counts
       const { data: posts, error } = await supabase
-        .from('community_posts')
+        .from('community_posts' as any)
         .select(`
           *,
           user_profiles!community_posts_user_id_fkey (
@@ -62,18 +62,18 @@ export const useCommunityPosts = () => {
 
       // Get likes and comments counts for each post
       const postsWithCounts = await Promise.all(
-        (posts || []).map(async (post) => {
+        (posts || []).map(async (post: any) => {
           const [likesResult, commentsResult, userLikeResult] = await Promise.all([
             supabase
-              .from('post_likes')
+              .from('post_likes' as any)
               .select('id', { count: 'exact' })
               .eq('post_id', post.id),
             supabase
-              .from('post_comments')
+              .from('post_comments' as any)
               .select('id', { count: 'exact' })
               .eq('post_id', post.id),
             supabase
-              .from('post_likes')
+              .from('post_likes' as any)
               .select('id')
               .eq('post_id', post.id)
               .eq('user_id', user.id)
@@ -85,7 +85,7 @@ export const useCommunityPosts = () => {
             likes_count: likesResult.count || 0,
             comments_count: commentsResult.count || 0,
             user_has_liked: !userLikeResult.error
-          };
+          } as CommunityPost;
         })
       );
 
@@ -131,7 +131,7 @@ export const useCommunityPosts = () => {
       }
 
       const { error } = await supabase
-        .from('community_posts')
+        .from('community_posts' as any)
         .insert([
           {
             user_id: user.id,
@@ -174,7 +174,7 @@ export const useCommunityPosts = () => {
       if (post.user_has_liked) {
         // Unlike
         const { error } = await supabase
-          .from('post_likes')
+          .from('post_likes' as any)
           .delete()
           .eq('post_id', postId)
           .eq('user_id', user.id);
@@ -186,7 +186,7 @@ export const useCommunityPosts = () => {
       } else {
         // Like
         const { error } = await supabase
-          .from('post_likes')
+          .from('post_likes' as any)
           .insert([
             {
               post_id: postId,
@@ -211,7 +211,7 @@ export const useCommunityPosts = () => {
 
     try {
       const { error } = await supabase
-        .from('post_comments')
+        .from('post_comments' as any)
         .insert([
           {
             post_id: postId,
@@ -236,7 +236,7 @@ export const useCommunityPosts = () => {
   const getPostComments = async (postId: string): Promise<PostComment[]> => {
     try {
       const { data, error } = await supabase
-        .from('post_comments')
+        .from('post_comments' as any)
         .select(`
           *,
           user_profiles!post_comments_user_id_fkey (
@@ -252,7 +252,7 @@ export const useCommunityPosts = () => {
         return [];
       }
 
-      return data || [];
+      return (data || []) as PostComment[];
     } catch (error) {
       console.error('Error loading comments:', error);
       return [];
