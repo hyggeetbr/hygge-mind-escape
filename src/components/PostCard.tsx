@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2 } from 'lucide-react';
@@ -91,7 +90,7 @@ export const PostCard = ({
         {isOwnPost && onDelete && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-black hover:text-black">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
