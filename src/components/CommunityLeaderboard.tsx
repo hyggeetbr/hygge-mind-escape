@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Medal, Award } from "lucide-react";
@@ -21,14 +20,10 @@ export const CommunityLeaderboard = () => {
   const loadTopContributors = async () => {
     setLoading(true);
     try {
-      // First, get all community posts with their user information
+      // First, get all community posts
       const { data: postsData, error: postsError } = await supabase
         .from('community_posts')
-        .select(`
-          id,
-          user_id,
-          user_profiles!inner(username)
-        `);
+        .select('id, user_id');
 
       if (postsError) {
         console.error('Error loading posts:', postsError);
@@ -42,6 +37,24 @@ export const CommunityLeaderboard = () => {
         setLoading(false);
         return;
       }
+
+      // Get user profiles separately
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('user_profiles')
+        .select('id, username');
+
+      if (profilesError) {
+        console.error('Error loading profiles:', profilesError);
+        return;
+      }
+
+      console.log('Profiles data:', profilesData);
+
+      // Create a map of user_id to username
+      const userProfilesMap = new Map();
+      profilesData?.forEach(profile => {
+        userProfilesMap.set(profile.id, profile.username || 'User');
+      });
 
       // Now get likes count for each post
       const userLikesMap = new Map<string, { username: string; likes_count: number }>();
@@ -59,7 +72,7 @@ export const CommunityLeaderboard = () => {
 
         const likesCount = likesData?.length || 0;
         const userId = post.user_id;
-        const username = post.user_profiles?.username || 'User';
+        const username = userProfilesMap.get(userId) || 'User';
 
         console.log(`Post ${post.id} by ${username}: ${likesCount} likes`);
 
