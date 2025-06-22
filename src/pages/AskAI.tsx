@@ -3,14 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send, Sparkles, Home, Users, Bot, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const AskAI = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [conversations, setConversations] = useState<any[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [conversation, setConversation] = useState([
     {
       role: "assistant",
@@ -19,20 +23,92 @@ const AskAI = () => {
   ]);
   const { toast } = useToast();
 
+  const createConversation = async () => {
+    if (!user) return null;
+    const { data, error } = await supabase
+      .from('conversations')
+      .insert({ user_id: user.id })
+      .select()
+      .single();
+    if (error) {
+      console.error('Error creating conversation', error);
+      return null;
+    }
+    setConversations((prev) => [data, ...prev]);
+    setCurrentConversationId(data.id);
+    return data;
+  };
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('conversations')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (!error) {
+        setConversations(data || []);
+        if (data && data.length > 0 && !currentConversationId) {
+          setCurrentConversationId(data[0].id);
+        }
+      } else {
+        console.error('Error fetching conversations', error);
+      }
+    };
+    fetchConversations();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!currentConversationId) return;
+      const { data, error } = await supabase
+        .from('conversation_messages')
+        .select('role, content')
+        .eq('conversation_id', currentConversationId)
+        .order('created_at');
+      if (!error) {
+        setConversation(
+          data && data.length > 0
+            ? data
+            : [
+                {
+                  role: 'assistant',
+                  content:
+                    "Hello! I'm Lumina, your personal mindfulness companion. How can I help you today? I can assist with meditation guidance, stress management techniques, sleep improvement tips, and more.",
+                },
+              ]
+        );
+      } else {
+        console.error('Error fetching messages', error);
+      }
+    };
+    fetchMessages();
+  }, [currentConversationId]);
+
   const handleSend = async () => {
     if (!message.trim() || isLoading) return;
+
+    let convId = currentConversationId;
+    if (!convId) {
+      const created = await createConversation();
+      if (!created) return;
+      convId = created.id;
+    }
 
     const userMessage = message.trim();
     setMessage("");
     setIsLoading(true);
 
-    // Add user message to conversation
-    const newConversation = [...conversation, { role: "user", content: userMessage }];
-    setConversation(newConversation);
+    const newConversationData = [...conversation, { role: "user", content: userMessage }];
+    setConversation(newConversationData);
+    await supabase
+      .from('conversation_messages')
+      .insert({ conversation_id: convId, role: 'user', content: userMessage });
 
     try {
       const { data, error } = await supabase.functions.invoke("ask-ai", {
-        body: { question: userMessage},
+        body: { question: userMessage },
       });
       // const response = await fetch('/functions/v1/ask-ai', {
       //   method: 'POST',
@@ -52,8 +128,21 @@ const AskAI = () => {
         throw new Error(data?.error || "No response from AI");
       }
 
-      // Add AI response to conversation
-      setConversation([...newConversation, { role: "assistant", content: data.answer }]);
+      await supabase
+        .from('conversation_messages')
+        .insert({ conversation_id: convId, role: 'assistant', content: data.answer });
+
+      setConversation([...newConversationData, { role: "assistant", content: data.answer }]);
+
+      if (conversations.find((c) => c.id === convId)?.title == null) {
+        await supabase
+          .from('conversations')
+          .update({ title: userMessage.slice(0, 50) })
+          .eq('id', convId);
+        setConversations((prev) =>
+          prev.map((c) => (c.id === convId ? { ...c, title: userMessage.slice(0, 50) } : c))
+        );
+      }
     } catch (error) {
       console.error('Error calling AI:', error);
       toast({
@@ -64,7 +153,7 @@ const AskAI = () => {
       
       // Add error message to conversation
         setConversation([
-          ...newConversation,
+          ...newConversationData,
           {
             role: "assistant",
             content:
@@ -81,6 +170,10 @@ const AskAI = () => {
       e.preventDefault();
       handleSend();
     }
+  };
+
+  const handleSelectConversation = (id: string) => {
+    setCurrentConversationId(id);
   };
 
   const handleDashboard = () => {
@@ -104,13 +197,27 @@ const AskAI = () => {
   };
 
   return (
-    <div className="min-h-screen calm-gradient relative overflow-hidden">
-      {/* Floating background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
-        <div className="floating-element absolute top-40 right-20 w-48 h-48 bg-white/3 rounded-full blur-2xl" />
-        <div className="floating-element absolute bottom-32 left-32 w-24 h-24 bg-white/4 rounded-full blur-lg" />
+    <div className="min-h-screen calm-gradient relative overflow-hidden flex">
+      {/* Sidebar */}
+      <div className="hidden md:block w-64 p-4 border-r border-white/20 overflow-y-auto">
+        <Button className="w-full mb-4" onClick={createConversation}>New Chat</Button>
+        {conversations.map((c) => (
+          <div
+            key={c.id}
+            onClick={() => handleSelectConversation(c.id)}
+            className={`p-2 rounded mb-2 cursor-pointer ${c.id === currentConversationId ? 'bg-white/20 text-white' : 'text-white/70 hover:bg-white/10'}`}
+          >
+            {c.title || 'Untitled'}
+          </div>
+        ))}
       </div>
+      <div className="flex-1 relative">
+        {/* Floating background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
+          <div className="floating-element absolute top-40 right-20 w-48 h-48 bg-white/3 rounded-full blur-2xl" />
+          <div className="floating-element absolute bottom-32 left-32 w-24 h-24 bg-white/4 rounded-full blur-lg" />
+        </div>
 
       {/* Header */}
       <div className="relative z-20 flex items-center justify-between p-6">
@@ -256,6 +363,7 @@ const AskAI = () => {
             <span className="text-white/60 text-xs">Premium</span>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
