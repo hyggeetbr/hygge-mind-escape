@@ -61,7 +61,7 @@ export const useNotifications = () => {
               .select('username, avatar_url')
               .eq('id', notification.actor_id)
               .single(),
-            notification.type !== 'nudge' ? supabase
+            notification.type !== 'nudge' && notification.post_id ? supabase
               .from('community_posts')
               .select('title')
               .eq('id', notification.post_id)

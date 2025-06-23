@@ -35,6 +35,10 @@ ALTER TABLE public.notifications
 ADD CONSTRAINT notifications_type_check 
 CHECK (type IN ('like', 'comment', 'nudge'));
 
+-- Make post_id nullable for nudge notifications
+ALTER TABLE public.notifications 
+ALTER COLUMN post_id DROP NOT NULL;
+
 -- Create function to automatically create notifications for nudges
 CREATE OR REPLACE FUNCTION create_nudge_notification()
 RETURNS TRIGGER AS $$
@@ -44,7 +48,7 @@ BEGIN
     NEW.recipient_id,
     NEW.sender_id,
     'nudge',
-    '00000000-0000-0000-0000-000000000000'::uuid, -- dummy post_id since nudges don't relate to posts
+    NULL, -- nudges don't relate to posts
     NEW.id
   );
   RETURN NEW;

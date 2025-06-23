@@ -20,7 +20,8 @@ const Notifications = () => {
       markAsRead(notification.id);
     }
     // For nudges, just mark as read since they don't link to posts
-    if (notification.type !== 'nudge') {
+    // Only navigate to post if it's not a nudge and post_id exists
+    if (notification.type !== 'nudge' && notification.post_id) {
       navigate(`/post/${notification.post_id}`);
     }
   };
