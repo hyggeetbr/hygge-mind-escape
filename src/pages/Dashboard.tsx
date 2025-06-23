@@ -1,17 +1,77 @@
+
 import { useNavigate } from "react-router-dom";
 import { CalendarDays, ListChecks, Sparkles, BookOpen, User, Home, Users, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [dailyProgress, setDailyProgress] = useState({
+    meditation: 0,
+    yoga: 0,
+    reading: 0
+  });
+  const [loading, setLoading] = useState(true);
 
-  // Mock completion data - you can replace this with actual user data later
-  const taskCompletion = {
-    meditation: 75,
-    yoga: 40,
-    reading: 90
+  // Daily goals in minutes
+  const goals = {
+    meditation: 7,
+    yoga: 10,
+    reading: 10
   };
+
+  // Calculate completion percentages
+  const taskCompletion = {
+    meditation: Math.min(Math.round((dailyProgress.meditation / goals.meditation) * 100), 100),
+    yoga: Math.min(Math.round((dailyProgress.yoga / goals.yoga) * 100), 100),
+    reading: Math.min(Math.round((dailyProgress.reading / goals.reading) * 100), 100)
+  };
+
+  // Fetch today's progress
+  useEffect(() => {
+    const fetchDailyProgress = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('daily_activities')
+          .select('meditation_minutes, yoga_minutes, reading_minutes')
+          .eq('user_id', user.id)
+          .eq('date', new Date().toISOString().split('T')[0])
+          .single();
+        
+        if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+          console.error('Error fetching daily progress:', error);
+          return;
+        }
+        
+        if (data) {
+          setDailyProgress({
+            meditation: data.meditation_minutes || 0,
+            yoga: data.yoga_minutes || 0,
+            reading: data.reading_minutes || 0
+          });
+        } else {
+          // No record for today yet, start with zeros
+          setDailyProgress({
+            meditation: 0,
+            yoga: 0,
+            reading: 0
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDailyProgress();
+  }, [user]);
 
   const handleMeditate = () => {
     navigate("/meditate");
@@ -57,7 +117,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="relative z-20 flex items-center justify-between p-6">
         <div>
-          <h1 className="text-white text-3xl font-light mb-1">Good Morning</h1>
+          <h1 className="text-white text-3xl font-light mb-1">Hygge - Escape the Brainrot</h1>
           <p className="text-white/60 text-sm">Here is your mindful guidance for today.</p>
         </div>
         <Button 
@@ -76,103 +136,107 @@ const Dashboard = () => {
         <div className="calm-card p-6 mb-6 animate-fade-in">
           <h2 className="text-2xl font-medium mb-6 text-black text-center">Today's Progress</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Meditation Progress */}
-            <div className="text-center">
-              <div className="w-20 h-20 mx-auto mb-4 relative">
-                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="36"
-                    stroke="#e5e7eb"
-                    strokeWidth="8"
-                    fill="none"
-                  />
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="36"
-                    stroke="#8b45ff"
-                    strokeWidth="8"
-                    fill="none"
-                    strokeDasharray={`${2 * Math.PI * 36}`}
-                    strokeDashoffset={`${2 * Math.PI * 36 * (1 - taskCompletion.meditation / 100)}`}
-                    className="transition-all duration-500"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-lg font-semibold text-calm-purple">{taskCompletion.meditation}%</span>
+          {loading ? (
+            <div className="text-center text-gray-500">Loading progress...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Meditation Progress */}
+              <div className="text-center">
+                <div className="w-20 h-20 mx-auto mb-4 relative">
+                  <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="36"
+                      stroke="#e5e7eb"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="36"
+                      stroke="#8b45ff"
+                      strokeWidth="8"
+                      fill="none"
+                      strokeDasharray={`${2 * Math.PI * 36}`}
+                      strokeDashoffset={`${2 * Math.PI * 36 * (1 - taskCompletion.meditation / 100)}`}
+                      className="transition-all duration-500"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-lg font-semibold text-calm-purple">{taskCompletion.meditation}%</span>
+                  </div>
                 </div>
+                <h3 className="font-medium text-black mb-1">Meditation</h3>
+                <p className="text-gray-500 text-sm">{dailyProgress.meditation}/{goals.meditation} min</p>
               </div>
-              <h3 className="font-medium text-black mb-1">Meditation</h3>
-              <p className="text-gray-500 text-sm">7 min goal</p>
-            </div>
 
-            {/* Yoga Progress */}
-            <div className="text-center">
-              <div className="w-20 h-20 mx-auto mb-4 relative">
-                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="36"
-                    stroke="#e5e7eb"
-                    strokeWidth="8"
-                    fill="none"
-                  />
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="36"
-                    stroke="#3b82f6"
-                    strokeWidth="8"
-                    fill="none"
-                    strokeDasharray={`${2 * Math.PI * 36}`}
-                    strokeDashoffset={`${2 * Math.PI * 36 * (1 - taskCompletion.yoga / 100)}`}
-                    className="transition-all duration-500"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-lg font-semibold text-calm-blue">{taskCompletion.yoga}%</span>
+              {/* Yoga Progress */}
+              <div className="text-center">
+                <div className="w-20 h-20 mx-auto mb-4 relative">
+                  <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="36"
+                      stroke="#e5e7eb"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="36"
+                      stroke="#3b82f6"
+                      strokeWidth="8"
+                      fill="none"
+                      strokeDasharray={`${2 * Math.PI * 36}`}
+                      strokeDashoffset={`${2 * Math.PI * 36 * (1 - taskCompletion.yoga / 100)}`}
+                      className="transition-all duration-500"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-lg font-semibold text-calm-blue">{taskCompletion.yoga}%</span>
+                  </div>
                 </div>
+                <h3 className="font-medium text-black mb-1">Yoga</h3>
+                <p className="text-gray-500 text-sm">{dailyProgress.yoga}/{goals.yoga} min</p>
               </div>
-              <h3 className="font-medium text-black mb-1">Yoga</h3>
-              <p className="text-gray-500 text-sm">10 min goal</p>
-            </div>
 
-            {/* Reading Progress */}
-            <div className="text-center">
-              <div className="w-20 h-20 mx-auto mb-4 relative">
-                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="36"
-                    stroke="#e5e7eb"
-                    strokeWidth="8"
-                    fill="none"
-                  />
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="36"
-                    stroke="#fb9260"
-                    strokeWidth="8"
-                    fill="none"
-                    strokeDasharray={`${2 * Math.PI * 36}`}
-                    strokeDashoffset={`${2 * Math.PI * 36 * (1 - taskCompletion.reading / 100)}`}
-                    className="transition-all duration-500"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-lg font-semibold text-calm-orange">{taskCompletion.reading}%</span>
+              {/* Reading Progress */}
+              <div className="text-center">
+                <div className="w-20 h-20 mx-auto mb-4 relative">
+                  <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="36"
+                      stroke="#e5e7eb"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="36"
+                      stroke="#fb9260"
+                      strokeWidth="8"
+                      fill="none"
+                      strokeDasharray={`${2 * Math.PI * 36}`}
+                      strokeDashoffset={`${2 * Math.PI * 36 * (1 - taskCompletion.reading / 100)}`}
+                      className="transition-all duration-500"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-lg font-semibold text-calm-orange">{taskCompletion.reading}%</span>
+                  </div>
                 </div>
+                <h3 className="font-medium text-black mb-1">Reading</h3>
+                <p className="text-gray-500 text-sm">{dailyProgress.reading}/{goals.reading} min</p>
               </div>
-              <h3 className="font-medium text-black mb-1">Reading</h3>
-              <p className="text-gray-500 text-sm">10 min goal</p>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Your Tasks Section */}

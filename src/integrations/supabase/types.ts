@@ -122,6 +122,39 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_activities: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          meditation_minutes: number
+          reading_minutes: number
+          updated_at: string
+          user_id: string
+          yoga_minutes: number
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          meditation_minutes?: number
+          reading_minutes?: number
+          updated_at?: string
+          user_id: string
+          yoga_minutes?: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          meditation_minutes?: number
+          reading_minutes?: number
+          updated_at?: string
+          user_id?: string
+          yoga_minutes?: number
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           actor_id: string
@@ -310,7 +343,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_or_create_daily_activity: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
+      update_daily_activity: {
+        Args: { p_user_id: string; p_activity_type: string; p_minutes: number }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
