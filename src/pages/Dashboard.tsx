@@ -1,10 +1,18 @@
 
 import { useNavigate } from "react-router-dom";
-import { CalendarDays, BarChart4, ListChecks, Sparkles, BookOpen, User, Home, Users, Bot, Volume2 } from "lucide-react";
+import { CalendarDays, ListChecks, Sparkles, BookOpen, User, Home, Users, Bot, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  // Mock completion data - you can replace this with actual user data later
+  const taskCompletion = {
+    meditation: 75,
+    yoga: 40,
+    reading: 90
+  };
 
   const handleMeditate = () => {
     navigate("/meditate");
@@ -69,73 +77,179 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="relative z-10 px-6 pb-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 animate-fade-in">
-          <div
-            className="calm-card p-6 cursor-pointer transform transition-all duration-300 hover:scale-105"
-            onClick={handleMeditate}
-          >
-            <h2 className="text-xl font-medium mb-2 text-black">Meditate</h2>
-            <p className="text-gray-500 mb-4">Find your inner peace with guided meditation.</p>
-            <Sparkles className="w-6 h-6 text-calm-blue" />
-          </div>
+        {/* Task Completion Tracker */}
+        <div className="calm-card p-6 mb-6 animate-fade-in">
+          <h2 className="text-2xl font-medium mb-6 text-black text-center">Today's Progress</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Meditation Progress */}
+            <div className="text-center">
+              <div className="w-20 h-20 mx-auto mb-4 relative">
+                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="36"
+                    stroke="#e5e7eb"
+                    strokeWidth="8"
+                    fill="none"
+                  />
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="36"
+                    stroke="#8b45ff"
+                    strokeWidth="8"
+                    fill="none"
+                    strokeDasharray={`${2 * Math.PI * 36}`}
+                    strokeDashoffset={`${2 * Math.PI * 36 * (1 - taskCompletion.meditation / 100)}`}
+                    className="transition-all duration-500"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-lg font-semibold text-calm-purple">{taskCompletion.meditation}%</span>
+                </div>
+              </div>
+              <h3 className="font-medium text-black mb-1">Meditation</h3>
+              <p className="text-gray-500 text-sm">15 min goal</p>
+            </div>
 
-          <div
-            className="calm-card p-6 cursor-pointer transform transition-all duration-300 hover:scale-105"
-            onClick={handleTodaysReading}
-          >
-            <h2 className="text-xl font-medium mb-2 text-black">Today's Reading</h2>
-            <p className="text-gray-500 mb-4">Enlighten your mind with today's curated article.</p>
-            <BookOpen className="w-6 h-6 text-calm-orange" />
+            {/* Yoga Progress */}
+            <div className="text-center">
+              <div className="w-20 h-20 mx-auto mb-4 relative">
+                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="36"
+                    stroke="#e5e7eb"
+                    strokeWidth="8"
+                    fill="none"
+                  />
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="36"
+                    stroke="#3b82f6"
+                    strokeWidth="8"
+                    fill="none"
+                    strokeDasharray={`${2 * Math.PI * 36}`}
+                    strokeDashoffset={`${2 * Math.PI * 36 * (1 - taskCompletion.yoga / 100)}`}
+                    className="transition-all duration-500"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-lg font-semibold text-calm-blue">{taskCompletion.yoga}%</span>
+                </div>
+              </div>
+              <h3 className="font-medium text-black mb-1">Yoga</h3>
+              <p className="text-gray-500 text-sm">30 min goal</p>
+            </div>
+
+            {/* Reading Progress */}
+            <div className="text-center">
+              <div className="w-20 h-20 mx-auto mb-4 relative">
+                <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="36"
+                    stroke="#e5e7eb"
+                    strokeWidth="8"
+                    fill="none"
+                  />
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="36"
+                    stroke="#fb9260"
+                    strokeWidth="8"
+                    fill="none"
+                    strokeDasharray={`${2 * Math.PI * 36}`}
+                    strokeDashoffset={`${2 * Math.PI * 36 * (1 - taskCompletion.reading / 100)}`}
+                    className="transition-all duration-500"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-lg font-semibold text-calm-orange">{taskCompletion.reading}%</span>
+                </div>
+              </div>
+              <h3 className="font-medium text-black mb-1">Reading</h3>
+              <p className="text-gray-500 text-sm">20 min goal</p>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-          <div className="calm-card p-4">
-            <BarChart4 className="w-5 h-5 text-gray-500 mb-2" />
-            <h3 className="text-lg font-medium text-black">Mood Tracker</h3>
-            <p className="text-gray-500">Track your daily mood and identify patterns.</p>
-          </div>
-
-          <div className="calm-card p-4">
-            <ListChecks className="w-5 h-5 text-gray-500 mb-2" />
-            <h3 className="text-lg font-medium text-black">Goal Setting</h3>
-            <p className="text-gray-500">Set and achieve your personal growth goals.</p>
-          </div>
-
-          <div
-            className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
-            onClick={handleYoga}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-yoga-pose w-5 h-5 text-gray-500 mb-2"
+        {/* Your Tasks Section */}
+        <div className="mb-8">
+          <h2 className="text-white text-2xl font-medium mb-6 text-center">Your Tasks</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
+            <div
+              className="calm-card p-6 cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={handleMeditate}
             >
-              <path d="M4 4v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2V4"/>
-              <path d="M4 12v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2v-4"/>
-              <path d="M4 20v-2c0-1.5 1-2 2.5 2h0c1.5 0 2.5.5 2.5 2v2"/>
-              <path d="M12 4v16"/>
-              <path d="M12 12H20"/>
-              <path d="M16 8v8"/>
-            </svg>
-            <h3 className="text-lg font-medium text-black">Yoga</h3>
-            <p className="text-gray-500">Rejuvenate your body and mind with yoga sessions.</p>
-          </div>
+              <div className="text-center">
+                <Sparkles className="w-8 h-8 text-calm-purple mx-auto mb-4" />
+                <h3 className="text-xl font-medium mb-2 text-black">Meditate</h3>
+                <p className="text-gray-500">Find your inner peace with guided meditation.</p>
+              </div>
+            </div>
 
-          <div
-            className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
-            onClick={handleAskAI}
-          >
-            <Bot className="w-5 h-5 text-gray-500 mb-2" />
-            <h3 className="text-lg font-medium text-black">Ask Lumina</h3>
-            <p className="text-gray-500">Get personalized advice from our AI assistant.</p>
+            <div
+              className="calm-card p-6 cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={handleYoga}
+            >
+              <div className="text-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-calm-blue mx-auto mb-4"
+                >
+                  <path d="M4 4v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2V4"/>
+                  <path d="M4 12v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2v-4"/>
+                  <path d="M4 20v-2c0-1.5 1-2 2.5 2h0c1.5 0 2.5.5 2.5 2v2"/>
+                  <path d="M12 4v16"/>
+                  <path d="M12 12H20"/>
+                  <path d="M16 8v8"/>
+                </svg>
+                <h3 className="text-xl font-medium mb-2 text-black">Yoga</h3>
+                <p className="text-gray-500">Rejuvenate your body and mind with yoga sessions.</p>
+              </div>
+            </div>
+
+            <div
+              className="calm-card p-6 cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={handleTodaysReading}
+            >
+              <div className="text-center">
+                <BookOpen className="w-8 h-8 text-calm-orange mx-auto mb-4" />
+                <h3 className="text-xl font-medium mb-2 text-black">Read</h3>
+                <p className="text-gray-500">Enlighten your mind with today's curated article.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Get more from Hygge Section */}
+        <div>
+          <h2 className="text-white text-2xl font-medium mb-6 text-center">Get more from Hygge</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-1 max-w-md mx-auto">
+            <div className="calm-card p-6 animate-fade-in">
+              <div className="text-center">
+                <ListChecks className="w-8 h-8 text-gray-500 mx-auto mb-4" />
+                <h3 className="text-xl font-medium text-black mb-2">Goal Setting</h3>
+                <p className="text-gray-500">Set and achieve your personal growth goals.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
