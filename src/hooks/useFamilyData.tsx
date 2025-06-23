@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -183,14 +184,19 @@ export const useFamilyData = () => {
       return false;
     }
 
-    try {
-      console.log('Inserting nudge:', {
-        sender_id: user.id,
-        recipient_id: recipientId,
-        message: message.trim()
-      });
+    if (!message.trim()) {
+      console.error('Message is empty');
+      return false;
+    }
 
-      const { data, error } = await supabase
+    try {
+      console.log('Starting nudge send process...');
+      console.log('Sender ID:', user.id);
+      console.log('Recipient ID:', recipientId);
+      console.log('Message:', message.trim());
+
+      // Insert the nudge
+      const { data: nudgeData, error: nudgeError } = await supabase
         .from('nudges')
         .insert([
           {
@@ -199,17 +205,35 @@ export const useFamilyData = () => {
             message: message.trim()
           }
         ])
-        .select();
+        .select()
+        .single();
 
-      if (error) {
-        console.error('Error sending nudge:', error);
+      if (nudgeError) {
+        console.error('Error inserting nudge:', nudgeError);
         return false;
       }
 
-      console.log('Nudge sent successfully:', data);
+      console.log('Nudge inserted successfully:', nudgeData);
+
+      // The notification should be created automatically by the trigger
+      // Let's verify it was created
+      const { data: notification, error: notificationError } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('nudge_id', nudgeData.id)
+        .single();
+
+      if (notificationError) {
+        console.error('Error checking notification creation:', notificationError);
+        // Don't return false here since the nudge was created successfully
+        // The notification might take a moment to appear due to trigger timing
+      } else {
+        console.log('Notification created successfully:', notification);
+      }
+
       return true;
     } catch (error) {
-      console.error('Error sending nudge:', error);
+      console.error('Unexpected error sending nudge:', error);
       return false;
     }
   };

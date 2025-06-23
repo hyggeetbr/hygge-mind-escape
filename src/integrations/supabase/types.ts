@@ -190,7 +190,7 @@ export type Database = {
           id: string
           is_read: boolean
           nudge_id: string | null
-          post_id: string
+          post_id: string | null
           type: string
           user_id: string
         }
@@ -201,7 +201,7 @@ export type Database = {
           id?: string
           is_read?: boolean
           nudge_id?: string | null
-          post_id: string
+          post_id?: string | null
           type: string
           user_id: string
         }
@@ -212,7 +212,7 @@ export type Database = {
           id?: string
           is_read?: boolean
           nudge_id?: string | null
-          post_id?: string
+          post_id?: string | null
           type?: string
           user_id?: string
         }
@@ -225,7 +225,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "fk_notifications_post"
+            foreignKeyName: "fk_notifications_post_conditional"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "community_posts"

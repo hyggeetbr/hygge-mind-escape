@@ -30,25 +30,56 @@ export const FamilyMembersView = () => {
   };
 
   const handleSendNudge = async (message: string) => {
-    if (!selectedMember) return false;
-    
-    console.log('Sending nudge to:', selectedMember.id, 'Message:', message);
-    const success = await sendNudge(selectedMember.id, message);
-    
-    if (success) {
+    if (!selectedMember) {
+      console.error('No member selected for nudge');
       toast({
-        title: "Nudge sent! 💝",
-        description: `Your nudge has been sent to ${selectedMember.username}`,
-      });
-    } else {
-      toast({
-        title: "Failed to send nudge",
-        description: "Please try again later",
+        title: "Error",
+        description: "No member selected",
         variant: "destructive",
       });
+      return false;
     }
     
-    return success;
+    if (!message.trim()) {
+      console.error('Empty message');
+      toast({
+        title: "Error",
+        description: "Please enter a message",
+        variant: "destructive",
+      });
+      return false;
+    }
+    
+    console.log('Attempting to send nudge to:', selectedMember.username, 'Message:', message);
+    
+    try {
+      const success = await sendNudge(selectedMember.id, message);
+      
+      if (success) {
+        console.log('Nudge sent successfully!');
+        toast({
+          title: "Nudge sent! 💝",
+          description: `Your nudge has been sent to ${selectedMember.username}`,
+        });
+        return true;
+      } else {
+        console.error('Failed to send nudge - sendNudge returned false');
+        toast({
+          title: "Failed to send nudge",
+          description: "Please try again later",
+          variant: "destructive",
+        });
+        return false;
+      }
+    } catch (error) {
+      console.error('Exception while sending nudge:', error);
+      toast({
+        title: "Error sending nudge",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+      return false;
+    }
   };
 
   if (loading || addingMember) {
