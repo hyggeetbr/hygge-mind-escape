@@ -1,6 +1,5 @@
-
 import { useNavigate } from "react-router-dom";
-import { CalendarDays, ListChecks, Sparkles, BookOpen, User, Home, Users, Bot, Volume2 } from "lucide-react";
+import { CalendarDays, ListChecks, Sparkles, BookOpen, User, Home, Users, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
@@ -28,10 +27,6 @@ const Dashboard = () => {
 
   const handleAskAI = () => {
     navigate("/ask-ai");
-  };
-
-  const handleSounds = () => {
-    navigate("/sounds");
   };
 
   const handleDiscover = () => {
@@ -111,7 +106,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <h3 className="font-medium text-black mb-1">Meditation</h3>
-              <p className="text-gray-500 text-sm">15 min goal</p>
+              <p className="text-gray-500 text-sm">7 min goal</p>
             </div>
 
             {/* Yoga Progress */}
@@ -143,7 +138,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <h3 className="font-medium text-black mb-1">Yoga</h3>
-              <p className="text-gray-500 text-sm">30 min goal</p>
+              <p className="text-gray-500 text-sm">10 min goal</p>
             </div>
 
             {/* Reading Progress */}
@@ -175,7 +170,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <h3 className="font-medium text-black mb-1">Reading</h3>
-              <p className="text-gray-500 text-sm">20 min goal</p>
+              <p className="text-gray-500 text-sm">10 min goal</p>
             </div>
           </div>
         </div>
@@ -262,15 +257,6 @@ const Dashboard = () => {
               <Home className="w-4 h-4 text-calm-purple" />
             </div>
             <span className="text-white text-xs font-medium">Home</span>
-          </div>
-          <div 
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handleSounds}
-          >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Volume2 className="w-4 h-4 text-white/60" />
-            </div>
-            <span className="text-white/60 text-xs">Sounds</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
