@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -8,11 +9,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { Plus, Trash2, Star } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
 
 export const FamilyMembersView = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showNudgeDialog, setShowNudgeDialog] = useState(false);
@@ -32,21 +31,11 @@ export const FamilyMembersView = () => {
   const handleSendNudge = async (message: string) => {
     if (!selectedMember) {
       console.error('No member selected for nudge');
-      toast({
-        title: "Error",
-        description: "No member selected",
-        variant: "destructive",
-      });
       return false;
     }
     
     if (!message.trim()) {
       console.error('Empty message');
-      toast({
-        title: "Error",
-        description: "Please enter a message",
-        variant: "destructive",
-      });
       return false;
     }
     
@@ -57,27 +46,14 @@ export const FamilyMembersView = () => {
       
       if (success) {
         console.log('Nudge sent successfully!');
-        toast({
-          title: "Nudge sent! 💝",
-          description: `Your nudge has been sent to ${selectedMember.username}`,
-        });
+        // No toast notification - just return success
         return true;
       } else {
         console.error('Failed to send nudge - sendNudge returned false');
-        toast({
-          title: "Failed to send nudge",
-          description: "Please try again later",
-          variant: "destructive",
-        });
         return false;
       }
     } catch (error) {
       console.error('Exception while sending nudge:', error);
-      toast({
-        title: "Error sending nudge",
-        description: "An unexpected error occurred",
-        variant: "destructive",
-      });
       return false;
     }
   };

@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Volume2, User, Bell } from "lucide-react";
+import { ArrowLeft, Plus, User, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
@@ -321,7 +321,7 @@ const Community = () => {
         onSubmit={handleCreatePost}
       />
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation - Removed Sounds section */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
         <div className="flex justify-around py-4 px-2">
           <div 
@@ -346,15 +346,6 @@ const Community = () => {
               </svg>
             </div>
             <span className="text-white/60 text-xs">Home</span>
-          </div>
-          <div
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={() => navigate("/sounds")}
-          >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Volume2 className="w-4 h-4 text-white/60" />
-            </div>
-            <span className="text-white/60 text-xs">Sounds</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"

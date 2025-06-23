@@ -47,14 +47,14 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
   // Show a dedicated loader screen while Google flow is in progress.
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center calm-gradient">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600">
         <span className="font-display text-5xl text-white animate-fade-in transition-all duration-500">Hygge</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen calm-gradient flex items-center justify-center px-6 py-8 animate-slide-in-right">
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center px-6 py-8 animate-slide-in-right">
       {/* Background decorative elements */}
       <div className="absolute top-16 right-12 w-20 h-20 bg-white/10 rounded-full blur-lg animate-float"></div>
       <div className="absolute bottom-20 left-8 w-28 h-28 bg-white/8 rounded-full blur-xl animate-pulse-soft"></div>
