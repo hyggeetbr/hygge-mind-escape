@@ -10,9 +10,10 @@ import { Search, Plus } from 'lucide-react';
 interface AddFamilyMemberDialogProps {
   open: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export const AddFamilyMemberDialog = ({ open, onClose }: AddFamilyMemberDialogProps) => {
+export const AddFamilyMemberDialog = ({ open, onClose, onSuccess }: AddFamilyMemberDialogProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { communityUsers, searchLoading, searchCommunityUsers, addFamilyMember } = useFamilyData();
 
@@ -25,7 +26,7 @@ export const AddFamilyMemberDialog = ({ open, onClose }: AddFamilyMemberDialogPr
     const success = await addFamilyMember(member.id);
     if (success) {
       setSearchTerm('');
-      onClose();
+      onSuccess?.();
     }
   };
 

@@ -7,11 +7,18 @@ import { AddFamilyMemberDialog } from './AddFamilyMemberDialog';
 import { useAuth } from '@/hooks/useAuth';
 import { Plus, Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export const FamilyMembersView = () => {
   const { user } = useAuth();
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { familyMembers, loading, addingMember, removeFamilyMember } = useFamilyData();
+
+  const handleAddMemberSuccess = () => {
+    setShowAddDialog(false);
+    setShowSuccessDialog(true);
+  };
 
   if (loading || addingMember) {
     return (
@@ -108,24 +115,24 @@ export const FamilyMembersView = () => {
                 </AlertDialog>
               </div>
 
-              {/* Stats Grid */}
+              {/* Stats Grid - Fixed consistent background */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
                     <p className="text-black text-xs uppercase tracking-wide mb-1 font-medium">Meditation</p>
                     <p className="text-black text-xl font-semibold">{member.meditation_minutes}</p>
                     <p className="text-black text-xs font-medium">minutes</p>
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
                     <p className="text-black text-xs uppercase tracking-wide mb-1 font-medium">Yoga</p>
                     <p className="text-black text-xl font-semibold">{member.yoga_minutes}</p>
                     <p className="text-black text-xs font-medium">minutes</p>
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
                     <p className="text-black text-xs uppercase tracking-wide mb-1 font-medium">Reading</p>
                     <p className="text-black text-xl font-semibold">{member.reading_minutes}</p>
                     <p className="text-black text-xs font-medium">minutes</p>
@@ -141,7 +148,30 @@ export const FamilyMembersView = () => {
       <AddFamilyMemberDialog
         open={showAddDialog}
         onClose={() => setShowAddDialog(false)}
+        onSuccess={handleAddMemberSuccess}
       />
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-black text-center">Success!</DialogTitle>
+          </DialogHeader>
+          <div className="text-center py-4">
+            <p className="text-black">
+              User has been successfully added to the family! Refresh the page to see your family members.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <Button 
+              onClick={() => setShowSuccessDialog(false)}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              OK
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
