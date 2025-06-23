@@ -24,6 +24,9 @@ import Sounds from "./pages/Sounds";
 import Privacy from "./pages/Privacy";
 import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
+import GoalSetting from "./pages/GoalSetting";
+import LongTermGoals from "./pages/LongTermGoals";
+import ShortTermGoals from "./pages/ShortTermGoals";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +47,9 @@ const App = () => (
           <Route path="/community" element={<Community />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/premium" element={<Premium />} />
+          <Route path="/goal-setting" element={<GoalSetting />} />
+          <Route path="/long-term-goals" element={<LongTermGoals />} />
+          <Route path="/short-term-goals" element={<ShortTermGoals />} />
           <Route path="/article/:id" element={<ArticleDetail />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/user/:userId" element={<UserProfile />} />

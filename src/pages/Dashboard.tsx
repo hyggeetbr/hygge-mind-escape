@@ -105,6 +105,10 @@ const Dashboard = () => {
     navigate("/premium");
   };
 
+  const handleGoalSetting = () => {
+    navigate("/goal-setting");
+  };
+
   return (
     <div className="min-h-screen calm-gradient relative overflow-hidden">
       {/* Floating background elements */}
@@ -302,7 +306,10 @@ const Dashboard = () => {
           <h2 className="text-white text-2xl font-medium mb-6 text-center">Get more from Hygge</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-1 max-w-md mx-auto">
-            <div className="calm-card p-6 animate-fade-in">
+            <div 
+              className="calm-card p-6 animate-fade-in cursor-pointer transform transition-all duration-300 hover:scale-105"
+              onClick={handleGoalSetting}
+            >
               <div className="text-center">
                 <ListChecks className="w-8 h-8 text-gray-500 mx-auto mb-4" />
                 <h3 className="text-xl font-medium text-black mb-2">Goal Setting</h3>
