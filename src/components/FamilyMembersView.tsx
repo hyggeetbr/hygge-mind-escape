@@ -74,7 +74,7 @@ export const FamilyMembersView = () => {
                   </Avatar>
                   <div>
                     <h3 className="text-white font-medium text-lg">{member.username}</h3>
-                    <p className="text-white/70 text-sm">Streak: {member.streak_count} days</p>
+                    <p className="text-black text-sm font-medium">Streak: {member.streak_count} days</p>
                   </div>
                 </div>
                 
@@ -88,18 +88,18 @@ export const FamilyMembersView = () => {
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent>
+                  <AlertDialogContent className="bg-white">
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Remove Family Member</AlertDialogTitle>
-                      <AlertDialogDescription>
+                      <AlertDialogTitle className="text-black">Remove Family Member</AlertDialogTitle>
+                      <AlertDialogDescription className="text-black">
                         Are you sure you want to remove {member.username} from your family? This action cannot be undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel className="text-black bg-white border-gray-300 hover:bg-gray-100">Cancel</AlertDialogCancel>
                       <AlertDialogAction 
                         onClick={() => removeFamilyMember(member.id)}
-                        className="bg-red-600 hover:bg-red-700"
+                        className="bg-red-600 hover:bg-red-700 text-white"
                       >
                         Remove
                       </AlertDialogAction>
@@ -112,23 +112,23 @@ export const FamilyMembersView = () => {
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
                   <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                    <p className="text-white/70 text-xs uppercase tracking-wide mb-1">Meditation</p>
-                    <p className="text-white text-xl font-semibold">{member.meditation_minutes}</p>
-                    <p className="text-white/70 text-xs">minutes</p>
+                    <p className="text-black text-xs uppercase tracking-wide mb-1 font-medium">Meditation</p>
+                    <p className="text-black text-xl font-semibold">{member.meditation_minutes}</p>
+                    <p className="text-black text-xs font-medium">minutes</p>
                   </div>
                 </div>
                 <div className="text-center">
                   <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                    <p className="text-white/70 text-xs uppercase tracking-wide mb-1">Yoga</p>
-                    <p className="text-white text-xl font-semibold">{member.yoga_minutes}</p>
-                    <p className="text-white/70 text-xs">minutes</p>
+                    <p className="text-black text-xs uppercase tracking-wide mb-1 font-medium">Yoga</p>
+                    <p className="text-black text-xl font-semibold">{member.yoga_minutes}</p>
+                    <p className="text-black text-xs font-medium">minutes</p>
                   </div>
                 </div>
                 <div className="text-center">
                   <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                    <p className="text-white/70 text-xs uppercase tracking-wide mb-1">Reading</p>
-                    <p className="text-white text-xl font-semibold">{member.reading_minutes}</p>
-                    <p className="text-white/70 text-xs">minutes</p>
+                    <p className="text-black text-xs uppercase tracking-wide mb-1 font-medium">Reading</p>
+                    <p className="text-black text-xl font-semibold">{member.reading_minutes}</p>
+                    <p className="text-black text-xs font-medium">minutes</p>
                   </div>
                 </div>
               </div>

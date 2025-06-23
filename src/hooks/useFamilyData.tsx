@@ -143,7 +143,7 @@ export const useFamilyData = () => {
         return false;
       }
 
-      // Reload family members and clear search
+      // Force reload family members immediately
       await loadFamilyMembers();
       setCommunityUsers([]);
       return true;
