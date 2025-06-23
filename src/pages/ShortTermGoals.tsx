@@ -23,7 +23,7 @@ const ShortTermGoals = () => {
   const [newGoal, setNewGoal] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [currentGradient, setCurrentGradient] = useState("linear-gradient(180deg, #581c87 0%, #7c3aed 50%, #a855f7 100%)");
+  const [currentBackground, setCurrentBackground] = useState("radial-gradient(circle at 20% 50%, #120a8f 0%, transparent 50%), radial-gradient(circle at 80% 20%, #ffffff 0%, transparent 50%), radial-gradient(circle at 40% 80%, #7c3aed 0%, transparent 50%), linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)");
 
   useEffect(() => {
     fetchGoals();
@@ -141,7 +141,7 @@ const ShortTermGoals = () => {
   return (
     <div 
       className="min-h-screen relative overflow-hidden"
-      style={{ background: currentGradient }}
+      style={{ background: currentBackground }}
     >
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -239,7 +239,7 @@ const ShortTermGoals = () => {
       </div>
 
       {/* Theme Selector */}
-      <ThemeSelector onThemeChange={setCurrentGradient} />
+      <ThemeSelector onThemeChange={setCurrentBackground} />
     </div>
   );
 };

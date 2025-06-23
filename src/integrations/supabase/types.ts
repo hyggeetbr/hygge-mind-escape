@@ -362,6 +362,7 @@ export type Database = {
           id: string
           meditation_minutes: number
           reading_minutes: number
+          theme_preference: string | null
           updated_at: string
           username: string | null
           yoga_minutes: number
@@ -374,6 +375,7 @@ export type Database = {
           id: string
           meditation_minutes?: number
           reading_minutes?: number
+          theme_preference?: string | null
           updated_at?: string
           username?: string | null
           yoga_minutes?: number
@@ -386,6 +388,7 @@ export type Database = {
           id?: string
           meditation_minutes?: number
           reading_minutes?: number
+          theme_preference?: string | null
           updated_at?: string
           username?: string | null
           yoga_minutes?: number
