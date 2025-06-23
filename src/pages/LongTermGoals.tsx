@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import ThemeSelector from "@/components/ThemeSelector";
 
 interface LongTermGoal {
   id: string;
@@ -23,6 +23,7 @@ const LongTermGoals = () => {
   const [newGoal, setNewGoal] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [currentGradient, setCurrentGradient] = useState("linear-gradient(180deg, #581c87 0%, #7c3aed 50%, #a855f7 100%)");
 
   useEffect(() => {
     fetchGoals();
@@ -138,7 +139,10 @@ const LongTermGoals = () => {
   };
 
   return (
-    <div className="min-h-screen calm-gradient relative overflow-hidden">
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{ background: currentGradient }}
+    >
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
@@ -175,7 +179,7 @@ const LongTermGoals = () => {
               value={newGoal}
               onChange={(e) => setNewGoal(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="flex-1 text-black"
+              className="flex-1 text-black bg-white border-gray-300"
               disabled={submitting}
             />
             <Button 
@@ -233,6 +237,9 @@ const LongTermGoals = () => {
           )}
         </div>
       </div>
+
+      {/* Theme Selector */}
+      <ThemeSelector onThemeChange={setCurrentGradient} />
     </div>
   );
 };
