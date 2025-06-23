@@ -9,6 +9,7 @@ import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { PostCard } from "@/components/PostCard";
 import { UsernameDialog } from "@/components/UsernameDialog";
 import { CommunityLeaderboard } from "@/components/CommunityLeaderboard";
+import { FamilyMembersView } from "@/components/FamilyMembersView";
 import { useAuth } from "@/hooks/useAuth";
 
 const Community = () => {
@@ -16,7 +17,7 @@ const Community = () => {
   const { user } = useAuth();
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showUsernameDialog, setShowUsernameDialog] = useState(false);
-  const [activeTab, setActiveTab] = useState<'community' | 'yours' | 'leaderboard'>('community');
+  const [activeTab, setActiveTab] = useState<'community' | 'yours' | 'leaderboard' | 'family'>('community');
   
   const {
     allPosts,
@@ -149,14 +150,17 @@ const Community = () => {
             <User size={16} />
           </Button>
           
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowCreatePost(true)}
-            className="text-white/80 hover:bg-white/10 hover:text-white"
-          >
-            <Plus size={20} />
-          </Button>
+          {/* Show create post button only when not on Family tab */}
+          {activeTab !== 'family' && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowCreatePost(true)}
+              className="text-white/80 hover:bg-white/10 hover:text-white"
+            >
+              <Plus size={20} />
+            </Button>
+          )}
         </div>
       </div>
 
@@ -174,7 +178,7 @@ const Community = () => {
           <div className="flex space-x-1 bg-white/10 backdrop-blur-md rounded-lg p-1">
             <button
               onClick={() => setActiveTab('community')}
-              className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+              className={`flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'community'
                   ? 'bg-white text-purple-700 font-semibold'
                   : 'text-white/80 hover:text-white'
@@ -184,7 +188,7 @@ const Community = () => {
             </button>
             <button
               onClick={() => setActiveTab('yours')}
-              className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+              className={`flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'yours'
                   ? 'bg-white text-purple-700 font-semibold'
                   : 'text-white/80 hover:text-white'
@@ -194,7 +198,7 @@ const Community = () => {
             </button>
             <button
               onClick={() => setActiveTab('leaderboard')}
-              className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+              className={`flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'leaderboard'
                   ? 'bg-white text-purple-700 font-semibold'
                   : 'text-white/80 hover:text-white'
@@ -202,12 +206,24 @@ const Community = () => {
             >
               Leaderboard
             </button>
+            <button
+              onClick={() => setActiveTab('family')}
+              className={`flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                activeTab === 'family'
+                  ? 'bg-white text-purple-700 font-semibold'
+                  : 'text-white/80 hover:text-white'
+              }`}
+            >
+              Family
+            </button>
           </div>
         </div>
 
         {/* Posts Content */}
         <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-          {activeTab === 'leaderboard' ? (
+          {activeTab === 'family' ? (
+            <FamilyMembersView />
+          ) : activeTab === 'leaderboard' ? (
             <CommunityLeaderboard />
           ) : loading ? (
             <div className="text-center text-white py-8">

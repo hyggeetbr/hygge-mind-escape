@@ -353,6 +353,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_families: {
+        Row: {
+          created_at: string
+          family_member_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          family_member_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          family_member_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_profiles: {
         Row: {
           achievements_count: number
@@ -362,6 +383,7 @@ export type Database = {
           id: string
           meditation_minutes: number
           reading_minutes: number
+          streak_count: number | null
           theme_preference: string | null
           updated_at: string
           username: string | null
@@ -375,6 +397,7 @@ export type Database = {
           id: string
           meditation_minutes?: number
           reading_minutes?: number
+          streak_count?: number | null
           theme_preference?: string | null
           updated_at?: string
           username?: string | null
@@ -388,6 +411,7 @@ export type Database = {
           id?: string
           meditation_minutes?: number
           reading_minutes?: number
+          streak_count?: number | null
           theme_preference?: string | null
           updated_at?: string
           username?: string | null
