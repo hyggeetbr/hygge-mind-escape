@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
-import { useToast } from '@/hooks/use-toast';
 
 export interface FamilyMember {
   id: string;
@@ -22,11 +21,11 @@ export interface CommunityUser {
 
 export const useFamilyData = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [communityUsers, setCommunityUsers] = useState<CommunityUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [addingMember, setAddingMember] = useState(false);
 
   const loadFamilyMembers = async () => {
     if (!user) return;
@@ -128,6 +127,8 @@ export const useFamilyData = () => {
     if (!user) return false;
 
     try {
+      setAddingMember(true);
+      
       const { error } = await supabase
         .from('user_families')
         .insert([
@@ -139,18 +140,8 @@ export const useFamilyData = () => {
 
       if (error) {
         console.error('Error adding family member:', error);
-        toast({
-          title: "Error",
-          description: "Failed to add family member. Please try again.",
-          variant: "destructive",
-        });
         return false;
       }
-
-      toast({
-        title: "Success",
-        description: "Family member added successfully!",
-      });
 
       // Reload family members and clear search
       await loadFamilyMembers();
@@ -159,6 +150,8 @@ export const useFamilyData = () => {
     } catch (error) {
       console.error('Error adding family member:', error);
       return false;
+    } finally {
+      setAddingMember(false);
     }
   };
 
@@ -174,18 +167,8 @@ export const useFamilyData = () => {
 
       if (error) {
         console.error('Error removing family member:', error);
-        toast({
-          title: "Error",
-          description: "Failed to remove family member. Please try again.",
-          variant: "destructive",
-        });
         return false;
       }
-
-      toast({
-        title: "Success",
-        description: "Family member removed successfully.",
-      });
 
       await loadFamilyMembers();
       return true;
@@ -206,6 +189,7 @@ export const useFamilyData = () => {
     communityUsers,
     loading,
     searchLoading,
+    addingMember,
     loadFamilyMembers,
     searchCommunityUsers,
     addFamilyMember,

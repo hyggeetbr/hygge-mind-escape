@@ -36,9 +36,9 @@ export const AddFamilyMemberDialog = ({ open, onClose }: AddFamilyMemberDialogPr
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-white">
         <DialogHeader>
-          <DialogTitle className="text-center text-xl font-medium">Add Family Member</DialogTitle>
+          <DialogTitle className="text-center text-xl font-medium text-black">Add Family Member</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">

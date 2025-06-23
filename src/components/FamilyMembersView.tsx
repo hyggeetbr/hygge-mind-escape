@@ -11,13 +11,13 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 export const FamilyMembersView = () => {
   const { user } = useAuth();
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const { familyMembers, loading, removeFamilyMember } = useFamilyData();
+  const { familyMembers, loading, addingMember, removeFamilyMember } = useFamilyData();
 
-  if (loading) {
+  if (loading || addingMember) {
     return (
       <div className="text-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
-        <p className="text-white">Loading family members...</p>
+        <p className="text-white">Loading...</p>
       </div>
     );
   }
