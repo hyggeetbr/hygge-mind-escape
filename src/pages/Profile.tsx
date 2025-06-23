@@ -1,23 +1,64 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Settings, Award, Calendar, Clock, Heart, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('user_profiles')
+          .select('meditation_minutes, yoga_minutes, reading_minutes, achievements_count')
+          .eq('id', user.id)
+          .single();
+        
+        if (error) {
+          console.error('Error fetching user profile:', error);
+          return;
+        }
+        
+        setUserProfile(data);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
 
   const stats = [
-    { label: "Current Streak", value: "7 days", icon: Calendar, color: "text-calm-orange" },
-    { label: "Total Sessions", value: "42", icon: Clock, color: "text-calm-purple" },
-    { label: "Mindful Minutes", value: "328", icon: Heart, color: "text-pink-500" }
-  ];
-
-  const achievements = [
-    { title: "Early Bird", description: "Meditated before 8 AM", earned: true },
-    { title: "Consistent", description: "7 day streak", earned: true },
-    { title: "Explorer", description: "Tried 5 different practices", earned: false },
-    { title: "Dedicated", description: "30 day streak", earned: false }
+    { 
+      label: "Meditation Minutes", 
+      value: userProfile?.meditation_minutes || "0", 
+      icon: Calendar, 
+      color: "text-calm-orange" 
+    },
+    { 
+      label: "Yoga Minutes", 
+      value: userProfile?.yoga_minutes || "0", 
+      icon: Clock, 
+      color: "text-calm-purple" 
+    },
+    { 
+      label: "Reading Minutes", 
+      value: userProfile?.reading_minutes || "0", 
+      icon: Heart, 
+      color: "text-pink-500" 
+    }
   ];
 
   const handleLogout = async () => {
@@ -27,10 +68,6 @@ const Profile = () => {
 
   const handleDashboard = () => {
     navigate("/dashboard");
-  };
-
-  const handleSounds = () => {
-    navigate("/sounds");
   };
 
   const handleDiscover = () => {
@@ -44,6 +81,25 @@ const Profile = () => {
   const handlePremium = () => {
     navigate("/premium");
   };
+
+  const handlePrivacy = () => {
+    navigate("/privacy");
+  };
+
+  const handleSupport = () => {
+    navigate("/support");
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen calm-gradient flex items-center justify-center">
+        <div className="text-center text-white">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen calm-gradient relative overflow-hidden">
@@ -107,25 +163,11 @@ const Profile = () => {
         {/* Achievements */}
         <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
           <h3 className="text-white text-xl font-medium mb-4">Achievements</h3>
-          <div className="grid grid-cols-2 gap-3">
-            {achievements.map((achievement, index) => (
-              <div 
-                key={achievement.title} 
-                className={`calm-card p-4 ${achievement.earned ? 'opacity-100' : 'opacity-60'}`}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    achievement.earned ? 'bg-calm-orange text-white' : 'bg-gray-200 text-gray-400'
-                  }`}>
-                    <Award className="w-5 h-5" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-800 text-sm">{achievement.title}</div>
-                    <div className="text-gray-600 text-xs">{achievement.description}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="calm-card p-6 text-center">
+            <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <Award className="w-8 h-8 text-gray-400" />
+            </div>
+            <p className="text-gray-600 text-lg font-medium">Build streaks to get your first achievement!</p>
           </div>
         </div>
 
@@ -133,19 +175,13 @@ const Profile = () => {
         <div className="animate-fade-in" style={{ animationDelay: "0.3s" }}>
           <h3 className="text-white text-xl font-medium mb-4">Settings</h3>
           <div className="space-y-3">
-            <div className="calm-card p-4 cursor-pointer">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-800 font-medium">Notifications</span>
-                <div className="text-gray-400">›</div>
-              </div>
-            </div>
-            <div className="calm-card p-4 cursor-pointer">
+            <div className="calm-card p-4 cursor-pointer" onClick={handlePrivacy}>
               <div className="flex items-center justify-between">
                 <span className="text-gray-800 font-medium">Privacy</span>
                 <div className="text-gray-400">›</div>
               </div>
             </div>
-            <div className="calm-card p-4 cursor-pointer">
+            <div className="calm-card p-4 cursor-pointer" onClick={handleSupport}>
               <div className="flex items-center justify-between">
                 <span className="text-gray-800 font-medium">Help & Support</span>
                 <div className="text-gray-400">›</div>
@@ -172,15 +208,6 @@ const Profile = () => {
               <div className="w-4 h-4 bg-white/60 rounded-sm"></div>
             </div>
             <span className="text-white/60 text-xs">Home</span>
-          </div>
-          <div
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handleSounds}
-          >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Volume2 className="w-4 h-4 text-white/60" />
-            </div>
-            <span className="text-white/60 text-xs">Sounds</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"

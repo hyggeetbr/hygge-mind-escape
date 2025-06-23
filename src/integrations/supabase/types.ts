@@ -268,28 +268,40 @@ export type Database = {
       }
       user_profiles: {
         Row: {
+          achievements_count: number
           avatar_url: string | null
           created_at: string
           full_name: string | null
           id: string
+          meditation_minutes: number
+          reading_minutes: number
           updated_at: string
           username: string | null
+          yoga_minutes: number
         }
         Insert: {
+          achievements_count?: number
           avatar_url?: string | null
           created_at?: string
           full_name?: string | null
           id: string
+          meditation_minutes?: number
+          reading_minutes?: number
           updated_at?: string
           username?: string | null
+          yoga_minutes?: number
         }
         Update: {
+          achievements_count?: number
           avatar_url?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
+          meditation_minutes?: number
+          reading_minutes?: number
           updated_at?: string
           username?: string | null
+          yoga_minutes?: number
         }
         Relationships: []
       }
