@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -6,12 +5,14 @@ import { useFamilyData } from '@/hooks/useFamilyData';
 import { AddFamilyMemberDialog } from './AddFamilyMemberDialog';
 import { NudgeDialog } from './NudgeDialog';
 import { useAuth } from '@/hooks/useAuth';
-import { Plus, Trash2, Heart } from 'lucide-react';
+import { Plus, Trash2, Star } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 
 export const FamilyMembersView = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showNudgeDialog, setShowNudgeDialog] = useState(false);
@@ -30,7 +31,24 @@ export const FamilyMembersView = () => {
 
   const handleSendNudge = async (message: string) => {
     if (!selectedMember) return false;
-    return await sendNudge(selectedMember.id, message);
+    
+    console.log('Sending nudge to:', selectedMember.id, 'Message:', message);
+    const success = await sendNudge(selectedMember.id, message);
+    
+    if (success) {
+      toast({
+        title: "Nudge sent! 💝",
+        description: `Your nudge has been sent to ${selectedMember.username}`,
+      });
+    } else {
+      toast({
+        title: "Failed to send nudge",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    }
+    
+    return success;
   };
 
   if (loading || addingMember) {
@@ -99,14 +117,14 @@ export const FamilyMembersView = () => {
                 </div>
                 
                 <div className="flex items-center space-x-2">
-                  {/* Nudge Button */}
+                  {/* Nudge Button with Star icon */}
                   <Button
                     onClick={() => handleNudgeClick(member)}
                     variant="ghost"
                     size="sm"
-                    className="text-white/70 hover:text-pink-400 hover:bg-pink-500/20"
+                    className="text-white/70 hover:text-yellow-400 hover:bg-yellow-500/20"
                   >
-                    <Heart className="w-4 h-4" />
+                    <Star className="w-4 h-4" />
                   </Button>
                   
                   {/* Delete Button */}

@@ -178,24 +178,35 @@ export const useFamilyData = () => {
   };
 
   const sendNudge = async (recipientId: string, message: string) => {
-    if (!user) return false;
+    if (!user) {
+      console.error('User not authenticated');
+      return false;
+    }
 
     try {
-      const { error } = await supabase
+      console.log('Inserting nudge:', {
+        sender_id: user.id,
+        recipient_id: recipientId,
+        message: message.trim()
+      });
+
+      const { data, error } = await supabase
         .from('nudges')
         .insert([
           {
             sender_id: user.id,
             recipient_id: recipientId,
-            message: message
+            message: message.trim()
           }
-        ]);
+        ])
+        .select();
 
       if (error) {
         console.error('Error sending nudge:', error);
         return false;
       }
 
+      console.log('Nudge sent successfully:', data);
       return true;
     } catch (error) {
       console.error('Error sending nudge:', error);
