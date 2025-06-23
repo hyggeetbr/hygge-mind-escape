@@ -1,5 +1,6 @@
+
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Settings, Award, Calendar, Clock, Heart, Volume2, Home, Users, Bot } from "lucide-react";
+import { ArrowLeft, User, Settings, Award, Calendar, Clock, Heart, Home, Users, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
