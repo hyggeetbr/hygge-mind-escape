@@ -121,10 +121,7 @@ const ThemeSelector = ({ onThemeChange }: ThemeSelectorProps) => {
         return;
       }
 
-      toast({
-        title: "Theme Updated",
-        description: `Switched to ${theme.name} theme`,
-      });
+      // Removed the success toast notification
     } catch (error) {
       console.error('Error:', error);
     }

@@ -179,7 +179,7 @@ const ShortTermGoals = () => {
               value={newGoal}
               onChange={(e) => setNewGoal(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="flex-1 text-black bg-white border-gray-300"
+              className="flex-1 text-black bg-white border-gray-300 placeholder:text-black"
               disabled={submitting}
             />
             <Button 
