@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -178,6 +177,32 @@ export const useFamilyData = () => {
     }
   };
 
+  const sendNudge = async (recipientId: string, message: string) => {
+    if (!user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('nudges')
+        .insert([
+          {
+            sender_id: user.id,
+            recipient_id: recipientId,
+            message: message
+          }
+        ]);
+
+      if (error) {
+        console.error('Error sending nudge:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error sending nudge:', error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (user) {
       loadFamilyMembers();
@@ -193,6 +218,7 @@ export const useFamilyData = () => {
     loadFamilyMembers,
     searchCommunityUsers,
     addFamilyMember,
-    removeFamilyMember
+    removeFamilyMember,
+    sendNudge
   };
 };

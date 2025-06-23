@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -7,9 +8,10 @@ export interface Notification {
   id: string;
   user_id: string;
   actor_id: string;
-  type: 'like' | 'comment';
+  type: 'like' | 'comment' | 'nudge';
   post_id: string;
   comment_id?: string;
+  nudge_id?: string;
   is_read: boolean;
   created_at: string;
   actor_profile?: {
@@ -21,6 +23,9 @@ export interface Notification {
   };
   comment?: {
     content: string;
+  };
+  nudge?: {
+    message: string;
   };
 }
 
@@ -47,24 +52,29 @@ export const useNotifications = () => {
         return;
       }
 
-      // Get actor profiles, post titles, and comment content
+      // Get actor profiles, post titles, comment content, and nudge messages
       const notificationsWithDetails = await Promise.all(
         (notificationsData || []).map(async (notification: any) => {
-          const [actorResult, postResult, commentResult] = await Promise.all([
+          const [actorResult, postResult, commentResult, nudgeResult] = await Promise.all([
             supabase
               .from('user_profiles')
               .select('username, avatar_url')
               .eq('id', notification.actor_id)
               .single(),
-            supabase
+            notification.type !== 'nudge' ? supabase
               .from('community_posts')
               .select('title')
               .eq('id', notification.post_id)
-              .single(),
+              .single() : Promise.resolve({ data: null }),
             notification.comment_id ? supabase
               .from('post_comments')
               .select('content')
               .eq('id', notification.comment_id)
+              .single() : Promise.resolve({ data: null }),
+            notification.nudge_id ? supabase
+              .from('nudges')
+              .select('message')
+              .eq('id', notification.nudge_id)
               .single() : Promise.resolve({ data: null })
           ]);
 
@@ -74,11 +84,14 @@ export const useNotifications = () => {
               username: actorResult.data?.username || 'User',
               avatar_url: actorResult.data?.avatar_url || null
             },
-            post: {
-              title: postResult.data?.title || 'Post'
-            },
+            post: postResult.data ? {
+              title: postResult.data.title
+            } : undefined,
             comment: commentResult.data ? {
               content: commentResult.data.content
+            } : undefined,
+            nudge: nudgeResult.data ? {
+              message: nudgeResult.data.message
             } : undefined
           } as Notification;
         })

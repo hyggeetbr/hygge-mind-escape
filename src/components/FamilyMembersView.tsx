@@ -4,8 +4,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useFamilyData } from '@/hooks/useFamilyData';
 import { AddFamilyMemberDialog } from './AddFamilyMemberDialog';
+import { NudgeDialog } from './NudgeDialog';
 import { useAuth } from '@/hooks/useAuth';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Heart } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
@@ -13,11 +14,23 @@ export const FamilyMembersView = () => {
   const { user } = useAuth();
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const { familyMembers, loading, addingMember, removeFamilyMember } = useFamilyData();
+  const [showNudgeDialog, setShowNudgeDialog] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<{ id: string; username: string } | null>(null);
+  const { familyMembers, loading, addingMember, removeFamilyMember, sendNudge } = useFamilyData();
 
   const handleAddMemberSuccess = () => {
     setShowAddDialog(false);
     setShowSuccessDialog(true);
+  };
+
+  const handleNudgeClick = (member: { id: string; username: string }) => {
+    setSelectedMember(member);
+    setShowNudgeDialog(true);
+  };
+
+  const handleSendNudge = async (message: string) => {
+    if (!selectedMember) return false;
+    return await sendNudge(selectedMember.id, message);
   };
 
   if (loading || addingMember) {
@@ -85,34 +98,47 @@ export const FamilyMembersView = () => {
                   </div>
                 </div>
                 
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-white/70 hover:text-red-400 hover:bg-red-500/20"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-white">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="text-black">Remove Family Member</AlertDialogTitle>
-                      <AlertDialogDescription className="text-black">
-                        Are you sure you want to remove {member.username} from your family? This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="text-black bg-white border-gray-300 hover:bg-gray-100">Cancel</AlertDialogCancel>
-                      <AlertDialogAction 
-                        onClick={() => removeFamilyMember(member.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white"
+                <div className="flex items-center space-x-2">
+                  {/* Nudge Button */}
+                  <Button
+                    onClick={() => handleNudgeClick(member)}
+                    variant="ghost"
+                    size="sm"
+                    className="text-white/70 hover:text-pink-400 hover:bg-pink-500/20"
+                  >
+                    <Heart className="w-4 h-4" />
+                  </Button>
+                  
+                  {/* Delete Button */}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-white/70 hover:text-red-400 hover:bg-red-500/20"
                       >
-                        Remove
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-white">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-black">Remove Family Member</AlertDialogTitle>
+                        <AlertDialogDescription className="text-black">
+                          Are you sure you want to remove {member.username} from your family? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="text-black bg-white border-gray-300 hover:bg-gray-100">Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => removeFamilyMember(member.id)}
+                          className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                          Remove
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
 
               {/* Stats Grid - Fixed consistent background */}
@@ -149,6 +175,14 @@ export const FamilyMembersView = () => {
         open={showAddDialog}
         onClose={() => setShowAddDialog(false)}
         onSuccess={handleAddMemberSuccess}
+      />
+
+      {/* Nudge Dialog */}
+      <NudgeDialog
+        open={showNudgeDialog}
+        onClose={() => setShowNudgeDialog(false)}
+        recipientName={selectedMember?.username || ''}
+        onSendNudge={handleSendNudge}
       />
 
       {/* Success Dialog */}

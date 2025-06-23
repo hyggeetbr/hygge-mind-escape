@@ -189,6 +189,7 @@ export type Database = {
           created_at: string
           id: string
           is_read: boolean
+          nudge_id: string | null
           post_id: string
           type: string
           user_id: string
@@ -199,6 +200,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          nudge_id?: string | null
           post_id: string
           type: string
           user_id: string
@@ -209,6 +211,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          nudge_id?: string | null
           post_id?: string
           type?: string
           user_id?: string
@@ -228,7 +231,38 @@ export type Database = {
             referencedRelation: "community_posts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "notifications_nudge_id_fkey"
+            columns: ["nudge_id"]
+            isOneToOne: false
+            referencedRelation: "nudges"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      nudges: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
       }
       post_comments: {
         Row: {

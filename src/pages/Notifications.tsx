@@ -1,5 +1,6 @@
+
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Bell } from "lucide-react";
+import { ArrowLeft, Bell, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,8 +19,10 @@ const Notifications = () => {
     if (!notification.is_read) {
       markAsRead(notification.id);
     }
-    // Navigate to the specific post detail page
-    navigate(`/post/${notification.post_id}`);
+    // For nudges, just mark as read since they don't link to posts
+    if (notification.type !== 'nudge') {
+      navigate(`/post/${notification.post_id}`);
+    }
   };
 
   if (!user) {
@@ -73,7 +76,7 @@ const Notifications = () => {
             <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-black mb-2">No notifications yet</h3>
             <p className="text-gray-600">
-              You'll see notifications here when people like or comment on your posts.
+              You'll see notifications here when people like or comment on your posts, or send you nudges.
             </p>
           </div>
         ) : (
@@ -90,13 +93,19 @@ const Notifications = () => {
               >
                 <div className="flex items-start space-x-3">
                   {/* Avatar */}
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 ${
+                    notification.type === 'nudge' 
+                      ? 'bg-gradient-to-br from-pink-500 to-red-500' 
+                      : 'bg-gradient-to-br from-purple-500 to-blue-500'
+                  }`}>
                     {notification.actor_profile?.avatar_url ? (
                       <img 
                         src={notification.actor_profile.avatar_url} 
                         alt="Avatar" 
                         className="w-full h-full rounded-full object-cover"
                       />
+                    ) : notification.type === 'nudge' ? (
+                      <Heart className="w-5 h-5" />
                     ) : (
                       getInitials(notification.actor_profile?.username || 'User')
                     )}
@@ -106,8 +115,10 @@ const Notifications = () => {
                   <div className="flex-1 min-w-0">
                     <p className="text-black text-sm">
                       <span className="font-semibold">{notification.actor_profile?.username}</span>
-                      {notification.type === 'like' ? ' liked' : ' commented on'} your post
-                      {notification.post?.title && (
+                      {notification.type === 'like' && ' liked your post'}
+                      {notification.type === 'comment' && ' commented on your post'}
+                      {notification.type === 'nudge' && ' sent you a nudge!'}
+                      {notification.type !== 'nudge' && notification.post?.title && (
                         <span className="text-gray-600">: "{notification.post.title}"</span>
                       )}
                     </p>
@@ -119,6 +130,13 @@ const Notifications = () => {
                       </p>
                     )}
                     
+                    {/* Show nudge message if it's a nudge notification */}
+                    {notification.type === 'nudge' && notification.nudge?.message && (
+                      <p className="text-gray-700 text-sm mt-1 italic bg-pink-50 p-2 rounded border-l-2 border-pink-300">
+                        💌 "{notification.nudge.message}"
+                      </p>
+                    )}
+                    
                     <p className="text-gray-500 text-xs mt-1">
                       {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                     </p>
@@ -126,7 +144,9 @@ const Notifications = () => {
 
                   {/* Unread indicator */}
                   {!notification.is_read && (
-                    <div className="w-2 h-2 bg-purple-600 rounded-full flex-shrink-0"></div>
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                      notification.type === 'nudge' ? 'bg-pink-600' : 'bg-purple-600'
+                    }`}></div>
                   )}
                 </div>
               </div>
