@@ -70,7 +70,7 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
         Back to Hygge
       </Button>
       
-      <Card className="w-full max-w-md calm-card shadow-xl">
+      <Card className="w-full max-w-md shadow-xl bg-blue-100 border-blue-200">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-2xl font-display text-gray-800">
             Welcome to Hygge
