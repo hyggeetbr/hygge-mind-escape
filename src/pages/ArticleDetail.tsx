@@ -1,9 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Clock, User } from "lucide-react";
+import { ArrowLeft, Clock, User, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ArticleInteractions from "@/components/ArticleInteractions";
+import { useArticleInteractions } from "@/hooks/useArticleInteractions";
 
 type Article = {
   id: string;
@@ -21,10 +22,13 @@ const ArticleDetail: React.FC = () => {
   const navigate = useNavigate();
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
+  const { stats, addRead } = useArticleInteractions(id || '');
 
   useEffect(() => {
     if (id) {
       fetchArticle();
+      // Add a read when the article is opened
+      addRead();
     }
   }, [id]);
 
@@ -108,6 +112,10 @@ const ArticleDetail: React.FC = () => {
                     <span>{article.estimated_read_minutes} min read</span>
                   </div>
                 )}
+                <div className="flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  <span>{stats.reads} reads</span>
+                </div>
               </div>
             </div>
 
@@ -116,10 +124,17 @@ const ArticleDetail: React.FC = () => {
             </h1>
 
             {article.summary && (
-              <p className="text-white/80 text-lg leading-relaxed">
+              <p className="text-white/80 text-lg leading-relaxed mb-6">
                 {article.summary}
               </p>
             )}
+
+            {/* Article Interactions */}
+            <ArticleInteractions 
+              articleId={article.id} 
+              title={article.title} 
+              showReads={true}
+            />
           </div>
 
           {/* Article Body */}

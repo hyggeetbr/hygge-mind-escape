@@ -1,7 +1,8 @@
 
 import React from "react";
-import { Clock, User } from "lucide-react";
+import { Clock, User, Heart, MessageCircle, Bookmark, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useArticleInteractions } from "@/hooks/useArticleInteractions";
 
 type Article = {
   id: string;
@@ -23,6 +24,13 @@ const ReadingArticleCard: React.FC<ReadingArticleCardProps> = ({
   article,
   onRead,
 }) => {
+  const { stats, addRead } = useArticleInteractions(article.id);
+
+  const handleReadClick = () => {
+    addRead();
+    onRead();
+  };
+
   return (
     <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
       {/* Header with category badge */}
@@ -44,6 +52,10 @@ const ReadingArticleCard: React.FC<ReadingArticleCardProps> = ({
                 <span>{article.estimated_read_minutes} min read</span>
               </div>
             )}
+            <div className="flex items-center gap-1">
+              <Eye className="w-3 h-3" />
+              <span>{stats.reads} reads</span>
+            </div>
           </div>
         </div>
 
@@ -68,12 +80,28 @@ const ReadingArticleCard: React.FC<ReadingArticleCardProps> = ({
             </p>
           </div>
         )}
+
+        {/* Interaction Stats */}
+        <div className="flex items-center gap-6 mb-4 text-xs text-white/60">
+          <div className="flex items-center gap-1">
+            <Heart className="w-4 h-4" />
+            <span>{stats.likes} likes</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <MessageCircle className="w-4 h-4" />
+            <span>{stats.comments} comments</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Bookmark className="w-4 h-4" />
+            <span>{stats.saves} saves</span>
+          </div>
+        </div>
       </div>
 
       {/* Footer with read button */}
       <div className="px-6 pb-6">
         <Button
-          onClick={onRead}
+          onClick={handleReadClick}
           className="w-full bg-white hover:bg-white/90 text-black font-medium py-3 rounded-xl transition-colors"
         >
           Read Article

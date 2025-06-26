@@ -1,11 +1,12 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import HomeButton from "@/components/HomeButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReadingArticleCard from "@/components/ReadingArticleCard";
-import { Loader2 } from "lucide-react";
+import SavedArticles from "@/components/SavedArticles";
+import { Loader2, Bookmark } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type Article = {
   id: string;
@@ -24,6 +25,7 @@ const TodaysReading: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [showSavedArticles, setShowSavedArticles] = useState(false);
 
   useEffect(() => {
     fetchArticles();
@@ -76,14 +78,24 @@ const TodaysReading: React.FC = () => {
       <HomeButton />
       
       <div className="w-full max-w-6xl mx-auto pt-8 pb-14 px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
+        {/* Header with Saves button */}
+        <div className="text-center mb-8 relative">
           <h1 className="text-3xl md:text-4xl text-white mb-2" style={{ fontFamily: 'Georgia, serif' }}>
             Hygge Reads
           </h1>
           <p className="text-white/80 text-lg">
             Nourish your mind with wisdom
           </p>
+          
+          {/* Saves button - positioned as ribbon in top right */}
+          <Button
+            onClick={() => setShowSavedArticles(true)}
+            variant="ghost"
+            className="absolute top-0 right-0 text-white hover:bg-white/10 flex items-center gap-2"
+          >
+            <Bookmark className="w-4 h-4" />
+            <span className="text-sm">Saves</span>
+          </Button>
         </div>
 
         {/* Category Tabs */}
@@ -126,6 +138,12 @@ const TodaysReading: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Saved Articles Sidebar */}
+      <SavedArticles
+        isOpen={showSavedArticles}
+        onClose={() => setShowSavedArticles(false)}
+      />
     </div>
   );
 };
