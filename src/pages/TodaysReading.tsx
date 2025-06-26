@@ -75,7 +75,7 @@ const TodaysReading: React.FC = () => {
     <div className="min-h-screen bg-black">
       <HomeButton />
       
-      <div className="w-full max-w-4xl mx-auto pt-8 pb-14 px-4">
+      <div className="w-full max-w-6xl mx-auto pt-8 pb-14 px-4">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl text-white mb-2" style={{ fontFamily: 'Georgia, serif' }}>
@@ -89,19 +89,19 @@ const TodaysReading: React.FC = () => {
         {/* Category Tabs */}
         {categories.length > 0 && (
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-            <TabsList className={`grid w-full max-w-4xl mx-auto mb-8 bg-white/10 border border-white/20 h-12 ${
-              categories.length === 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3'
-            }`}>
-              {categories.map((category) => (
-                <TabsTrigger
-                  key={category}
-                  value={category}
-                  className="font-medium text-white data-[state=active]:bg-white data-[state=active]:text-black text-xs sm:text-sm px-2 sm:px-4 py-2 rounded-md transition-all duration-200"
-                >
-                  {category}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+            <div className="w-full overflow-x-auto mb-8">
+              <TabsList className="flex w-max min-w-full bg-white/10 border border-white/20 h-12 p-1 rounded-lg">
+                {categories.map((category) => (
+                  <TabsTrigger
+                    key={category}
+                    value={category}
+                    className="font-medium text-white data-[state=active]:bg-white data-[state=active]:text-black text-sm px-6 py-2 rounded-md transition-all duration-200 whitespace-nowrap flex-shrink-0"
+                  >
+                    {category}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
 
             {categories.map((category) => (
               <TabsContent key={category} value={category} className="mt-0">
