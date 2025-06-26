@@ -89,12 +89,12 @@ const TodaysReading: React.FC = () => {
         {/* Category Tabs */}
         {categories.length > 0 && (
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-            <TabsList className="grid w-full max-w-md mx-auto mb-8 bg-white/10 border border-white/20">
+            <TabsList className="grid grid-cols-2 w-full max-w-lg mx-auto mb-8 bg-white/10 border border-white/20 h-12">
               {categories.map((category) => (
                 <TabsTrigger
                   key={category}
                   value={category}
-                  className="font-medium text-white data-[state=active]:bg-white data-[state=active]:text-black"
+                  className="font-medium text-white data-[state=active]:bg-white data-[state=active]:text-black text-sm px-4 py-2 rounded-md transition-all duration-200"
                 >
                   {category}
                 </TabsTrigger>
