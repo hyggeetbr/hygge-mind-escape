@@ -78,8 +78,8 @@ const TodaysReading: React.FC = () => {
       <div className="w-full max-w-4xl mx-auto pt-8 pb-14 px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
-            Today's Reading
+          <h1 className="text-3xl md:text-4xl text-white mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+            Hygge Reads
           </h1>
           <p className="text-white/80 text-lg">
             Nourish your mind with wisdom
