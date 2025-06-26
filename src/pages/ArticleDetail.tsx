@@ -51,18 +51,18 @@ const ArticleDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-hygge-cream">
-        <div className="animate-pulse text-hygge-moss">Loading article...</div>
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="animate-pulse text-white">Loading article...</div>
       </div>
     );
   }
 
   if (!article) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-hygge-cream">
+      <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="text-center">
-          <h2 className="text-2xl font-display text-hygge-moss mb-4">Article not found</h2>
-          <Button onClick={() => navigate('/todays-reading')} variant="outline">
+          <h2 className="text-2xl font-display text-white mb-4">Article not found</h2>
+          <Button onClick={() => navigate('/todays-reading')} variant="outline" className="border-white text-white hover:bg-white hover:text-black">
             Back to Reading
           </Button>
         </div>
@@ -71,14 +71,14 @@ const ArticleDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-hygge-cream">
+    <div className="min-h-screen bg-black">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-hygge-cream/95 backdrop-blur-sm border-b border-hygge-stone/20">
+      <div className="sticky top-0 z-10 bg-black/95 backdrop-blur-sm border-b border-white/20">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <Button
             onClick={() => navigate('/todays-reading')}
             variant="ghost"
-            className="text-hygge-moss hover:bg-hygge-moss/10"
+            className="text-white hover:bg-white/10"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Reading
@@ -88,14 +88,14 @@ const ArticleDetail: React.FC = () => {
 
       {/* Article Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <article className="bg-white/90 backdrop-blur-sm rounded-2xl border border-hygge-stone/20 shadow-lg overflow-hidden">
+        <article className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg overflow-hidden">
           {/* Article Header */}
-          <div className="px-8 pt-8 pb-6 border-b border-hygge-stone/10">
+          <div className="px-8 pt-8 pb-6 border-b border-white/10">
             <div className="flex items-center justify-between mb-4">
-              <span className="inline-block px-4 py-2 text-sm font-medium bg-hygge-moss/10 text-hygge-moss rounded-full border border-hygge-moss/20">
+              <span className="inline-block px-4 py-2 text-sm font-medium bg-white/20 text-white rounded-full border border-white/30">
                 {article.category}
               </span>
-              <div className="flex items-center gap-6 text-sm text-hygge-stone">
+              <div className="flex items-center gap-6 text-sm text-white/80">
                 {article.author && (
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4" />
@@ -111,12 +111,12 @@ const ArticleDetail: React.FC = () => {
               </div>
             </div>
 
-            <h1 className="font-display text-3xl md:text-4xl text-hygge-moss mb-4 leading-tight">
+            <h1 className="font-display text-3xl md:text-4xl text-white mb-4 leading-tight">
               {article.title}
             </h1>
 
             {article.summary && (
-              <p className="text-hygge-earth text-lg leading-relaxed">
+              <p className="text-white/80 text-lg leading-relaxed">
                 {article.summary}
               </p>
             )}
@@ -127,7 +127,7 @@ const ArticleDetail: React.FC = () => {
             {article.content && (
               <div className="prose prose-lg max-w-none">
                 {article.content.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="text-hygge-earth leading-relaxed mb-6 text-base md:text-lg">
+                  <p key={index} className="text-white/90 leading-relaxed mb-6 text-base md:text-lg">
                     {paragraph}
                   </p>
                 ))}

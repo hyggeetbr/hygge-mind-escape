@@ -65,23 +65,23 @@ const TodaysReading: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-hygge-cream">
-        <Loader2 className="animate-spin h-8 w-8 text-hygge-moss" />
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <Loader2 className="animate-spin h-8 w-8 text-white" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-hygge-cream">
+    <div className="min-h-screen bg-black">
       <HomeButton />
       
       <div className="w-full max-w-4xl mx-auto pt-8 pb-14 px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="font-display text-3xl md:text-4xl text-hygge-moss mb-2">
+          <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
             Today's Reading
           </h1>
-          <p className="text-hygge-stone text-lg">
+          <p className="text-white/80 text-lg">
             Nourish your mind with wisdom
           </p>
         </div>
@@ -89,12 +89,12 @@ const TodaysReading: React.FC = () => {
         {/* Category Tabs */}
         {categories.length > 0 && (
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-            <TabsList className="grid w-full max-w-md mx-auto mb-8 bg-white/60 border border-hygge-stone/20">
+            <TabsList className="grid w-full max-w-md mx-auto mb-8 bg-white/10 border border-white/20">
               {categories.map((category) => (
                 <TabsTrigger
                   key={category}
                   value={category}
-                  className="font-medium text-hygge-earth data-[state=active]:bg-hygge-moss data-[state=active]:text-white"
+                  className="font-medium text-white data-[state=active]:bg-white data-[state=active]:text-black"
                 >
                   {category}
                 </TabsTrigger>
@@ -118,7 +118,7 @@ const TodaysReading: React.FC = () => {
         )}
 
         {categories.length === 0 && (
-          <div className="text-center text-hygge-stone mt-12">
+          <div className="text-center text-white/80 mt-12">
             <p className="text-lg">No articles available at the moment.</p>
             <p className="text-sm mt-2">Please check back later for new content.</p>
           </div>
