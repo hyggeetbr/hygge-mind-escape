@@ -89,7 +89,9 @@ const TodaysReading: React.FC = () => {
         {/* Category Tabs */}
         {categories.length > 0 && (
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-            <TabsList className="grid grid-cols-3 w-full max-w-2xl mx-auto mb-8 bg-white/10 border border-white/20 h-12">
+            <TabsList className={`grid w-full max-w-4xl mx-auto mb-8 bg-white/10 border border-white/20 h-12 ${
+              categories.length === 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3'
+            }`}>
               {categories.map((category) => (
                 <TabsTrigger
                   key={category}
