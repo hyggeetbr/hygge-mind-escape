@@ -11,6 +11,9 @@ export type Database = {
     Tables: {
       articles: {
         Row: {
+          author: string | null
+          category: string | null
+          content: string | null
           created_at: string
           estimated_read_minutes: number | null
           id: string
@@ -19,6 +22,9 @@ export type Database = {
           url: string
         }
         Insert: {
+          author?: string | null
+          category?: string | null
+          content?: string | null
           created_at?: string
           estimated_read_minutes?: number | null
           id?: string
@@ -27,6 +33,9 @@ export type Database = {
           url: string
         }
         Update: {
+          author?: string | null
+          category?: string | null
+          content?: string | null
           created_at?: string
           estimated_read_minutes?: number | null
           id?: string
