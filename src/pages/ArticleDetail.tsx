@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Clock, User, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ArticleInteractions from "@/components/ArticleInteractions";
+import ArticleComments from "@/components/ArticleComments";
 import { useArticleInteractions } from "@/hooks/useArticleInteractions";
 
 type Article = {
@@ -148,6 +150,12 @@ const ArticleDetail: React.FC = () => {
                 ))}
               </div>
             )}
+
+            {/* Comments Section */}
+            <ArticleComments 
+              articleId={article.id} 
+              commentsCount={stats.comments}
+            />
           </div>
         </article>
       </div>
