@@ -3,27 +3,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Calm-inspired design system with purple gradients and clean aesthetics */
+/* Black theme design system with purple gradients and clean aesthetics */
 
 @layer base {
   :root {
-    --background: 253 246 232; /* keeping base for compatibility */
-    --foreground: 255 255 255;
+    --background: 0 0 0; /* black background */
+    --foreground: 255 255 255; /* white text */
 
-    --card: 255 255 255;
-    --card-foreground: 74 74 74;
+    --card: 0 0 0; /* black cards */
+    --card-foreground: 255 255 255; /* white text on cards */
 
-    --popover: 255 255 255;
-    --popover-foreground: 74 74 74;
+    --popover: 0 0 0; /* black popovers */
+    --popover-foreground: 255 255 255; /* white text on popovers */
 
     --primary: 139 69 255; /* calm purple */
     --primary-foreground: 255 255 255;
 
-    --secondary: 255 255 255;
-    --secondary-foreground: 74 74 74;
+    --secondary: 30 30 30; /* dark gray */
+    --secondary-foreground: 255 255 255;
 
-    --muted: 232 230 255; /* light purple */
-    --muted-foreground: 139 115 185;
+    --muted: 20 20 20; /* very dark gray */
+    --muted-foreground: 180 180 180; /* light gray text */
 
     --accent: 168 85 247; /* purple accent */
     --accent-foreground: 255 255 255;
@@ -31,8 +31,8 @@
     --destructive: 220 38 38;
     --destructive-foreground: 255 255 255;
 
-    --border: 199 184 255;
-    --input: 199 184 255;
+    --border: 40 40 40; /* dark border */
+    --input: 40 40 40; /* dark input */
     --ring: 139 69 255;
 
     --radius: 1rem;
@@ -46,23 +46,23 @@
   }
 
   .dark {
-    --background: 88 28 135;
+    --background: 0 0 0;
     --foreground: 255 255 255;
 
-    --card: 88 28 135;
+    --card: 0 0 0;
     --card-foreground: 255 255 255;
 
-    --popover: 88 28 135;
+    --popover: 0 0 0;
     --popover-foreground: 255 255 255;
 
     --primary: 196 181 253;
-    --primary-foreground: 88 28 135;
+    --primary-foreground: 0 0 0;
 
-    --secondary: 139 69 255;
+    --secondary: 30 30 30;
     --secondary-foreground: 255 255 255;
 
-    --muted: 139 69 255;
-    --muted-foreground: 196 181 253;
+    --muted: 20 20 20;
+    --muted-foreground: 180 180 180;
 
     --accent: 168 85 247;
     --accent-foreground: 255 255 255;
@@ -70,8 +70,8 @@
     --destructive: 239 68 68;
     --destructive-foreground: 255 255 255;
 
-    --border: 139 69 255;
-    --input: 139 69 255;
+    --border: 40 40 40;
+    --input: 40 40 40;
     --ring: 196 181 253;
   }
 }
@@ -82,8 +82,8 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    background: linear-gradient(180deg, #581c87 0%, #7c3aed 50%, #a855f7 100%);
+    @apply bg-black text-white;
+    background: #000000;
     min-height: 100vh;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -94,27 +94,27 @@
 
 @layer components {
   .calm-gradient {
-    background: linear-gradient(180deg, #581c87 0%, #7c3aed 50%, #a855f7 100%);
+    background: #000000;
   }
   
   .calm-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 1rem;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   }
 
   .calm-button {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 2rem;
     transition: all 0.3s ease;
   }
 
   .calm-button:hover {
-    background: rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   }
@@ -131,9 +131,9 @@
   }
 
   .glass-effect {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .floating-element {

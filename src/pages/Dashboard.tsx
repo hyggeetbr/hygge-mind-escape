@@ -110,7 +110,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen calm-gradient relative overflow-hidden">
+    <div className="min-h-screen bg-black relative overflow-hidden">
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
@@ -357,11 +357,11 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
+      <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-30">
         <div className="flex justify-around py-4 px-2">
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-              <Home className="w-4 h-4 text-calm-purple" />
+              <Home className="w-4 h-4 text-black" />
             </div>
             <span className="text-white text-xs font-medium">Home</span>
           </div>

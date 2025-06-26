@@ -28,35 +28,35 @@ const Notifications = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center text-black">
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center text-white">
           <h2 className="text-2xl font-light mb-4">Please sign in to view notifications</h2>
-          <Button onClick={() => navigate("/")}>Go to Login</Button>
+          <Button onClick={() => navigate("/")} className="bg-white text-black hover:bg-white/90">Go to Login</Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
+      <div className="flex items-center justify-between p-6 border-b border-white/20">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => navigate("/community")}
-          className="text-black hover:bg-gray-100"
+          className="text-white hover:bg-white/10"
         >
           <ArrowLeft size={20} />
         </Button>
         
-        <h1 className="text-black text-xl font-medium">Notifications</h1>
+        <h1 className="text-white text-xl font-medium">Notifications</h1>
         
         {unreadCount > 0 && (
           <Button
             variant="ghost"
             onClick={markAllAsRead}
-            className="text-purple-600 hover:bg-purple-50 text-sm"
+            className="text-purple-400 hover:bg-purple-500/10 text-sm"
           >
             Mark all read
           </Button>
@@ -69,14 +69,14 @@ const Notifications = () => {
       <div className="p-6">
         {loading ? (
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading notifications...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-4"></div>
+            <p className="text-white/60">Loading notifications...</p>
           </div>
         ) : notifications.length === 0 ? (
           <div className="text-center py-12">
-            <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-black mb-2">No notifications yet</h3>
-            <p className="text-gray-600">
+            <Bell className="w-16 h-16 text-white/30 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-white mb-2">No notifications yet</h3>
+            <p className="text-white/60">
               You'll see notifications here when people like or comment on your posts, or send you nudges.
             </p>
           </div>
@@ -88,8 +88,8 @@ const Notifications = () => {
                 onClick={() => handleNotificationClick(notification)}
                 className={`p-4 rounded-lg border cursor-pointer transition-colors ${
                   notification.is_read
-                    ? 'bg-white border-gray-200 hover:bg-gray-50'
-                    : 'bg-purple-50 border-purple-200 hover:bg-purple-100'
+                    ? 'bg-white/5 border-white/10 hover:bg-white/10'
+                    : 'bg-purple-500/10 border-purple-500/20 hover:bg-purple-500/20'
                 }`}
               >
                 <div className="flex items-start space-x-3">
@@ -114,31 +114,31 @@ const Notifications = () => {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-black text-sm">
+                    <p className="text-white text-sm">
                       <span className="font-semibold">{notification.actor_profile?.username}</span>
                       {notification.type === 'like' && ' liked your post'}
                       {notification.type === 'comment' && ' commented on your post'}
                       {notification.type === 'nudge' && ' sent you a nudge!'}
                       {notification.type !== 'nudge' && notification.post?.title && (
-                        <span className="text-gray-600">: "{notification.post.title}"</span>
+                        <span className="text-white/60">: "{notification.post.title}"</span>
                       )}
                     </p>
                     
                     {/* Show comment content if it's a comment notification */}
                     {notification.type === 'comment' && notification.comment?.content && (
-                      <p className="text-gray-700 text-sm mt-1 italic">
+                      <p className="text-white/70 text-sm mt-1 italic">
                         "{notification.comment.content}"
                       </p>
                     )}
                     
                     {/* Show nudge message if it's a nudge notification */}
                     {notification.type === 'nudge' && notification.nudge?.message && (
-                      <p className="text-gray-700 text-sm mt-1 italic bg-pink-50 p-2 rounded border-l-2 border-pink-300">
+                      <p className="text-white/70 text-sm mt-1 italic bg-pink-500/10 p-2 rounded border-l-2 border-pink-500/30">
                         💌 "{notification.nudge.message}"
                       </p>
                     )}
                     
-                    <p className="text-gray-500 text-xs mt-1">
+                    <p className="text-white/50 text-xs mt-1">
                       {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                     </p>
                   </div>
@@ -146,7 +146,7 @@ const Notifications = () => {
                   {/* Unread indicator */}
                   {!notification.is_read && (
                     <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                      notification.type === 'nudge' ? 'bg-pink-600' : 'bg-purple-600'
+                      notification.type === 'nudge' ? 'bg-pink-500' : 'bg-purple-500'
                     }`}></div>
                   )}
                 </div>
