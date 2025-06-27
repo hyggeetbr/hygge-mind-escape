@@ -670,6 +670,35 @@ export type Database = {
         }
         Relationships: []
       }
+      track_likes: {
+        Row: {
+          created_at: string
+          id: string
+          track_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          track_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          track_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "track_likes_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "audio_tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_families: {
         Row: {
           created_at: string
