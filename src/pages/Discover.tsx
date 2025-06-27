@@ -1,12 +1,23 @@
 
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2, Upload } from "lucide-react";
+import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useAudioTracks } from "@/hooks/useAudioTracks";
+import { useUserPlaylists } from "@/hooks/useUserPlaylists";
 
 const Discover = () => {
   const navigate = useNavigate();
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
+  const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
+
+  // Fetch audio tracks for each category
+  const { tracks: morningTracks, loading: morningLoading, incrementPlayCount: incrementMorningPlay } = useAudioTracks('morning_affirmations');
+  const { tracks: wisdomTracks, loading: wisdomLoading, incrementPlayCount: incrementWisdomPlay } = useAudioTracks('daily_wisdom');
+  const { tracks: sleepTracks, loading: sleepLoading, incrementPlayCount: incrementSleepPlay } = useAudioTracks('sleep_sounds');
+  
+  // Fetch user playlists
+  const { playlists, loading: playlistsLoading } = useUserPlaylists();
 
   const audioSections = [
     {
@@ -14,32 +25,71 @@ const Discover = () => {
       description: "Start your day with positive energy",
       icon: "🌅",
       color: "from-orange-500 to-yellow-500",
-      tracks: []
+      tracks: morningTracks,
+      loading: morningLoading,
+      incrementPlayCount: incrementMorningPlay
     },
     {
       title: "Daily Wisdom", 
       description: "Inspirational thoughts for reflection",
       icon: "🧠",
       color: "from-purple-500 to-indigo-500",
-      tracks: []
+      tracks: wisdomTracks,
+      loading: wisdomLoading,
+      incrementPlayCount: incrementWisdomPlay
     },
     {
       title: "Sleep Sounds",
       description: "Peaceful sounds for better rest",
       icon: "🌙",
       color: "from-blue-500 to-purple-600",
-      tracks: []
+      tracks: sleepTracks,
+      loading: sleepLoading,
+      incrementPlayCount: incrementSleepPlay
     }
   ];
 
-  const yourPlaylist = [];
-
-  const handlePlayTrack = (trackId: string) => {
+  const handlePlayTrack = async (trackId: string, fileUrl: string, incrementPlayCount: (id: string) => void) => {
+    console.log('Playing track:', trackId, fileUrl);
+    
     if (playingTrack === trackId) {
+      // Stop current track
+      if (currentAudio) {
+        currentAudio.pause();
+        setCurrentAudio(null);
+      }
       setPlayingTrack(null);
     } else {
-      setPlayingTrack(trackId);
+      // Stop any currently playing audio
+      if (currentAudio) {
+        currentAudio.pause();
+      }
+      
+      // Create new audio element and play
+      const audio = new Audio(fileUrl);
+      audio.play()
+        .then(() => {
+          setPlayingTrack(trackId);
+          setCurrentAudio(audio);
+          incrementPlayCount(trackId);
+        })
+        .catch((error) => {
+          console.error('Error playing audio:', error);
+        });
+
+      // Handle audio end
+      audio.addEventListener('ended', () => {
+        setPlayingTrack(null);
+        setCurrentAudio(null);
+      });
     }
+  };
+
+  const formatDuration = (seconds: number | null) => {
+    if (!seconds) return "Unknown";
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -104,29 +154,26 @@ const Discover = () => {
                   <p className="text-white/60 text-sm">{section.description}</p>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white/60 hover:text-white hover:bg-white/10"
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Upload
-              </Button>
             </div>
 
-            {section.tracks.length === 0 ? (
+            {section.loading ? (
+              <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-8 text-center">
+                <Music className="w-12 h-12 text-white/30 mx-auto mb-4 animate-pulse" />
+                <p className="text-white/60">Loading tracks...</p>
+              </div>
+            ) : section.tracks.length === 0 ? (
               <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-8 text-center">
                 <Music className="w-12 h-12 text-white/30 mx-auto mb-4" />
                 <p className="text-white/60 mb-2">No tracks yet</p>
-                <p className="text-white/40 text-sm">Upload your first audio file to get started</p>
+                <p className="text-white/40 text-sm">Audio tracks will appear here once uploaded</p>
               </div>
             ) : (
               <div className="space-y-2">
-                {section.tracks.map((track: any, trackIndex) => (
+                {section.tracks.map((track) => (
                   <div 
                     key={track.id}
                     className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-                    onClick={() => handlePlayTrack(track.id)}
+                    onClick={() => handlePlayTrack(track.id, track.file_url, section.incrementPlayCount)}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
@@ -142,9 +189,9 @@ const Discover = () => {
                           <div className="flex items-center space-x-3 text-white/60 text-sm">
                             <span className="flex items-center space-x-1">
                               <Clock className="w-3 h-3" />
-                              <span>{track.duration}</span>
+                              <span>{formatDuration(track.duration_seconds)}</span>
                             </span>
-                            <span>{track.plays} plays</span>
+                            <span>{track.play_count} plays</span>
                           </div>
                         </div>
                       </div>
@@ -152,6 +199,7 @@ const Discover = () => {
                         variant="ghost"
                         size="icon"
                         className="text-white/60 hover:text-white hover:bg-white/10"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <Heart className="w-4 h-4" />
                       </Button>
@@ -177,7 +225,12 @@ const Discover = () => {
             </Button>
           </div>
           
-          {yourPlaylist.length === 0 ? (
+          {playlistsLoading ? (
+            <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-8 text-center">
+              <Music className="w-12 h-12 text-white/30 mx-auto mb-4 animate-pulse" />
+              <p className="text-white/60">Loading playlists...</p>
+            </div>
+          ) : playlists.length === 0 ? (
             <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-8 text-center">
               <Music className="w-12 h-12 text-white/30 mx-auto mb-4" />
               <p className="text-white/60 mb-2">No playlists yet</p>
@@ -189,18 +242,18 @@ const Discover = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4">
-              {yourPlaylist.map((playlist: any) => (
+              {playlists.map((playlist) => (
                 <div 
                   key={playlist.id}
                   className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className={`w-16 h-16 bg-gradient-to-br ${playlist.image} rounded-lg flex items-center justify-center`}>
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
                       <Music className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1">
                       <h4 className="text-white font-medium text-lg">{playlist.title}</h4>
-                      <p className="text-white/60 text-sm">{playlist.tracks} tracks • {playlist.duration}</p>
+                      <p className="text-white/60 text-sm">{playlist.track_count || 0} tracks</p>
                     </div>
                     <Button
                       variant="ghost"
@@ -227,14 +280,20 @@ const Discover = () => {
               </div>
               <div>
                 <p className="text-white font-medium">Now Playing</p>
-                <p className="text-white/60 text-sm">Track is playing...</p>
+                <p className="text-white/60 text-sm">Audio track is playing...</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setPlayingTrack(null)}
+                onClick={() => {
+                  if (currentAudio) {
+                    currentAudio.pause();
+                    setCurrentAudio(null);
+                  }
+                  setPlayingTrack(null);
+                }}
                 className="text-white hover:bg-white/10"
               >
                 <Pause className="w-5 h-5" />
