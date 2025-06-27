@@ -7,14 +7,19 @@ import { AudioTrack } from '@/hooks/useAudioTracks';
 
 interface AudioPlayerProps {
   track: AudioTrack;
+  trackList: AudioTrack[];
+  currentIndex: number;
   onClose: () => void;
+  onTrackChange: (track: AudioTrack, index: number) => void;
 }
 
-export const AudioPlayer = ({ track, onClose }: AudioPlayerProps) => {
+export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackChange }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
+  const [isShuffled, setIsShuffled] = useState(false);
+  const [repeatMode, setRepeatMode] = useState<'none' | 'one' | 'all'>('none');
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -23,17 +28,31 @@ export const AudioPlayer = ({ track, onClose }: AudioPlayerProps) => {
 
     const updateTime = () => setCurrentTime(audio.currentTime);
     const updateDuration = () => setDuration(audio.duration);
+    const handleEnded = () => {
+      setIsPlaying(false);
+      handleNext(); // Auto-play next track when current ends
+    };
 
     audio.addEventListener('timeupdate', updateTime);
     audio.addEventListener('loadedmetadata', updateDuration);
-    audio.addEventListener('ended', () => setIsPlaying(false));
+    audio.addEventListener('ended', handleEnded);
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime);
       audio.removeEventListener('loadedmetadata', updateDuration);
-      audio.removeEventListener('ended', () => setIsPlaying(false));
+      audio.removeEventListener('ended', handleEnded);
     };
   }, []);
+
+  // Reset audio when track changes
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.load();
+      setCurrentTime(0);
+      setIsPlaying(false);
+    }
+  }, [track.id]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -45,6 +64,83 @@ export const AudioPlayer = ({ track, onClose }: AudioPlayerProps) => {
       audio.play();
     }
     setIsPlaying(!isPlaying);
+  };
+
+  const handleNext = () => {
+    if (trackList.length <= 1) return;
+
+    let nextIndex;
+    
+    if (repeatMode === 'one') {
+      // Stay on the same track
+      const audio = audioRef.current;
+      if (audio) {
+        audio.currentTime = 0;
+        if (isPlaying) audio.play();
+      }
+      return;
+    }
+
+    if (isShuffled) {
+      // Random next track (excluding current)
+      const availableIndices = trackList.map((_, i) => i).filter(i => i !== currentIndex);
+      nextIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+    } else {
+      // Sequential next track
+      nextIndex = currentIndex + 1;
+      if (nextIndex >= trackList.length) {
+        if (repeatMode === 'all') {
+          nextIndex = 0;
+        } else {
+          return; // Don't play next if at end and no repeat
+        }
+      }
+    }
+
+    onTrackChange(trackList[nextIndex], nextIndex);
+  };
+
+  const handlePrevious = () => {
+    if (trackList.length <= 1) return;
+
+    const audio = audioRef.current;
+    
+    // If more than 3 seconds played, restart current track
+    if (audio && audio.currentTime > 3) {
+      audio.currentTime = 0;
+      return;
+    }
+
+    let prevIndex;
+    
+    if (isShuffled) {
+      // Random previous track (excluding current)
+      const availableIndices = trackList.map((_, i) => i).filter(i => i !== currentIndex);
+      prevIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+    } else {
+      // Sequential previous track
+      prevIndex = currentIndex - 1;
+      if (prevIndex < 0) {
+        if (repeatMode === 'all') {
+          prevIndex = trackList.length - 1;
+        } else {
+          return; // Don't play previous if at start and no repeat
+        }
+      }
+    }
+
+    onTrackChange(trackList[prevIndex], prevIndex);
+  };
+
+  const toggleShuffle = () => {
+    setIsShuffled(!isShuffled);
+  };
+
+  const toggleRepeat = () => {
+    const modes: ('none' | 'one' | 'all')[] = ['none', 'all', 'one'];
+    const currentModeIndex = modes.indexOf(repeatMode);
+    const nextMode = modes[(currentModeIndex + 1) % modes.length];
+    setRepeatMode(nextMode);
   };
 
   const handleSeek = (value: number[]) => {
@@ -72,6 +168,12 @@ export const AudioPlayer = ({ track, onClose }: AudioPlayerProps) => {
   };
 
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  const getRepeatIcon = () => {
+    if (repeatMode === 'one') return '🔂';
+    if (repeatMode === 'all') return '🔁';
+    return '🔁';
+  };
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-orange-400 via-red-400 to-pink-500 z-50 flex flex-col">
@@ -136,14 +238,17 @@ export const AudioPlayer = ({ track, onClose }: AudioPlayerProps) => {
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-white/20"
+          onClick={toggleShuffle}
+          className={`text-white hover:bg-white/20 ${isShuffled ? 'bg-white/20' : ''}`}
         >
           <Shuffle size={24} />
         </Button>
         <Button
           variant="ghost"
           size="icon"
+          onClick={handlePrevious}
           className="text-white hover:bg-white/20"
+          disabled={trackList.length <= 1}
         >
           <SkipBack size={32} />
         </Button>
@@ -158,16 +263,20 @@ export const AudioPlayer = ({ track, onClose }: AudioPlayerProps) => {
         <Button
           variant="ghost"
           size="icon"
+          onClick={handleNext}
           className="text-white hover:bg-white/20"
+          disabled={trackList.length <= 1}
         >
           <SkipForward size={32} />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-white/20"
+          onClick={toggleRepeat}
+          className={`text-white hover:bg-white/20 ${repeatMode !== 'none' ? 'bg-white/20' : ''}`}
         >
           <Repeat size={24} />
+          {repeatMode === 'one' && <span className="absolute -top-1 -right-1 text-xs">1</span>}
         </Button>
       </div>
 

@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,8 @@ const Discover = () => {
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [fullScreenTrack, setFullScreenTrack] = useState<any | null>(null);
+  const [currentTrackList, setCurrentTrackList] = useState<any[]>([]);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
   // Fetch audio tracks for each category
@@ -56,7 +57,7 @@ const Discover = () => {
     }
   ];
 
-  const handlePlayTrack = async (trackId: string, fileUrl: string, incrementPlayCount: (id: string) => void, track: any) => {
+  const handlePlayTrack = async (trackId: string, fileUrl: string, incrementPlayCount: (id: string) => void, track: any, trackList?: any[]) => {
     console.log('Playing track:', trackId, fileUrl);
     
     // Stop any currently playing audio
@@ -66,9 +67,25 @@ const Discover = () => {
     }
     setPlayingTrack(null);
     
-    // Open full screen player
+    // Set up track list and index
+    const tracks = trackList || [];
+    const trackIndex = tracks.findIndex(t => t.id === trackId);
+    
+    setCurrentTrackList(tracks);
+    setCurrentTrackIndex(trackIndex >= 0 ? trackIndex : 0);
     setFullScreenTrack(track);
     incrementPlayCount(trackId);
+  };
+
+  const handleTrackChange = (newTrack: any, newIndex: number) => {
+    setFullScreenTrack(newTrack);
+    setCurrentTrackIndex(newIndex);
+    
+    // Find the section this track belongs to and increment play count
+    const section = audioSections.find(s => s.tracks.some(t => t.id === newTrack.id));
+    if (section) {
+      section.incrementPlayCount(newTrack.id);
+    }
   };
 
   const handleSectionClick = (category: string) => {
@@ -102,7 +119,15 @@ const Discover = () => {
   };
 
   if (fullScreenTrack) {
-    return <AudioPlayer track={fullScreenTrack} onClose={() => setFullScreenTrack(null)} />;
+    return (
+      <AudioPlayer 
+        track={fullScreenTrack} 
+        trackList={currentTrackList}
+        currentIndex={currentTrackIndex}
+        onClose={() => setFullScreenTrack(null)}
+        onTrackChange={handleTrackChange}
+      />
+    );
   }
 
   // Show section details view
@@ -166,7 +191,7 @@ const Discover = () => {
                 <div 
                   key={track.id}
                   className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-                  onClick={() => handlePlayTrack(track.id, track.file_url, section.incrementPlayCount, track)}
+                  onClick={() => handlePlayTrack(track.id, track.file_url, section.incrementPlayCount, track, section.tracks)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
@@ -348,7 +373,7 @@ const Discover = () => {
                 <div 
                   key={track.id}
                   className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-                  onClick={() => handlePlayTrack(track.id, track.file_url, () => {}, track)}
+                  onClick={() => handlePlayTrack(track.id, track.file_url, () => {}, track, likedTracks)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
