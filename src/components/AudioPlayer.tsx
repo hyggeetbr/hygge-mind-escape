@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Volume2, Share, MoreHorizontal } from 'lucide-react';
+import { ArrowLeft, Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Volume2, Share, MoreHorizontal, Gauge } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { AudioTrack } from '@/hooks/useAudioTracks';
@@ -20,7 +20,10 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
   const [volume, setVolume] = useState(1);
   const [isShuffled, setIsShuffled] = useState(false);
   const [repeatMode, setRepeatMode] = useState<'none' | 'one' | 'all'>('none');
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const speedOptions = [0.5, 1, 1.5, 2];
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -51,8 +54,18 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
       audio.load();
       setCurrentTime(0);
       setIsPlaying(false);
+      // Maintain playback speed when track changes
+      audio.playbackRate = playbackSpeed;
     }
-  }, [track.id]);
+  }, [track.id, playbackSpeed]);
+
+  // Update playback speed when it changes
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.playbackRate = playbackSpeed;
+    }
+  }, [playbackSpeed]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -143,6 +156,12 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
     setRepeatMode(nextMode);
   };
 
+  const toggleSpeed = () => {
+    const currentIndex = speedOptions.indexOf(playbackSpeed);
+    const nextIndex = (currentIndex + 1) % speedOptions.length;
+    setPlaybackSpeed(speedOptions[nextIndex]);
+  };
+
   const handleSeek = (value: number[]) => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -169,10 +188,8 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
 
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 
-  const getRepeatIcon = () => {
-    if (repeatMode === 'one') return '🔂';
-    if (repeatMode === 'all') return '🔁';
-    return '🔁';
+  const getSpeedDisplayText = () => {
+    return playbackSpeed === 1 ? '1×' : `${playbackSpeed}×`;
   };
 
   return (
@@ -234,14 +251,14 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
       </div>
 
       {/* Controls */}
-      <div className="flex items-center justify-center space-x-8 py-6">
+      <div className="flex items-center justify-center space-x-6 py-6">
         <Button
           variant="ghost"
           size="icon"
           onClick={toggleShuffle}
           className={`text-white hover:bg-white/20 ${isShuffled ? 'bg-white/20' : ''}`}
         >
-          <Shuffle size={24} />
+          <Shuffle size={20} />
         </Button>
         <Button
           variant="ghost"
@@ -250,7 +267,7 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
           className="text-white hover:bg-white/20"
           disabled={trackList.length <= 1}
         >
-          <SkipBack size={32} />
+          <SkipBack size={28} />
         </Button>
         <Button
           variant="ghost"
@@ -267,7 +284,7 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
           className="text-white hover:bg-white/20"
           disabled={trackList.length <= 1}
         >
-          <SkipForward size={32} />
+          <SkipForward size={28} />
         </Button>
         <Button
           variant="ghost"
@@ -275,8 +292,22 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
           onClick={toggleRepeat}
           className={`text-white hover:bg-white/20 ${repeatMode !== 'none' ? 'bg-white/20' : ''}`}
         >
-          <Repeat size={24} />
+          <Repeat size={20} />
           {repeatMode === 'one' && <span className="absolute -top-1 -right-1 text-xs">1</span>}
+        </Button>
+      </div>
+
+      {/* Speed Control */}
+      <div className="flex justify-center pb-4">
+        <Button
+          variant="ghost"
+          onClick={toggleSpeed}
+          className={`text-white hover:bg-white/20 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transition-all duration-200 ${
+            playbackSpeed !== 1 ? 'bg-white/20 border-white/30' : ''
+          }`}
+        >
+          <Gauge size={16} className="mr-2" />
+          <span className="font-medium text-sm">{getSpeedDisplayText()}</span>
         </Button>
       </div>
 
