@@ -45,7 +45,8 @@ export const useAudioTracks = (category?: string) => {
           setError(error.message);
         } else {
           console.log('Fetched audio tracks:', data);
-          setTracks(data || []);
+          // Type assertion to ensure the data matches our AudioTrack interface
+          setTracks((data as AudioTrack[]) || []);
         }
       } catch (err) {
         console.error('Error in fetchTracks:', err);
@@ -68,18 +69,26 @@ export const useAudioTracks = (category?: string) => {
           user_id: (await supabase.auth.getUser()).data.user?.id || null
         });
 
-      // Increment play count
-      await supabase
+      // Get current play count and increment it
+      const { data: trackData } = await supabase
         .from('audio_tracks')
-        .update({ play_count: supabase.sql`play_count + 1` })
-        .eq('id', trackId);
+        .select('play_count')
+        .eq('id', trackId)
+        .single();
 
-      // Update local state
-      setTracks(prev => prev.map(track => 
-        track.id === trackId 
-          ? { ...track, play_count: track.play_count + 1 }
-          : track
-      ));
+      if (trackData) {
+        await supabase
+          .from('audio_tracks')
+          .update({ play_count: trackData.play_count + 1 })
+          .eq('id', trackId);
+
+        // Update local state
+        setTracks(prev => prev.map(track => 
+          track.id === trackId 
+            ? { ...track, play_count: track.play_count + 1 }
+            : track
+        ));
+      }
     } catch (error) {
       console.error('Error incrementing play count:', error);
     }
