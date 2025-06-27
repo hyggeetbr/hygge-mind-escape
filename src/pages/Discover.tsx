@@ -16,6 +16,7 @@ const Discover = () => {
   const [currentTrackList, setCurrentTrackList] = useState<any[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [trackCategory, setTrackCategory] = useState<string>('');
 
   // Fetch audio tracks for each category
   const { tracks: morningTracks, loading: morningLoading, incrementPlayCount: incrementMorningPlay } = useAudioTracks('morning_affirmations');
@@ -58,7 +59,7 @@ const Discover = () => {
     }
   ];
 
-  const handlePlayTrack = async (trackId: string, fileUrl: string, incrementPlayCount: (id: string) => void, track: any, trackList?: any[]) => {
+  const handlePlayTrack = async (trackId: string, fileUrl: string, incrementPlayCount: (id: string) => void, track: any, trackList?: any[], category?: string) => {
     console.log('Playing track:', trackId, fileUrl);
     
     // Stop any currently playing audio
@@ -75,6 +76,7 @@ const Discover = () => {
     setCurrentTrackList(tracks);
     setCurrentTrackIndex(trackIndex >= 0 ? trackIndex : 0);
     setFullScreenTrack(track);
+    setTrackCategory(category || '');
     incrementPlayCount(trackId);
   };
 
@@ -127,6 +129,7 @@ const Discover = () => {
         currentIndex={currentTrackIndex}
         onClose={() => setFullScreenTrack(null)}
         onTrackChange={handleTrackChange}
+        category={trackCategory}
       />
     );
   }
@@ -192,7 +195,7 @@ const Discover = () => {
                 <div 
                   key={track.id}
                   className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-                  onClick={() => handlePlayTrack(track.id, track.file_url, section.incrementPlayCount, track, section.tracks)}
+                  onClick={() => handlePlayTrack(track.id, track.file_url, section.incrementPlayCount, track, section.tracks, section.category)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">

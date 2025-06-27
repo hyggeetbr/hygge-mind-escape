@@ -11,9 +11,10 @@ interface AudioPlayerProps {
   currentIndex: number;
   onClose: () => void;
   onTrackChange: (track: AudioTrack, index: number) => void;
+  category?: string;
 }
 
-export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackChange }: AudioPlayerProps) => {
+export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackChange, category }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -25,14 +26,33 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
 
   const speedOptions = [0.5, 1, 1.5, 2];
 
+  // Store playback positions in localStorage
+  const getStoredPosition = (trackId: string) => {
+    const stored = localStorage.getItem(`audio_position_${trackId}`);
+    return stored ? parseFloat(stored) : 0;
+  };
+
+  const savePosition = (trackId: string, position: number) => {
+    localStorage.setItem(`audio_position_${trackId}`, position.toString());
+  };
+
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const updateTime = () => setCurrentTime(audio.currentTime);
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+      // Save position every 5 seconds
+      if (Math.floor(audio.currentTime) % 5 === 0) {
+        savePosition(track.id, audio.currentTime);
+      }
+    };
+    
     const updateDuration = () => setDuration(audio.duration);
     const handleEnded = () => {
       setIsPlaying(false);
+      // Clear saved position when track ends
+      localStorage.removeItem(`audio_position_${track.id}`);
       handleNext(); // Auto-play next track when current ends
     };
 
@@ -45,17 +65,24 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
       audio.removeEventListener('loadedmetadata', updateDuration);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, []);
+  }, [track.id]);
 
-  // Reset audio when track changes
+  // Reset audio when track changes and resume from saved position
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) {
       audio.load();
-      setCurrentTime(0);
       setIsPlaying(false);
       // Maintain playback speed when track changes
       audio.playbackRate = playbackSpeed;
+      
+      // Resume from saved position
+      const savedPosition = getStoredPosition(track.id);
+      if (savedPosition > 0) {
+        audio.addEventListener('loadedmetadata', () => {
+          audio.currentTime = savedPosition;
+        }, { once: true });
+      }
     }
   }, [track.id, playbackSpeed]);
 
@@ -169,6 +196,8 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
     const newTime = (value[0] / 100) * duration;
     audio.currentTime = newTime;
     setCurrentTime(newTime);
+    // Save new position
+    savePosition(track.id, newTime);
   };
 
   const handleVolumeChange = (value: number[]) => {
@@ -192,12 +221,36 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
     return playbackSpeed === 1 ? '1×' : `${playbackSpeed}×`;
   };
 
+  const getCategoryDisplayName = () => {
+    switch (category) {
+      case 'morning_affirmations':
+        return 'MORNING AFFIRMATIONS';
+      case 'daily_wisdom':
+        return 'DAILY WISDOM';
+      case 'sleep_sounds':
+        return 'SLEEP SOUNDS';
+      default:
+        return 'AUDIO TRACK';
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-orange-400 via-red-400 to-pink-500 z-50 flex flex-col">
+    <div 
+      className="fixed inset-0 z-50 flex flex-col"
+      style={{
+        backgroundImage: `url('/lovable-uploads/b856ada0-10f5-47d5-831c-7a5228d30e4e.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      {/* Overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/40" />
+      
       <audio ref={audioRef} src={track.file_url} preload="metadata" />
       
       {/* Header */}
-      <div className="flex items-center justify-between p-6 text-white">
+      <div className="relative z-10 flex items-center justify-between p-6 text-white">
         <Button
           variant="ghost"
           size="icon"
@@ -207,7 +260,7 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
           <ArrowLeft size={24} />
         </Button>
         <div className="text-center">
-          <p className="text-sm opacity-80">PLAYING FROM MORNING AFFIRMATIONS</p>
+          <p className="text-sm opacity-80">PLAYING FROM {getCategoryDisplayName()}</p>
         </div>
         <Button
           variant="ghost"
@@ -219,7 +272,7 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
       </div>
 
       {/* Album Art */}
-      <div className="flex-1 flex items-center justify-center px-6">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-6">
         <div className="w-80 h-80 bg-white/10 rounded-lg backdrop-blur-md flex items-center justify-center">
           <img 
             src={track.cover_art_url || "/lovable-uploads/b9735981-828e-4d4b-b080-d0eefc24c1f7.png"} 
@@ -230,13 +283,13 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
       </div>
 
       {/* Track Info */}
-      <div className="px-6 py-4 text-center text-white">
+      <div className="relative z-10 px-6 py-4 text-center text-white">
         <h1 className="text-2xl font-bold mb-2">{track.title}</h1>
         <p className="text-lg opacity-80">{track.artist || "Unknown Artist"}</p>
       </div>
 
       {/* Progress Bar */}
-      <div className="px-6 py-2">
+      <div className="relative z-10 px-6 py-2">
         <Slider
           value={[progressPercentage]}
           onValueChange={handleSeek}
@@ -251,7 +304,7 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
       </div>
 
       {/* Controls */}
-      <div className="flex items-center justify-center space-x-6 py-6">
+      <div className="relative z-10 flex items-center justify-center space-x-6 py-6">
         <Button
           variant="ghost"
           size="icon"
@@ -298,7 +351,7 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
       </div>
 
       {/* Speed Control */}
-      <div className="flex justify-center pb-4">
+      <div className="relative z-10 flex justify-center pb-4">
         <Button
           variant="ghost"
           onClick={toggleSpeed}
@@ -312,7 +365,7 @@ export const AudioPlayer = ({ track, trackList, currentIndex, onClose, onTrackCh
       </div>
 
       {/* Bottom Controls */}
-      <div className="flex items-center justify-between px-6 py-4 bg-black/20">
+      <div className="relative z-10 flex items-center justify-between px-6 py-4 bg-black/20">
         <div className="flex items-center space-x-2">
           <Volume2 className="text-white" size={20} />
           <Slider
