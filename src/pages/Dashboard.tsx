@@ -100,10 +100,6 @@ const Dashboard = () => {
     navigate("/profile");
   };
 
-  const handlePremium = () => {
-    navigate("/premium");
-  };
-
   const handleGoalSetting = () => {
     navigate("/goal-setting");
   };
@@ -139,7 +135,7 @@ const Dashboard = () => {
         <div 
           className="relative p-6 mb-6 animate-fade-in rounded-2xl border border-white/20 shadow-lg overflow-hidden"
           style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1000&q=80)',
+            backgroundImage: 'url(/lovable-uploads/e2976cc5-aa4b-451c-bff1-6ae1cfbbe16f.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
@@ -345,7 +341,7 @@ const Dashboard = () => {
               className="relative p-6 animate-fade-in cursor-pointer transform transition-all duration-300 hover:scale-105 rounded-2xl border border-white/20 shadow-lg overflow-hidden"
               onClick={handleGoalSetting}
               style={{
-                backgroundImage: 'url(https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=800&q=80)',
+                backgroundImage: 'url(/lovable-uploads/12022cf2-d56b-4835-b30b-084e5d3cbb56.png)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
@@ -361,7 +357,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation - Removed Premium */}
       <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-30">
         <div className="flex justify-around py-4 px-2">
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
@@ -396,13 +392,6 @@ const Dashboard = () => {
               <Bot className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Lumina</span>
-          </div>
-          <div 
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={handlePremium}
-          >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">⭐</div>
-            <span className="text-white/60 text-xs">Premium</span>
           </div>
         </div>
       </div>
