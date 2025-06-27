@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2 } from "lucide-react";
+import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -14,41 +14,25 @@ const Discover = () => {
       description: "Start your day with positive energy",
       icon: "🌅",
       color: "from-orange-500 to-yellow-500",
-      tracks: [
-        { id: "ma1", title: "I Am Powerful", duration: "5:30", plays: "1.2K" },
-        { id: "ma2", title: "Success Mindset", duration: "7:15", plays: "890" },
-        { id: "ma3", title: "Confidence Boost", duration: "4:45", plays: "2.1K" }
-      ]
+      tracks: []
     },
     {
       title: "Daily Wisdom", 
       description: "Inspirational thoughts for reflection",
       icon: "🧠",
       color: "from-purple-500 to-indigo-500",
-      tracks: [
-        { id: "dw1", title: "Mindful Living", duration: "6:20", plays: "1.5K" },
-        { id: "dw2", title: "Inner Peace", duration: "8:10", plays: "967" },
-        { id: "dw3", title: "Life Lessons", duration: "5:55", plays: "1.8K" }
-      ]
+      tracks: []
     },
     {
       title: "Sleep Sounds",
       description: "Peaceful sounds for better rest",
       icon: "🌙",
       color: "from-blue-500 to-purple-600",
-      tracks: [
-        { id: "ss1", title: "Rain & Thunder", duration: "30:00", plays: "3.2K" },
-        { id: "ss2", title: "Ocean Waves", duration: "45:00", plays: "2.8K" },
-        { id: "ss3", title: "Forest Night", duration: "60:00", plays: "4.1K" }
-      ]
+      tracks: []
     }
   ];
 
-  const yourPlaylist = [
-    { id: "yp1", title: "Morning Routine Mix", tracks: 12, duration: "1h 5m", image: "from-green-400 to-emerald-500" },
-    { id: "yp2", title: "Evening Wind Down", tracks: 8, duration: "45m", image: "from-indigo-400 to-purple-500" },
-    { id: "yp3", title: "Focus Sessions", tracks: 15, duration: "2h 15m", image: "from-blue-400 to-cyan-500" }
-  ];
+  const yourPlaylist = [];
 
   const handlePlayTrack = (trackId: string) => {
     if (playingTrack === trackId) {
@@ -110,93 +94,126 @@ const Discover = () => {
         {/* Audio Sections */}
         {audioSections.map((section, sectionIndex) => (
           <div key={section.title} className="mb-8 animate-fade-in" style={{ animationDelay: `${0.2 + sectionIndex * 0.1}s` }}>
-            <div className="flex items-center mb-4">
-              <div className={`w-12 h-12 bg-gradient-to-br ${section.color} rounded-lg flex items-center justify-center text-xl mr-4`}>
-                {section.icon}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <div className={`w-12 h-12 bg-gradient-to-br ${section.color} rounded-lg flex items-center justify-center text-xl mr-4`}>
+                  {section.icon}
+                </div>
+                <div>
+                  <h3 className="text-white text-xl font-semibold">{section.title}</h3>
+                  <p className="text-white/60 text-sm">{section.description}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-white text-xl font-semibold">{section.title}</h3>
-                <p className="text-white/60 text-sm">{section.description}</p>
-              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-white/60 hover:text-white hover:bg-white/10"
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Upload
+              </Button>
             </div>
 
-            <div className="space-y-2">
-              {section.tracks.map((track, trackIndex) => (
-                <div 
-                  key={track.id}
-                  className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-                  onClick={() => handlePlayTrack(track.id)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
-                        {playingTrack === track.id ? (
-                          <Pause className="w-5 h-5 text-white" />
-                        ) : (
-                          <Play className="w-5 h-5 text-white" />
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="text-white font-medium">{track.title}</h4>
-                        <div className="flex items-center space-x-3 text-white/60 text-sm">
-                          <span className="flex items-center space-x-1">
-                            <Clock className="w-3 h-3" />
-                            <span>{track.duration}</span>
-                          </span>
-                          <span>{track.plays} plays</span>
+            {section.tracks.length === 0 ? (
+              <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-8 text-center">
+                <Music className="w-12 h-12 text-white/30 mx-auto mb-4" />
+                <p className="text-white/60 mb-2">No tracks yet</p>
+                <p className="text-white/40 text-sm">Upload your first audio file to get started</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {section.tracks.map((track: any, trackIndex) => (
+                  <div 
+                    key={track.id}
+                    className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                    onClick={() => handlePlayTrack(track.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
+                          {playingTrack === track.id ? (
+                            <Pause className="w-5 h-5 text-white" />
+                          ) : (
+                            <Play className="w-5 h-5 text-white" />
+                          )}
+                        </div>
+                        <div>
+                          <h4 className="text-white font-medium">{track.title}</h4>
+                          <div className="flex items-center space-x-3 text-white/60 text-sm">
+                            <span className="flex items-center space-x-1">
+                              <Clock className="w-3 h-3" />
+                              <span>{track.duration}</span>
+                            </span>
+                            <span>{track.plays} plays</span>
+                          </div>
                         </div>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-white/60 hover:text-white hover:bg-white/10"
+                      >
+                        <Heart className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Your Playlist Section */}
+        <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white text-xl font-semibold">Your Playlists</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-white/60 hover:text-white hover:bg-white/10"
+            >
+              <Music className="w-4 h-4 mr-2" />
+              Create
+            </Button>
+          </div>
+          
+          {yourPlaylist.length === 0 ? (
+            <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-8 text-center">
+              <Music className="w-12 h-12 text-white/30 mx-auto mb-4" />
+              <p className="text-white/60 mb-2">No playlists yet</p>
+              <p className="text-white/40 text-sm">Create your first playlist to organize your favorite tracks</p>
+              <Button className="mt-4 bg-white/10 border border-white/20 backdrop-blur-md hover:bg-white/20 text-white">
+                <Music className="w-4 h-4 mr-2" />
+                Create Your First Playlist
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {yourPlaylist.map((playlist: any) => (
+                <div 
+                  key={playlist.id}
+                  className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-16 h-16 bg-gradient-to-br ${playlist.image} rounded-lg flex items-center justify-center`}>
+                      <Music className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-white font-medium text-lg">{playlist.title}</h4>
+                      <p className="text-white/60 text-sm">{playlist.tracks} tracks • {playlist.duration}</p>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="text-white/60 hover:text-white hover:bg-white/10"
                     >
-                      <Heart className="w-4 h-4" />
+                      <Play className="w-5 h-5" />
                     </Button>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        ))}
-
-        {/* Your Playlist Section */}
-        <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
-          <h3 className="text-white text-xl font-semibold mb-4">Your Playlists</h3>
-          <div className="grid grid-cols-1 gap-4">
-            {yourPlaylist.map((playlist) => (
-              <div 
-                key={playlist.id}
-                className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${playlist.image} rounded-lg flex items-center justify-center`}>
-                    <Music className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-white font-medium text-lg">{playlist.title}</h4>
-                    <p className="text-white/60 text-sm">{playlist.tracks} tracks • {playlist.duration}</p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-white/60 hover:text-white hover:bg-white/10"
-                  >
-                    <Play className="w-5 h-5" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Create Playlist Button */}
-        <div className="mt-8 animate-fade-in" style={{ animationDelay: "0.6s" }}>
-          <Button className="w-full bg-white/10 border border-white/20 backdrop-blur-md hover:bg-white/20 text-white">
-            <Music className="w-4 h-4 mr-2" />
-            Create New Playlist
-          </Button>
+          )}
         </div>
       </div>
 
