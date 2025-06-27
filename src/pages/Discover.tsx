@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -195,8 +196,15 @@ const Discover = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
-                        <Play className="w-5 h-5 text-white" />
+                      <div className="relative">
+                        <img 
+                          src={track.cover_art_url || "/lovable-uploads/b9735981-828e-4d4b-b080-d0eefc24c1f7.png"} 
+                          alt={track.title}
+                          className="w-12 h-12 rounded-lg object-cover shadow-lg"
+                        />
+                        <div className="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
+                          <Play className="w-4 h-4 text-white" />
+                        </div>
                       </div>
                       <div>
                         <h4 className="text-white font-medium">{track.title}</h4>
@@ -377,8 +385,15 @@ const Discover = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
-                        <Play className="w-5 h-5 text-white" />
+                      <div className="relative">
+                        <img 
+                          src={track.cover_art_url || "/lovable-uploads/b9735981-828e-4d4b-b080-d0eefc24c1f7.png"} 
+                          alt={track.title}
+                          className="w-12 h-12 rounded-lg object-cover shadow-lg"
+                        />
+                        <div className="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
+                          <Play className="w-4 h-4 text-white" />
+                        </div>
                       </div>
                       <div>
                         <h4 className="text-white font-medium">{track.title}</h4>
