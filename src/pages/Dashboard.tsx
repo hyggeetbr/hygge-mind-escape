@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { CalendarDays, ListChecks, Sparkles, BookOpen, User, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -261,71 +260,77 @@ const Dashboard = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
             <div
-              className="relative p-6 cursor-pointer transform transition-all duration-300 hover:scale-105 rounded-2xl border border-white/20 shadow-lg overflow-hidden"
+              className="relative p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 rounded-2xl border border-white/30 shadow-2xl overflow-hidden"
               onClick={handleMeditate}
               style={{
-                backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80)',
+                backgroundImage: 'url(/lovable-uploads/d17b2fe6-8631-425c-b185-9aba3b38c6ba.png)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
             >
-              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
               <div className="relative z-10 text-center">
-                <Sparkles className="w-8 h-8 text-white mx-auto mb-4" />
-                <h3 className="text-xl font-medium mb-2 text-white">Meditate</h3>
-                <p className="text-white/80">Find your inner peace with guided meditation.</p>
+                <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 border border-white/20">
+                  <Sparkles className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-light mb-3 text-white tracking-wide">Meditate</h3>
+                <p className="text-white/90 text-sm font-light leading-relaxed">Find your inner peace with guided meditation sessions</p>
               </div>
             </div>
 
             <div
-              className="relative p-6 cursor-pointer transform transition-all duration-300 hover:scale-105 rounded-2xl border border-white/20 shadow-lg overflow-hidden"
+              className="relative p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 rounded-2xl border border-white/30 shadow-2xl overflow-hidden"
               onClick={handleYoga}
               style={{
-                backgroundImage: 'url(https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80)',
+                backgroundImage: 'url(/lovable-uploads/d17b2fe6-8631-425c-b185-9aba3b38c6ba.png)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
             >
-              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
               <div className="relative z-10 text-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-white mx-auto mb-4"
-                >
-                  <path d="M4 4v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2V4"/>
-                  <path d="M4 12v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2v-4"/>
-                  <path d="M4 20v-2c0-1.5 1-2 2.5 2h0c1.5 0 2.5.5 2.5 2v2"/>
-                  <path d="M12 4v16"/>
-                  <path d="M12 12H20"/>
-                  <path d="M16 8v8"/>
-                </svg>
-                <h3 className="text-xl font-medium mb-2 text-white">Yoga</h3>
-                <p className="text-white/80">Rejuvenate your body and mind with yoga sessions.</p>
+                <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 border border-white/20">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-white"
+                  >
+                    <path d="M4 4v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2V4"/>
+                    <path d="M4 12v4c0 1.5 1 2 2.5 2h0c1.5 0 2.5-.5 2.5-2v-4"/>
+                    <path d="M4 20v-2c0-1.5 1-2 2.5 2h0c1.5 0 2.5.5 2.5 2v2"/>
+                    <path d="M12 4v16"/>
+                    <path d="M12 12H20"/>
+                    <path d="M16 8v8"/>
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-light mb-3 text-white tracking-wide">Yoga</h3>
+                <p className="text-white/90 text-sm font-light leading-relaxed">Rejuvenate your body and mind with yoga practices</p>
               </div>
             </div>
 
             <div
-              className="relative p-6 cursor-pointer transform transition-all duration-300 hover:scale-105 rounded-2xl border border-white/20 shadow-lg overflow-hidden"
+              className="relative p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 rounded-2xl border border-white/30 shadow-2xl overflow-hidden"
               onClick={handleTodaysReading}
               style={{
-                backgroundImage: 'url(https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=800&q=80)',
+                backgroundImage: 'url(/lovable-uploads/d17b2fe6-8631-425c-b185-9aba3b38c6ba.png)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
             >
-              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
               <div className="relative z-10 text-center">
-                <BookOpen className="w-8 h-8 text-white mx-auto mb-4" />
-                <h3 className="text-xl font-medium mb-2 text-white">Read</h3>
-                <p className="text-white/80">Enlighten your mind with today's curated article.</p>
+                <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 border border-white/20">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-light mb-3 text-white tracking-wide">Read</h3>
+                <p className="text-white/90 text-sm font-light leading-relaxed">Enlighten your mind with today's curated articles</p>
               </div>
             </div>
           </div>
