@@ -249,8 +249,10 @@ const Discover = () => {
               <span className="text-white/60 text-xs">Home</span>
             </div>
             <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
-              <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">🔍</div>
-              <span className="text-white text-xs font-medium">Explore</span>
+              <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                <Music className="w-4 h-4 text-black" />
+              </div>
+              <span className="text-white text-xs font-medium">Echo</span>
             </div>
             <div 
               className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
@@ -302,7 +304,7 @@ const Discover = () => {
         >
           <ArrowLeft size={20} />
         </Button>
-        <h1 className="text-white text-xl font-medium">Explore</h1>
+        <h1 className="text-white text-xl font-medium">Echo</h1>
         <Button variant="ghost" size="icon" className="text-white/80 hover:bg-white/10 hover:text-white">
           <Search size={20} />
         </Button>
@@ -439,8 +441,10 @@ const Discover = () => {
             <span className="text-white/60 text-xs">Home</span>
           </div>
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
-            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">🔍</div>
-            <span className="text-white text-xs font-medium">Explore</span>
+            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+              <Music className="w-4 h-4 text-black" />
+            </div>
+            <span className="text-white text-xs font-medium">Echo</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
