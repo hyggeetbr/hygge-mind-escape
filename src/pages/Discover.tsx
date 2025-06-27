@@ -1,57 +1,61 @@
 
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Sparkles, BookOpen, Music, Heart, TrendingUp, Brain, Leaf, Home, Users, Bot } from "lucide-react";
+import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const Discover = () => {
   const navigate = useNavigate();
+  const [playingTrack, setPlayingTrack] = useState<string | null>(null);
 
-  const categories = [
-    { name: "Trending", icon: TrendingUp, color: "bg-calm-orange" },
-    { name: "Mindfulness", icon: Brain, color: "bg-calm-purple" },
-    { name: "Self-Care", icon: Heart, color: "bg-pink-500" },
-    { name: "Nature", icon: Leaf, color: "bg-green-500" }
-  ];
-
-  const featuredContent = [
+  const audioSections = [
     {
-      title: "7 Days of Mindfulness",
-      category: "Program",
-      image: "from-blue-400 to-purple-500",
-      participants: "12.3K"
+      title: "Morning Affirmations",
+      description: "Start your day with positive energy",
+      icon: "🌅",
+      color: "from-orange-500 to-yellow-500",
+      tracks: [
+        { id: "ma1", title: "I Am Powerful", duration: "5:30", plays: "1.2K" },
+        { id: "ma2", title: "Success Mindset", duration: "7:15", plays: "890" },
+        { id: "ma3", title: "Confidence Boost", duration: "4:45", plays: "2.1K" }
+      ]
     },
     {
-      title: "Morning Energy Boost",
-      category: "Meditation",
-      image: "from-yellow-400 to-orange-500",
-      participants: "8.7K"
+      title: "Daily Wisdom", 
+      description: "Inspirational thoughts for reflection",
+      icon: "🧠",
+      color: "from-purple-500 to-indigo-500",
+      tracks: [
+        { id: "dw1", title: "Mindful Living", duration: "6:20", plays: "1.5K" },
+        { id: "dw2", title: "Inner Peace", duration: "8:10", plays: "967" },
+        { id: "dw3", title: "Life Lessons", duration: "5:55", plays: "1.8K" }
+      ]
     },
     {
-      title: "Stress Relief in 5 Minutes",
-      category: "Quick Session",
-      image: "from-green-400 to-teal-500",
-      participants: "15.2K"
+      title: "Sleep Sounds",
+      description: "Peaceful sounds for better rest",
+      icon: "🌙",
+      color: "from-blue-500 to-purple-600",
+      tracks: [
+        { id: "ss1", title: "Rain & Thunder", duration: "30:00", plays: "3.2K" },
+        { id: "ss2", title: "Ocean Waves", duration: "45:00", plays: "2.8K" },
+        { id: "ss3", title: "Forest Night", duration: "60:00", plays: "4.1K" }
+      ]
     }
   ];
 
-  const handleDashboard = () => {
-    navigate("/dashboard");
-  };
+  const yourPlaylist = [
+    { id: "yp1", title: "Morning Routine Mix", tracks: 12, duration: "1h 5m", image: "from-green-400 to-emerald-500" },
+    { id: "yp2", title: "Evening Wind Down", tracks: 8, duration: "45m", image: "from-indigo-400 to-purple-500" },
+    { id: "yp3", title: "Focus Sessions", tracks: 15, duration: "2h 15m", image: "from-blue-400 to-cyan-500" }
+  ];
 
-  const handleCommunity = () => {
-    navigate("/community");
-  };
-
-  const handleProfile = () => {
-    navigate("/profile");
-  };
-
-  const handlePremium = () => {
-    navigate("/premium");
-  };
-
-  const handleAskAI = () => {
-    navigate("/ask-ai");
+  const handlePlayTrack = (trackId: string) => {
+    if (playingTrack === trackId) {
+      setPlayingTrack(null);
+    } else {
+      setPlayingTrack(trackId);
+    }
   };
 
   return (
@@ -73,7 +77,7 @@ const Discover = () => {
         >
           <ArrowLeft size={20} />
         </Button>
-        <h1 className="text-white text-xl font-medium">Discover</h1>
+        <h1 className="text-white text-xl font-medium">Explore</h1>
         <Button variant="ghost" size="icon" className="text-white/80 hover:bg-white/10 hover:text-white">
           <Search size={20} />
         </Button>
@@ -81,77 +85,147 @@ const Discover = () => {
 
       {/* Main Content */}
       <div className="relative z-10 px-6 pb-32">
+        {/* Welcome Section */}
         <div className="mb-8 animate-fade-in">
-          <h2 className="text-white text-3xl font-light mb-4">Explore & Grow</h2>
-          <p className="text-white/70 text-lg leading-relaxed">
-            Discover new practices, programs, and insights to enhance your mindful journey.
+          <h2 className="text-white text-3xl font-light mb-2">Good Morning</h2>
+          <p className="text-white/70 text-lg">
+            Discover audio content to enhance your mindful journey
           </p>
         </div>
 
         {/* Search Bar */}
         <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-2xl p-4">
+          <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-xl p-4">
             <div className="flex items-center space-x-3">
               <Search className="w-5 h-5 text-white/60" />
               <input 
                 type="text" 
-                placeholder="Search meditations, programs, music..."
+                placeholder="Search for affirmations, wisdom, sounds..."
                 className="flex-1 bg-transparent border-none outline-none text-white placeholder-white/60"
               />
             </div>
           </div>
         </div>
 
-        {/* Categories */}
-        <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-          <h3 className="text-white text-xl font-medium mb-4">Categories</h3>
-          <div className="grid grid-cols-2 gap-4">
-            {categories.map((category, index) => (
-              <div 
-                key={category.name}
-                className="bg-white/10 border border-white/20 backdrop-blur-md rounded-2xl p-4 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:bg-white/20"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 ${category.color} rounded-lg flex items-center justify-center`}>
-                    <category.icon className="w-5 h-5 text-white" />
+        {/* Audio Sections */}
+        {audioSections.map((section, sectionIndex) => (
+          <div key={section.title} className="mb-8 animate-fade-in" style={{ animationDelay: `${0.2 + sectionIndex * 0.1}s` }}>
+            <div className="flex items-center mb-4">
+              <div className={`w-12 h-12 bg-gradient-to-br ${section.color} rounded-lg flex items-center justify-center text-xl mr-4`}>
+                {section.icon}
+              </div>
+              <div>
+                <h3 className="text-white text-xl font-semibold">{section.title}</h3>
+                <p className="text-white/60 text-sm">{section.description}</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {section.tracks.map((track, trackIndex) => (
+                <div 
+                  key={track.id}
+                  className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                  onClick={() => handlePlayTrack(track.id)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
+                        {playingTrack === track.id ? (
+                          <Pause className="w-5 h-5 text-white" />
+                        ) : (
+                          <Play className="w-5 h-5 text-white" />
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="text-white font-medium">{track.title}</h4>
+                        <div className="flex items-center space-x-3 text-white/60 text-sm">
+                          <span className="flex items-center space-x-1">
+                            <Clock className="w-3 h-3" />
+                            <span>{track.duration}</span>
+                          </span>
+                          <span>{track.plays} plays</span>
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-white/60 hover:text-white hover:bg-white/10"
+                    >
+                      <Heart className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <span className="font-medium text-white">{category.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {/* Your Playlist Section */}
+        <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
+          <h3 className="text-white text-xl font-semibold mb-4">Your Playlists</h3>
+          <div className="grid grid-cols-1 gap-4">
+            {yourPlaylist.map((playlist) => (
+              <div 
+                key={playlist.id}
+                className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className={`w-16 h-16 bg-gradient-to-br ${playlist.image} rounded-lg flex items-center justify-center`}>
+                    <Music className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-white font-medium text-lg">{playlist.title}</h4>
+                    <p className="text-white/60 text-sm">{playlist.tracks} tracks • {playlist.duration}</p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-white/60 hover:text-white hover:bg-white/10"
+                  >
+                    <Play className="w-5 h-5" />
+                  </Button>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Featured Content */}
-        <div className="animate-fade-in" style={{ animationDelay: "0.3s" }}>
-          <h3 className="text-white text-xl font-medium mb-4">Featured This Week</h3>
-          <div className="space-y-4">
-            {featuredContent.map((item, index) => (
-              <div 
-                key={item.title}
-                className="bg-white/10 border border-white/20 backdrop-blur-md rounded-2xl p-0 overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:bg-white/20"
-              >
-                <div className="flex">
-                  <div className={`w-20 h-20 bg-gradient-to-br ${item.image} flex items-center justify-center`}>
-                    <Heart className="w-8 h-8 text-white" />
-                  </div>
-                  <div className="p-4 flex-1">
-                    <h4 className="font-semibold text-white mb-1">{item.title}</h4>
-                    <p className="text-white/60 text-sm mb-2">{item.category}</p>
-                    <div className="flex items-center space-x-1 text-calm-purple text-xs">
-                      <div className="w-2 h-2 bg-calm-purple rounded-full"></div>
-                      <span>{item.participants} participants</span>
-                    </div>
-                  </div>
-                  <div className="p-4 flex items-center">
-                    <div className="text-white/60">›</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Create Playlist Button */}
+        <div className="mt-8 animate-fade-in" style={{ animationDelay: "0.6s" }}>
+          <Button className="w-full bg-white/10 border border-white/20 backdrop-blur-md hover:bg-white/20 text-white">
+            <Music className="w-4 h-4 mr-2" />
+            Create New Playlist
+          </Button>
         </div>
       </div>
+
+      {/* Now Playing Bar */}
+      {playingTrack && (
+        <div className="fixed bottom-24 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-40">
+          <div className="flex items-center justify-between p-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                <Volume2 className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-white font-medium">Now Playing</p>
+                <p className="text-white/60 text-sm">Track is playing...</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setPlayingTrack(null)}
+                className="text-white hover:bg-white/10"
+              >
+                <Pause className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-30">
@@ -167,7 +241,7 @@ const Discover = () => {
           </div>
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">🔍</div>
-            <span className="text-white text-xs font-medium">Discover</span>
+            <span className="text-white text-xs font-medium">Explore</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
