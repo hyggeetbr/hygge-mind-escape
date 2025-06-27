@@ -103,7 +103,7 @@ export const AudioPlayer = ({ track, onClose }: AudioPlayerProps) => {
       <div className="flex-1 flex items-center justify-center px-6">
         <div className="w-80 h-80 bg-white/10 rounded-lg backdrop-blur-md flex items-center justify-center">
           <img 
-            src="/lovable-uploads/b9735981-828e-4d4b-b080-d0eefc24c1f7.png" 
+            src={track.cover_art_url || "/lovable-uploads/b9735981-828e-4d4b-b080-d0eefc24c1f7.png"} 
             alt={track.title}
             className="w-full h-full object-cover rounded-lg shadow-2xl"
           />
@@ -113,7 +113,7 @@ export const AudioPlayer = ({ track, onClose }: AudioPlayerProps) => {
       {/* Track Info */}
       <div className="px-6 py-4 text-center text-white">
         <h1 className="text-2xl font-bold mb-2">{track.title}</h1>
-        <p className="text-lg opacity-80">Arijit Singh</p>
+        <p className="text-lg opacity-80">{track.artist || "Unknown Artist"}</p>
       </div>
 
       {/* Progress Bar */}

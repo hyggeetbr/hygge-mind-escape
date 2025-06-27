@@ -14,6 +14,8 @@ export interface AudioTrack {
   uploaded_by: string | null;
   is_public: boolean;
   play_count: number;
+  artist: string | null;
+  cover_art_url: string | null;
   created_at: string;
   updated_at: string;
 }

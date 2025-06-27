@@ -198,7 +198,9 @@ export type Database = {
       }
       audio_tracks: {
         Row: {
+          artist: string | null
           category: string
+          cover_art_url: string | null
           created_at: string
           description: string | null
           duration_seconds: number | null
@@ -213,7 +215,9 @@ export type Database = {
           uploaded_by: string | null
         }
         Insert: {
+          artist?: string | null
           category: string
+          cover_art_url?: string | null
           created_at?: string
           description?: string | null
           duration_seconds?: number | null
@@ -228,7 +232,9 @@ export type Database = {
           uploaded_by?: string | null
         }
         Update: {
+          artist?: string | null
           category?: string
+          cover_art_url?: string | null
           created_at?: string
           description?: string | null
           duration_seconds?: number | null
