@@ -146,10 +146,6 @@ const AskAI = () => {
     navigate("/community");
   };
 
-  const handlePremium = () => {
-    navigate("/premium");
-  };
-
   return (
     <div className="min-h-screen calm-gradient relative overflow-hidden flex">
       {/* Floating background elements */}
@@ -246,7 +242,7 @@ const AskAI = () => {
               </div>
             </div>
 
-            {/* Quick Suggestions (only show when no current session) */}
+            {/* Quick Suggestions - Fixed font color */}
             {(!currentSessionId || messages.length <= 1) && (
               <div className="mt-6 animate-fade-in" style={{ animationDelay: "0.2s" }}>
                 <h3 className="text-white text-lg font-medium mb-4">Quick Questions</h3>
@@ -263,7 +259,7 @@ const AskAI = () => {
                       className="calm-card p-3 text-left hover:bg-white/5 transition-colors"
                       disabled={isLoading}
                     >
-                      <span className="text-black">{suggestion}</span>
+                      <span className="text-white">{suggestion}</span>
                     </button>
                   ))}
                 </div>
@@ -272,7 +268,7 @@ const AskAI = () => {
           </div>
         </div>
 
-        {/* Bottom Navigation - Updated with Music icon and Echo label */}
+        {/* Bottom Navigation - Updated */}
         <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
           <div className="flex justify-around py-4 px-2">
             <div 
@@ -307,13 +303,6 @@ const AskAI = () => {
                 <Bot className="w-4 h-4 text-calm-purple" />
               </div>
               <span className="text-white text-xs font-medium">Lumina</span>
-            </div>
-            <div 
-              className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-              onClick={handlePremium}
-            >
-              <div className="w-6 h-6 text-white/60 flex items-center justify-center">⭐</div>
-              <span className="text-white/60 text-xs">Premium</span>
             </div>
           </div>
         </div>

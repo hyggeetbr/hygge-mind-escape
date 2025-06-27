@@ -320,7 +320,7 @@ const Community = () => {
         onSubmit={handleCreatePost}
       />
 
-      {/* Bottom Navigation - Updated with Music icon and Echo label */}
+      {/* Bottom Navigation - Updated */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
         <div className="flex justify-around py-4 px-2">
           <div 
@@ -355,13 +355,6 @@ const Community = () => {
               <Bot className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Lumina</span>
-          </div>
-          <div 
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={() => navigate("/premium")}
-          >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">⭐</div>
-            <span className="text-white/60 text-xs">Premium</span>
           </div>
         </div>
       </div>
