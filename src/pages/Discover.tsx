@@ -1,15 +1,16 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAudioTracks } from "@/hooks/useAudioTracks";
 import { useUserPlaylists } from "@/hooks/useUserPlaylists";
+import { AudioPlayer } from "@/components/AudioPlayer";
 
 const Discover = () => {
   const navigate = useNavigate();
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
+  const [fullScreenTrack, setFullScreenTrack] = useState<any | null>(null);
 
   // Fetch audio tracks for each category
   const { tracks: morningTracks, loading: morningLoading, incrementPlayCount: incrementMorningPlay } = useAudioTracks('morning_affirmations');
@@ -49,40 +50,19 @@ const Discover = () => {
     }
   ];
 
-  const handlePlayTrack = async (trackId: string, fileUrl: string, incrementPlayCount: (id: string) => void) => {
+  const handlePlayTrack = async (trackId: string, fileUrl: string, incrementPlayCount: (id: string) => void, track: any) => {
     console.log('Playing track:', trackId, fileUrl);
     
-    if (playingTrack === trackId) {
-      // Stop current track
-      if (currentAudio) {
-        currentAudio.pause();
-        setCurrentAudio(null);
-      }
-      setPlayingTrack(null);
-    } else {
-      // Stop any currently playing audio
-      if (currentAudio) {
-        currentAudio.pause();
-      }
-      
-      // Create new audio element and play
-      const audio = new Audio(fileUrl);
-      audio.play()
-        .then(() => {
-          setPlayingTrack(trackId);
-          setCurrentAudio(audio);
-          incrementPlayCount(trackId);
-        })
-        .catch((error) => {
-          console.error('Error playing audio:', error);
-        });
-
-      // Handle audio end
-      audio.addEventListener('ended', () => {
-        setPlayingTrack(null);
-        setCurrentAudio(null);
-      });
+    // Stop any currently playing audio
+    if (currentAudio) {
+      currentAudio.pause();
+      setCurrentAudio(null);
     }
+    setPlayingTrack(null);
+    
+    // Open full screen player
+    setFullScreenTrack(track);
+    incrementPlayCount(trackId);
   };
 
   const formatDuration = (seconds: number | null) => {
@@ -91,6 +71,10 @@ const Discover = () => {
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
+
+  if (fullScreenTrack) {
+    return <AudioPlayer track={fullScreenTrack} onClose={() => setFullScreenTrack(null)} />;
+  }
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -173,16 +157,12 @@ const Discover = () => {
                   <div 
                     key={track.id}
                     className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-                    onClick={() => handlePlayTrack(track.id, track.file_url, section.incrementPlayCount)}
+                    onClick={() => handlePlayTrack(track.id, track.file_url, section.incrementPlayCount, track)}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
-                          {playingTrack === track.id ? (
-                            <Pause className="w-5 h-5 text-white" />
-                          ) : (
-                            <Play className="w-5 h-5 text-white" />
-                          )}
+                          <Play className="w-5 h-5 text-white" />
                         </div>
                         <div>
                           <h4 className="text-white font-medium">{track.title}</h4>
@@ -269,39 +249,6 @@ const Discover = () => {
           )}
         </div>
       </div>
-
-      {/* Now Playing Bar */}
-      {playingTrack && (
-        <div className="fixed bottom-24 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-40">
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <Volume2 className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-white font-medium">Now Playing</p>
-                <p className="text-white/60 text-sm">Audio track is playing...</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  if (currentAudio) {
-                    currentAudio.pause();
-                    setCurrentAudio(null);
-                  }
-                  setPlayingTrack(null);
-                }}
-                className="text-white hover:bg-white/10"
-              >
-                <Pause className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-30">
