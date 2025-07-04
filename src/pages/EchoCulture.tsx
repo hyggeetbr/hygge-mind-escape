@@ -9,48 +9,11 @@ import * as THREE from "three";
 // Earth component with realistic textures
 function Earth() {
   const earthRef = useRef<THREE.Mesh>(null);
-  
-  // Create earth texture (using a simple color for now, can be replaced with actual earth texture)
-  const earthTexture = useMemo(() => {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = 512;
-    canvas.height = 256;
-    
-    if (context) {
-      // Create a gradient that resembles Earth colors
-      const gradient = context.createLinearGradient(0, 0, 512, 256);
-      gradient.addColorStop(0, '#4A90E2');    // Ocean blue
-      gradient.addColorStop(0.3, '#7ED321');  // Land green
-      gradient.addColorStop(0.5, '#F5A623');  // Desert yellow
-      gradient.addColorStop(0.7, '#8B572A');  // Mountain brown
-      gradient.addColorStop(1, '#FFFFFF');    // Ice white
-      
-      context.fillStyle = gradient;
-      context.fillRect(0, 0, 512, 256);
-      
-      // Add some continent-like shapes
-      context.fillStyle = '#228B22';
-      context.beginPath();
-      context.arc(100, 100, 40, 0, Math.PI * 2);
-      context.fill();
-      
-      context.beginPath();
-      context.arc(300, 80, 60, 0, Math.PI * 2);
-      context.fill();
-      
-      context.beginPath();
-      context.arc(400, 150, 50, 0, Math.PI * 2);
-      context.fill();
-    }
-    
-    return new THREE.CanvasTexture(canvas);
-  }, []);
 
   return (
-    <Sphere ref={earthRef} args={[2, 32, 32]} position={[0, 0, 0]}>
+    <Sphere ref={earthRef} args={[2, 64, 64]} position={[0, 0, 0]}>
       <meshPhongMaterial 
-        map={earthTexture}
+        color="#4A90E2"
         shininess={100}
         specular={new THREE.Color(0x111111)}
       />
