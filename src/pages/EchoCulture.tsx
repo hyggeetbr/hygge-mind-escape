@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
@@ -33,6 +33,29 @@ function Stars() {
 // Earth component with clickable country buttons
 function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const [buttonsVisible, setButtonsVisible] = useState(true);
+  const { camera } = useThree();
+
+  useFrame(() => {
+    if (meshRef.current) {
+      // Get camera position
+      const cameraPosition = camera.position.clone();
+      
+      // Light source position (directional light is at [5, 3, 5])
+      const lightPosition = new THREE.Vector3(5, 3, 5);
+      
+      // Calculate if the camera is on the same side as the light source
+      // We check the dot product of normalized vectors from Earth center
+      const cameraDirection = cameraPosition.clone().normalize();
+      const lightDirection = lightPosition.clone().normalize();
+      
+      // If dot product is positive, camera and light are on the same side
+      const dotProduct = cameraDirection.dot(lightDirection);
+      
+      // Show buttons only when camera is viewing the bright side
+      setButtonsVisible(dotProduct > 0.1);
+    }
+  });
 
   const handleCountryClick = (country: string) => {
     console.log(`${country} button clicked`);
@@ -51,33 +74,37 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
         />
       </mesh>
 
-      {/* Country buttons positioned on the bright side of Earth */}
-      <Html position={[1.8, 0.8, 1.2]} distanceFactor={8}>
-        <button
-          onClick={() => handleCountryClick('China')}
-          className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 border border-gray-300 shadow-lg cursor-pointer"
-        >
-          China
-        </button>
-      </Html>
+      {/* Country buttons - only visible when on bright side */}
+      {buttonsVisible && (
+        <>
+          <Html position={[1.8, 0.8, 1.2]} distanceFactor={8}>
+            <button
+              onClick={() => handleCountryClick('China')}
+              className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 border border-gray-300 shadow-lg cursor-pointer"
+            >
+              China
+            </button>
+          </Html>
 
-      <Html position={[1.2, -0.5, 2]} distanceFactor={8}>
-        <button
-          onClick={() => handleCountryClick('India')}
-          className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 border border-gray-300 shadow-lg cursor-pointer"
-        >
-          India
-        </button>
-      </Html>
+          <Html position={[1.2, -0.5, 2]} distanceFactor={8}>
+            <button
+              onClick={() => handleCountryClick('India')}
+              className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 border border-gray-300 shadow-lg cursor-pointer"
+            >
+              India
+            </button>
+          </Html>
 
-      <Html position={[2.2, 0.2, 0.8]} distanceFactor={8}>
-        <button
-          onClick={() => handleCountryClick('Japan')}
-          className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 border border-gray-300 shadow-lg cursor-pointer"
-        >
-          Japan
-        </button>
-      </Html>
+          <Html position={[2.2, 0.2, 0.8]} distanceFactor={8}>
+            <button
+              onClick={() => handleCountryClick('Japan')}
+              className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 border border-gray-300 shadow-lg cursor-pointer"
+            >
+              Japan
+            </button>
+          </Html>
+        </>
+      )}
     </group>
   );
 }
