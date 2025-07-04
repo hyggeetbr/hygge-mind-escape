@@ -31,14 +31,16 @@ function Stars() {
   );
 }
 
-// Earth component with guaranteed texture loading
-function Earth() {
+// Earth component with India, China, and Japan
+function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [isTextureReady, setIsTextureReady] = useState(false);
   const [earthTexture, setEarthTexture] = useState<THREE.Texture | null>(null);
+  const raycaster = useRef(new THREE.Raycaster());
+  const mouse = useRef(new THREE.Vector2());
 
   useEffect(() => {
-    console.log('Creating Earth texture synchronously...');
+    console.log('Creating Earth texture with India, China, and Japan...');
     
     const createEarthTexture = () => {
       const canvas = document.createElement('canvas');
@@ -49,7 +51,7 @@ function Earth() {
       if (!ctx) return null;
       
       // Deep ocean blue background
-      ctx.fillStyle = '#1a237e';
+      ctx.fillStyle = '#1565c0';
       ctx.fillRect(0, 0, 2048, 1024);
       
       // Ocean depth variations
@@ -59,104 +61,44 @@ function Earth() {
       ctx.fillStyle = oceanGradient;
       ctx.fillRect(0, 0, 2048, 1024);
       
-      // North America
-      ctx.fillStyle = '#4a5d23';
+      // India (South Asia)
+      ctx.fillStyle = '#4caf50';
       ctx.beginPath();
-      ctx.moveTo(300, 200);
-      ctx.quadraticCurveTo(250, 150, 350, 175);
-      ctx.quadraticCurveTo(450, 190, 425, 275);
-      ctx.quadraticCurveTo(375, 325, 350, 300);
-      ctx.quadraticCurveTo(325, 250, 300, 200);
+      ctx.moveTo(1300, 350);
+      ctx.quadraticCurveTo(1350, 340, 1380, 370);
+      ctx.quadraticCurveTo(1400, 420, 1370, 480);
+      ctx.quadraticCurveTo(1340, 520, 1300, 500);
+      ctx.quadraticCurveTo(1280, 460, 1290, 400);
+      ctx.quadraticCurveTo(1285, 370, 1300, 350);
       ctx.fill();
       
-      // South America
-      ctx.fillStyle = '#4a5d23';
+      // China (East Asia)
+      ctx.fillStyle = '#ff9800';
       ctx.beginPath();
-      ctx.moveTo(375, 350);
-      ctx.quadraticCurveTo(400, 325, 390, 400);
-      ctx.quadraticCurveTo(380, 500, 360, 600);
-      ctx.quadraticCurveTo(350, 550, 365, 450);
-      ctx.quadraticCurveTo(360, 375, 375, 350);
+      ctx.moveTo(1450, 250);
+      ctx.quadraticCurveTo(1550, 240, 1600, 280);
+      ctx.quadraticCurveTo(1620, 320, 1590, 360);
+      ctx.quadraticCurveTo(1540, 380, 1480, 370);
+      ctx.quadraticCurveTo(1430, 340, 1440, 290);
+      ctx.quadraticCurveTo(1435, 260, 1450, 250);
       ctx.fill();
       
-      // Amazon rainforest
-      ctx.fillStyle = '#1b5e20';
+      // Japan (Island nation east of China)
+      ctx.fillStyle = '#e91e63';
       ctx.beginPath();
-      ctx.ellipse(380, 425, 25, 40, 0, 0, 2 * Math.PI);
+      ctx.ellipse(1650, 300, 25, 60, Math.PI / 6, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Europe
-      ctx.fillStyle = '#4a5d23';
+      // Small Japanese islands
       ctx.beginPath();
-      ctx.ellipse(1100, 175, 40, 30, 0, 0, 2 * Math.PI);
+      ctx.ellipse(1670, 280, 8, 15, Math.PI / 4, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Africa
-      ctx.fillStyle = '#8d6e63';
       ctx.beginPath();
-      ctx.moveTo(1050, 250);
-      ctx.quadraticCurveTo(1100, 240, 1125, 300);
-      ctx.quadraticCurveTo(1140, 400, 1100, 500);
-      ctx.quadraticCurveTo(1075, 550, 1025, 500);
-      ctx.quadraticCurveTo(1000, 350, 1050, 250);
+      ctx.ellipse(1635, 330, 12, 20, -Math.PI / 8, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Sahara Desert
-      ctx.fillStyle = '#ffa726';
-      ctx.beginPath();
-      ctx.ellipse(1075, 275, 50, 20, 0, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Asia
-      ctx.fillStyle = '#4a5d23';
-      ctx.beginPath();
-      ctx.moveTo(1200, 150);
-      ctx.quadraticCurveTo(1400, 125, 1600, 160);
-      ctx.quadraticCurveTo(1700, 200, 1650, 300);
-      ctx.quadraticCurveTo(1450, 325, 1250, 275);
-      ctx.quadraticCurveTo(1175, 200, 1200, 150);
-      ctx.fill();
-      
-      // China
-      ctx.fillStyle = '#6d4c41';
-      ctx.beginPath();
-      ctx.ellipse(1450, 225, 60, 40, 0, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Australia
-      ctx.fillStyle = '#d7ccc8';
-      ctx.beginPath();
-      ctx.ellipse(1650, 600, 60, 40, 0, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Greenland
-      ctx.fillStyle = '#f5f5f5';
-      ctx.beginPath();
-      ctx.ellipse(500, 100, 40, 30, 0, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Antarctica
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 900, 2048, 124);
-      
-      // Arctic
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 2048, 60);
-      
-      // Cloud cover
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-      for (let i = 0; i < 25; i++) {
-        const x = Math.random() * 2048;
-        const y = Math.random() * 1024;
-        const width = 40 + Math.random() * 60;
-        const height = width * 0.4;
-        
-        ctx.beginPath();
-        ctx.ellipse(x, y, width, height, 0, 0, 2 * Math.PI);
-        ctx.fill();
-      }
-      
-      console.log('Earth texture created successfully');
+      console.log('Earth texture created successfully with three countries');
       
       const texture = new THREE.CanvasTexture(canvas);
       texture.wrapS = THREE.RepeatWrapping;
@@ -168,7 +110,6 @@ function Earth() {
       return texture;
     };
 
-    // Create texture synchronously
     const texture = createEarthTexture();
     if (texture) {
       setEarthTexture(texture);
@@ -177,13 +118,65 @@ function Earth() {
     }
   }, []);
 
-  // Don't render until texture is ready
+  const handleClick = (event: any) => {
+    if (!meshRef.current) return;
+    
+    // Convert mouse position to normalized device coordinates
+    const rect = event.target.getBoundingClientRect();
+    mouse.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    
+    // Get camera from the scene
+    const camera = event.target.parentElement?.camera || event.camera;
+    if (!camera) return;
+    
+    raycaster.current.setFromCamera(mouse.current, camera);
+    const intersects = raycaster.current.intersectObject(meshRef.current);
+    
+    if (intersects.length > 0) {
+      const intersection = intersects[0];
+      const uv = intersection.uv;
+      
+      if (uv) {
+        // Convert UV coordinates to texture coordinates
+        const x = uv.x * 2048;
+        const y = (1 - uv.y) * 1024;
+        
+        console.log('Clicked at texture coordinates:', x, y);
+        
+        // Check which country was clicked based on texture coordinates
+        // India region
+        if (x >= 1280 && x <= 1400 && y >= 340 && y <= 520) {
+          console.log('India clicked');
+          onCountryClick('India');
+        }
+        // China region
+        else if (x >= 1430 && x <= 1620 && y >= 240 && y <= 380) {
+          console.log('China clicked');
+          onCountryClick('China');
+        }
+        // Japan region
+        else if (x >= 1610 && x <= 1690 && y >= 240 && y <= 360) {
+          console.log('Japan clicked');
+          onCountryClick('Japan');
+        }
+      }
+    }
+  };
+
   if (!isTextureReady || !earthTexture) {
     return null;
   }
 
   return (
-    <mesh ref={meshRef} position={[0, 0, 0]}>
+    <mesh 
+      ref={meshRef} 
+      position={[0, 0, 0]} 
+      onClick={handleClick}
+      onPointerOver={(e) => {
+        e.target.style.cursor = 'pointer';
+      }}
+    >
       <sphereGeometry args={[2.5, 64, 32]} />
       <meshPhongMaterial 
         map={earthTexture}
@@ -197,6 +190,10 @@ function Earth() {
 
 const EchoCulture = () => {
   const navigate = useNavigate();
+
+  const handleCountryClick = (country: string) => {
+    navigate(`/folklore/${country.toLowerCase()}`);
+  };
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -217,7 +214,7 @@ const EchoCulture = () => {
       {/* Instructions */}
       <div className="relative z-20 px-6 mb-4">
         <p className="text-white/70 text-center text-sm">
-          Rotate the Earth to explore stories and folklore from different cultures
+          Click on India, China, or Japan to explore their folklore
         </p>
       </div>
 
@@ -231,10 +228,8 @@ const EchoCulture = () => {
             state.scene.background = new THREE.Color(0x000000);
           }}
         >
-          {/* Starfield background */}
           <Stars />
           
-          {/* Lighting setup */}
           <ambientLight intensity={0.3} color="#ffffff" />
           <directionalLight 
             position={[5, 3, 5]} 
@@ -247,10 +242,8 @@ const EchoCulture = () => {
             color="#4A90E2"
           />
           
-          {/* Earth */}
-          <Earth />
+          <Earth onCountryClick={handleCountryClick} />
           
-          {/* Controls */}
           <OrbitControls 
             enableDamping={true}
             dampingFactor={0.05}
@@ -263,17 +256,6 @@ const EchoCulture = () => {
             minPolarAngle={0}
           />
         </Canvas>
-      </div>
-
-      {/* Coming Soon Message */}
-      <div className="relative z-20 px-6 pb-32">
-        <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-xl p-6 text-center">
-          <h3 className="text-white text-xl font-semibold mb-2">Coming Soon</h3>
-          <p className="text-white/70 text-sm">
-            Interactive cultural stories and folklore from around the world will be available here soon. 
-            Click on different regions to discover their unique tales and traditions.
-          </p>
-        </div>
       </div>
 
       {/* Bottom Navigation */}
