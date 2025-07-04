@@ -31,164 +31,124 @@ function Stars() {
   );
 }
 
-// Earth component with guaranteed realistic texture
+// Earth component with guaranteed texture loading
 function Earth() {
   const meshRef = useRef<THREE.Mesh>(null);
-  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+  const [isTextureReady, setIsTextureReady] = useState(false);
+  const [earthTexture, setEarthTexture] = useState<THREE.Texture | null>(null);
 
   useEffect(() => {
-    console.log('Creating guaranteed Earth texture...');
+    console.log('Creating Earth texture synchronously...');
     
-    const createRealisticEarthTexture = () => {
+    const createEarthTexture = () => {
       const canvas = document.createElement('canvas');
-      canvas.width = 4096;  // Higher resolution
-      canvas.height = 2048;
+      canvas.width = 2048;
+      canvas.height = 1024;
       const ctx = canvas.getContext('2d');
       
       if (!ctx) return null;
       
-      console.log('Drawing realistic Earth texture...');
-      
       // Deep ocean blue background
-      ctx.fillStyle = '#1a237e';  // Deep ocean blue
-      ctx.fillRect(0, 0, 4096, 2048);
+      ctx.fillStyle = '#1a237e';
+      ctx.fillRect(0, 0, 2048, 1024);
       
-      // Add ocean depth variations
-      const oceanGradient = ctx.createRadialGradient(2048, 1024, 0, 2048, 1024, 1500);
-      oceanGradient.addColorStop(0, '#2196f3');  // Lighter blue in center
-      oceanGradient.addColorStop(1, '#0d47a1');  // Darker blue at edges
+      // Ocean depth variations
+      const oceanGradient = ctx.createRadialGradient(1024, 512, 0, 1024, 512, 800);
+      oceanGradient.addColorStop(0, '#2196f3');
+      oceanGradient.addColorStop(1, '#0d47a1');
       ctx.fillStyle = oceanGradient;
-      ctx.fillRect(0, 0, 4096, 2048);
+      ctx.fillRect(0, 0, 2048, 1024);
       
-      // North America - detailed shape
-      ctx.fillStyle = '#4a5d23';  // Dark green for land
+      // North America
+      ctx.fillStyle = '#4a5d23';
       ctx.beginPath();
-      ctx.moveTo(600, 400);  // Canada
-      ctx.quadraticCurveTo(500, 300, 700, 350);
-      ctx.quadraticCurveTo(900, 380, 850, 550);  // USA
-      ctx.quadraticCurveTo(750, 650, 700, 600);
-      ctx.quadraticCurveTo(650, 500, 600, 400);
-      ctx.fill();
-      
-      // Add forests to North America
-      ctx.fillStyle = '#2e7d32';  // Forest green
-      ctx.beginPath();
-      ctx.ellipse(720, 420, 60, 40, 0, 0, 2 * Math.PI);
+      ctx.moveTo(300, 200);
+      ctx.quadraticCurveTo(250, 150, 350, 175);
+      ctx.quadraticCurveTo(450, 190, 425, 275);
+      ctx.quadraticCurveTo(375, 325, 350, 300);
+      ctx.quadraticCurveTo(325, 250, 300, 200);
       ctx.fill();
       
       // South America
       ctx.fillStyle = '#4a5d23';
       ctx.beginPath();
-      ctx.moveTo(750, 700);
-      ctx.quadraticCurveTo(800, 650, 780, 800);
-      ctx.quadraticCurveTo(760, 1000, 720, 1200);
-      ctx.quadraticCurveTo(700, 1100, 730, 900);
-      ctx.quadraticCurveTo(720, 750, 750, 700);
+      ctx.moveTo(375, 350);
+      ctx.quadraticCurveTo(400, 325, 390, 400);
+      ctx.quadraticCurveTo(380, 500, 360, 600);
+      ctx.quadraticCurveTo(350, 550, 365, 450);
+      ctx.quadraticCurveTo(360, 375, 375, 350);
       ctx.fill();
       
       // Amazon rainforest
-      ctx.fillStyle = '#1b5e20';  // Dark forest green
+      ctx.fillStyle = '#1b5e20';
       ctx.beginPath();
-      ctx.ellipse(760, 850, 50, 80, 0, 0, 2 * Math.PI);
+      ctx.ellipse(380, 425, 25, 40, 0, 0, 2 * Math.PI);
       ctx.fill();
       
       // Europe
       ctx.fillStyle = '#4a5d23';
       ctx.beginPath();
-      ctx.ellipse(2200, 350, 80, 60, 0, 0, 2 * Math.PI);
+      ctx.ellipse(1100, 175, 40, 30, 0, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Africa - detailed shape
-      ctx.fillStyle = '#8d6e63';  // Brown for Africa
+      // Africa
+      ctx.fillStyle = '#8d6e63';
       ctx.beginPath();
-      ctx.moveTo(2100, 500);
-      ctx.quadraticCurveTo(2200, 480, 2250, 600);
-      ctx.quadraticCurveTo(2280, 800, 2200, 1000);
-      ctx.quadraticCurveTo(2150, 1100, 2050, 1000);
-      ctx.quadraticCurveTo(2000, 700, 2100, 500);
+      ctx.moveTo(1050, 250);
+      ctx.quadraticCurveTo(1100, 240, 1125, 300);
+      ctx.quadraticCurveTo(1140, 400, 1100, 500);
+      ctx.quadraticCurveTo(1075, 550, 1025, 500);
+      ctx.quadraticCurveTo(1000, 350, 1050, 250);
       ctx.fill();
       
       // Sahara Desert
-      ctx.fillStyle = '#ffa726';  // Sandy color
+      ctx.fillStyle = '#ffa726';
       ctx.beginPath();
-      ctx.ellipse(2150, 550, 100, 40, 0, 0, 2 * Math.PI);
+      ctx.ellipse(1075, 275, 50, 20, 0, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Central African forests
-      ctx.fillStyle = '#2e7d32';
-      ctx.beginPath();
-      ctx.ellipse(2150, 750, 70, 50, 0, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Asia - large and detailed
+      // Asia
       ctx.fillStyle = '#4a5d23';
       ctx.beginPath();
-      ctx.moveTo(2400, 300);
-      ctx.quadraticCurveTo(2800, 250, 3200, 320);
-      ctx.quadraticCurveTo(3400, 400, 3300, 600);
-      ctx.quadraticCurveTo(2900, 650, 2500, 550);
-      ctx.quadraticCurveTo(2350, 400, 2400, 300);
-      ctx.fill();
-      
-      // Siberian forests
-      ctx.fillStyle = '#1b5e20';
-      ctx.beginPath();
-      ctx.ellipse(2800, 350, 200, 50, 0, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Himalayas (snow-capped mountains)
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.ellipse(2700, 500, 150, 20, 0, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // India
-      ctx.fillStyle = '#8d6e63';
-      ctx.beginPath();
-      ctx.moveTo(2600, 600);
-      ctx.quadraticCurveTo(2700, 580, 2750, 700);
-      ctx.quadraticCurveTo(2700, 800, 2600, 750);
-      ctx.quadraticCurveTo(2550, 650, 2600, 600);
+      ctx.moveTo(1200, 150);
+      ctx.quadraticCurveTo(1400, 125, 1600, 160);
+      ctx.quadraticCurveTo(1700, 200, 1650, 300);
+      ctx.quadraticCurveTo(1450, 325, 1250, 275);
+      ctx.quadraticCurveTo(1175, 200, 1200, 150);
       ctx.fill();
       
       // China
       ctx.fillStyle = '#6d4c41';
       ctx.beginPath();
-      ctx.ellipse(2900, 450, 120, 80, 0, 0, 2 * Math.PI);
+      ctx.ellipse(1450, 225, 60, 40, 0, 0, 2 * Math.PI);
       ctx.fill();
       
       // Australia
-      ctx.fillStyle = '#d7ccc8';  // Light brown/beige
+      ctx.fillStyle = '#d7ccc8';
       ctx.beginPath();
-      ctx.ellipse(3300, 1200, 120, 80, 0, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Australian Outback (red center)
-      ctx.fillStyle = '#bf360c';
-      ctx.beginPath();
-      ctx.ellipse(3300, 1200, 60, 40, 0, 0, 2 * Math.PI);
+      ctx.ellipse(1650, 600, 60, 40, 0, 0, 2 * Math.PI);
       ctx.fill();
       
       // Greenland
-      ctx.fillStyle = '#f5f5f5';  // Icy white
+      ctx.fillStyle = '#f5f5f5';
       ctx.beginPath();
-      ctx.ellipse(1000, 200, 80, 60, 0, 0, 2 * Math.PI);
+      ctx.ellipse(500, 100, 40, 30, 0, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Antarctica (bottom)
+      // Antarctica
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 1800, 4096, 248);
+      ctx.fillRect(0, 900, 2048, 124);
       
-      // Arctic ice cap (top)
+      // Arctic
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 4096, 120);
+      ctx.fillRect(0, 0, 2048, 60);
       
-      // Add some cloud cover for realism
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-      for (let i = 0; i < 50; i++) {
-        const x = Math.random() * 4096;
-        const y = Math.random() * 2048;
-        const width = 80 + Math.random() * 120;
+      // Cloud cover
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+      for (let i = 0; i < 25; i++) {
+        const x = Math.random() * 2048;
+        const y = Math.random() * 1024;
+        const width = 40 + Math.random() * 60;
         const height = width * 0.4;
         
         ctx.beginPath();
@@ -196,30 +156,37 @@ function Earth() {
         ctx.fill();
       }
       
-      console.log('Earth texture created successfully with realistic colors');
+      console.log('Earth texture created successfully');
       
-      const earthTexture = new THREE.CanvasTexture(canvas);
-      earthTexture.wrapS = THREE.RepeatWrapping;
-      earthTexture.wrapT = THREE.RepeatWrapping;
-      earthTexture.minFilter = THREE.LinearFilter;
-      earthTexture.magFilter = THREE.LinearFilter;
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.needsUpdate = true;
       
-      return earthTexture;
+      return texture;
     };
 
-    const earthTexture = createRealisticEarthTexture();
-    if (earthTexture) {
-      setTexture(earthTexture);
-      console.log('Earth texture set successfully');
+    // Create texture synchronously
+    const texture = createEarthTexture();
+    if (texture) {
+      setEarthTexture(texture);
+      setIsTextureReady(true);
+      console.log('Earth texture is ready');
     }
-
   }, []);
+
+  // Don't render until texture is ready
+  if (!isTextureReady || !earthTexture) {
+    return null;
+  }
 
   return (
     <mesh ref={meshRef} position={[0, 0, 0]}>
       <sphereGeometry args={[2.5, 64, 32]} />
       <meshPhongMaterial 
-        map={texture}
+        map={earthTexture}
         color="#ffffff"
         shininess={10}
         specular="#444444"
