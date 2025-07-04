@@ -3,43 +3,62 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars, Sphere } from "@react-three/drei";
-import { useRef, useEffect } from "react";
+import { OrbitControls } from "@react-three/drei";
+import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 
-// Earth component
+// Simple Earth component that WILL be visible
 function Earth() {
-  const earthRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
 
   useEffect(() => {
-    console.log('Earth component mounted', earthRef.current);
+    console.log('Earth component mounted, mesh ref:', meshRef.current);
+    if (meshRef.current) {
+      console.log('Mesh position:', meshRef.current.position);
+      console.log('Mesh scale:', meshRef.current.scale);
+      console.log('Mesh visible:', meshRef.current.visible);
+    }
   }, []);
 
   return (
-    <Sphere ref={earthRef} args={[2, 32, 32]} position={[0, 0, 0]}>
-      <meshBasicMaterial 
-        color="#4A90E2"
-        wireframe={false}
-      />
-    </Sphere>
+    <mesh ref={meshRef} position={[0, 0, 0]} scale={[1, 1, 1]}>
+      <sphereGeometry args={[2, 32, 32]} />
+      <meshBasicMaterial color="#4A90E2" />
+    </mesh>
   );
 }
 
-// Fallback Earth component in case Three.js fails
+// Fallback component
 function FallbackEarth() {
+  console.log('Fallback Earth component rendered');
   return (
-    <div className="w-64 h-64 bg-blue-500 rounded-full mx-auto flex items-center justify-center shadow-2xl">
-      <div className="text-white text-6xl">🌍</div>
+    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+      <div className="w-64 h-64 bg-blue-500 rounded-full flex items-center justify-center shadow-2xl">
+        <div className="text-white text-6xl">🌍</div>
+      </div>
     </div>
   );
 }
 
 const EchoCulture = () => {
   const navigate = useNavigate();
+  const [canvasError, setCanvasError] = useState(false);
 
   useEffect(() => {
     console.log('EchoCulture component mounted');
   }, []);
+
+  const handleCanvasCreated = (state: any) => {
+    console.log('Canvas created successfully:', state);
+    console.log('Renderer:', state.gl);
+    console.log('Scene:', state.scene);
+    console.log('Camera:', state.camera);
+  };
+
+  const handleCanvasError = (error: any) => {
+    console.error('Canvas error:', error);
+    setCanvasError(true);
+  };
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -66,53 +85,35 @@ const EchoCulture = () => {
 
       {/* 3D Earth Canvas */}
       <div className="relative z-10 h-[calc(100vh-200px)] bg-gray-900">
-        <Canvas
-          camera={{ position: [0, 0, 6], fov: 45 }}
-          style={{ width: '100%', height: '100%' }}
-          onCreated={(state) => {
-            console.log('Canvas created', state);
-          }}
-          fallback={<FallbackEarth />}
-        >
-          {/* Very bright ambient lighting */}
-          <ambientLight intensity={1.2} />
-          
-          {/* Multiple directional lights */}
-          <directionalLight 
-            position={[10, 10, 5]} 
-            intensity={2} 
-          />
-          <directionalLight 
-            position={[-10, -10, -5]} 
-            intensity={1} 
-          />
-          
-          {/* Stars background */}
-          <Stars 
-            radius={100} 
-            depth={50} 
-            count={3000} 
-            factor={4} 
-            saturation={0} 
-            fade={true}
-            speed={1}
-          />
-          
-          {/* Earth */}
-          <Earth />
-          
-          {/* Controls for rotation */}
-          <OrbitControls 
-            enableDamping={true}
-            dampingFactor={0.05}
-            screenSpacePanning={false}
-            minDistance={3}
-            maxDistance={10}
-            maxPolarAngle={Math.PI}
-            autoRotate={true}
-            autoRotateSpeed={0.5}
-          />
-        </Canvas>
+        {canvasError ? (
+          <FallbackEarth />
+        ) : (
+          <Canvas
+            camera={{ position: [0, 0, 8], fov: 50 }}
+            style={{ width: '100%', height: '100%' }}
+            onCreated={handleCanvasCreated}
+            onError={handleCanvasError}
+            dpr={[1, 2]}
+            legacy={false}
+          >
+            {/* Simple lighting that will definitely work */}
+            <ambientLight intensity={0.8} />
+            <directionalLight position={[5, 5, 5]} intensity={1} />
+            
+            {/* Earth - using the simplest possible approach */}
+            <Earth />
+            
+            {/* Controls */}
+            <OrbitControls 
+              enableDamping={true}
+              dampingFactor={0.05}
+              autoRotate={true}
+              autoRotateSpeed={1}
+              minDistance={4}
+              maxDistance={12}
+            />
+          </Canvas>
+        )}
       </div>
 
       {/* Coming Soon Message */}
