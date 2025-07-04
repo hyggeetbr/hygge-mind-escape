@@ -30,7 +30,7 @@ function Stars() {
   );
 }
 
-// Earth component with India, China, and Japan
+// Earth component with accurate India, China, and Japan shapes
 function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [isTextureReady, setIsTextureReady] = useState(false);
@@ -39,7 +39,7 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
   const mouse = useRef(new THREE.Vector2());
 
   useEffect(() => {
-    console.log('Creating Earth texture with India, China, and Japan...');
+    console.log('Creating Earth texture with accurate India, China, and Japan shapes...');
     
     const createEarthTexture = () => {
       const canvas = document.createElement('canvas');
@@ -60,44 +60,87 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
       ctx.fillStyle = oceanGradient;
       ctx.fillRect(0, 0, 2048, 1024);
       
-      // India (South Asia) - Green landmass
-      ctx.fillStyle = '#4caf50';
-      ctx.beginPath();
-      ctx.moveTo(1300, 350);
-      ctx.quadraticCurveTo(1350, 340, 1380, 370);
-      ctx.quadraticCurveTo(1400, 420, 1370, 480);
-      ctx.quadraticCurveTo(1340, 520, 1300, 500);
-      ctx.quadraticCurveTo(1280, 460, 1290, 400);
-      ctx.quadraticCurveTo(1285, 370, 1300, 350);
-      ctx.fill();
-      
-      // China (East Asia) - Orange landmass
+      // Position countries on the bright side (center-right area of texture)
+      // China - Orange landmass with accurate shape
       ctx.fillStyle = '#ff9800';
       ctx.beginPath();
-      ctx.moveTo(1450, 250);
-      ctx.quadraticCurveTo(1550, 240, 1600, 280);
-      ctx.quadraticCurveTo(1620, 320, 1590, 360);
-      ctx.quadraticCurveTo(1540, 380, 1480, 370);
-      ctx.quadraticCurveTo(1430, 340, 1440, 290);
-      ctx.quadraticCurveTo(1435, 260, 1450, 250);
+      // Main body of China - roughly rectangular with curves
+      ctx.moveTo(1200, 200);
+      ctx.quadraticCurveTo(1300, 180, 1400, 200);
+      ctx.quadraticCurveTo(1450, 220, 1480, 260);
+      ctx.quadraticCurveTo(1490, 300, 1470, 340);
+      ctx.quadraticCurveTo(1450, 380, 1400, 400);
+      ctx.quadraticCurveTo(1350, 420, 1300, 410);
+      ctx.quadraticCurveTo(1250, 400, 1200, 380);
+      ctx.quadraticCurveTo(1150, 360, 1140, 320);
+      ctx.quadraticCurveTo(1130, 280, 1150, 240);
+      ctx.quadraticCurveTo(1170, 210, 1200, 200);
       ctx.fill();
       
-      // Japan (Island nation) - Pink landmass
+      // Western extension of China
+      ctx.beginPath();
+      ctx.moveTo(1100, 280);
+      ctx.quadraticCurveTo(1080, 290, 1070, 310);
+      ctx.quadraticCurveTo(1080, 330, 1100, 320);
+      ctx.quadraticCurveTo(1120, 310, 1130, 290);
+      ctx.quadraticCurveTo(1120, 280, 1100, 280);
+      ctx.fill();
+      
+      // India - Green landmass with triangular peninsula shape
+      ctx.fillStyle = '#4caf50';
+      ctx.beginPath();
+      // Northern part (wider)
+      ctx.moveTo(1150, 450);
+      ctx.quadraticCurveTo(1200, 440, 1250, 450);
+      ctx.quadraticCurveTo(1280, 460, 1290, 480);
+      ctx.quadraticCurveTo(1285, 500, 1270, 520);
+      // Eastern coast
+      ctx.quadraticCurveTo(1260, 540, 1250, 580);
+      ctx.quadraticCurveTo(1240, 620, 1220, 650);
+      // Southern tip (triangular)
+      ctx.quadraticCurveTo(1200, 680, 1170, 685);
+      ctx.quadraticCurveTo(1140, 680, 1120, 650);
+      // Western coast
+      ctx.quadraticCurveTo(1110, 620, 1105, 580);
+      ctx.quadraticCurveTo(1100, 540, 1110, 500);
+      ctx.quadraticCurveTo(1120, 470, 1150, 450);
+      ctx.fill();
+      
+      // Sri Lanka (small island below India)
+      ctx.beginPath();
+      ctx.ellipse(1160, 700, 8, 12, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // Japan - Pink landmass with island chain shape
       ctx.fillStyle = '#e91e63';
+      // Main island (Honshu) - elongated curve
       ctx.beginPath();
-      ctx.ellipse(1650, 300, 25, 60, Math.PI / 6, 0, 2 * Math.PI);
+      ctx.moveTo(1550, 280);
+      ctx.quadraticCurveTo(1580, 270, 1600, 290);
+      ctx.quadraticCurveTo(1620, 310, 1630, 340);
+      ctx.quadraticCurveTo(1625, 370, 1610, 390);
+      ctx.quadraticCurveTo(1590, 400, 1570, 395);
+      ctx.quadraticCurveTo(1550, 390, 1540, 370);
+      ctx.quadraticCurveTo(1535, 340, 1540, 310);
+      ctx.quadraticCurveTo(1545, 290, 1550, 280);
       ctx.fill();
       
-      // Additional Japanese islands
+      // Hokkaido (northern island)
       ctx.beginPath();
-      ctx.ellipse(1670, 280, 8, 15, Math.PI / 4, 0, 2 * Math.PI);
+      ctx.ellipse(1570, 250, 15, 20, Math.PI / 8, 0, 2 * Math.PI);
       ctx.fill();
       
+      // Kyushu (southern island)
       ctx.beginPath();
-      ctx.ellipse(1635, 330, 12, 20, -Math.PI / 8, 0, 2 * Math.PI);
+      ctx.ellipse(1580, 420, 12, 18, -Math.PI / 6, 0, 2 * Math.PI);
       ctx.fill();
       
-      console.log('Earth texture created successfully with three countries');
+      // Shikoku (smaller southern island)
+      ctx.beginPath();
+      ctx.ellipse(1600, 400, 8, 12, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      console.log('Earth texture created successfully with accurate country shapes');
       
       const texture = new THREE.CanvasTexture(canvas);
       texture.wrapS = THREE.RepeatWrapping;
@@ -143,19 +186,19 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
         
         console.log('Clicked at texture coordinates:', x, y);
         
-        // Check which country was clicked based on texture coordinates
-        // India region
-        if (x >= 1280 && x <= 1400 && y >= 340 && y <= 520) {
-          console.log('India clicked');
-          onCountryClick('India');
-        }
-        // China region
-        else if (x >= 1430 && x <= 1620 && y >= 240 && y <= 380) {
+        // Check which country was clicked based on updated texture coordinates
+        // China region (updated coordinates)
+        if (x >= 1070 && x <= 1490 && y >= 180 && y <= 420) {
           console.log('China clicked');
           onCountryClick('China');
         }
-        // Japan region
-        else if (x >= 1610 && x <= 1690 && y >= 240 && y <= 360) {
+        // India region (updated coordinates)
+        else if (x >= 1100 && x <= 1290 && y >= 440 && y <= 700) {
+          console.log('India clicked');
+          onCountryClick('India');
+        }
+        // Japan region (updated coordinates)
+        else if (x >= 1535 && x <= 1640 && y >= 240 && y <= 430) {
           console.log('Japan clicked');
           onCountryClick('Japan');
         }
