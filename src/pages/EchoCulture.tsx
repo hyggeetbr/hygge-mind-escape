@@ -31,157 +31,209 @@ function Stars() {
   );
 }
 
-// Earth component with proper texture
+// Earth component with reliable texture
 function Earth() {
   const meshRef = useRef<THREE.Mesh>(null);
   const [texture, setTexture] = useState<THREE.Texture | null>(null);
 
   useEffect(() => {
-    console.log('Loading Earth texture...');
+    console.log('Starting Earth texture loading...');
     
-    const loader = new THREE.TextureLoader();
-    
-    // Try multiple Earth texture sources
-    const textureUrls = [
-      'https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg',
-      'https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73909/world.topo.bathy.200412.3x5400x2700.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/5/56/Blue_Marble_Next_Generation_%2B_topography_%2B_bathymetry.jpg'
-    ];
-
-    let textureLoaded = false;
-
-    const tryLoadTexture = (urlIndex: number) => {
-      if (urlIndex >= textureUrls.length || textureLoaded) {
-        // If all URLs fail, create a realistic fallback
-        createFallbackTexture();
-        return;
-      }
-
-      loader.load(
-        textureUrls[urlIndex],
-        (loadedTexture) => {
-          if (!textureLoaded) {
-            console.log(`Earth texture loaded successfully from source ${urlIndex + 1}`);
-            textureLoaded = true;
-            loadedTexture.wrapS = THREE.RepeatWrapping;
-            loadedTexture.wrapT = THREE.RepeatWrapping;
-            setTexture(loadedTexture);
-          }
-        },
-        (progress) => {
-          console.log(`Loading texture ${urlIndex + 1}:`, progress);
-        },
-        (error) => {
-          console.warn(`Failed to load texture ${urlIndex + 1}:`, error);
-          // Try next URL
-          tryLoadTexture(urlIndex + 1);
-        }
-      );
-    };
-
-    const createFallbackTexture = () => {
-      console.log('Creating fallback Earth texture...');
+    // Create a detailed procedural Earth texture immediately
+    const createDetailedEarthTexture = () => {
+      console.log('Creating detailed procedural Earth texture...');
       const canvas = document.createElement('canvas');
-      canvas.width = 1024;
-      canvas.height = 512;
+      canvas.width = 2048;
+      canvas.height = 1024;
       const context = canvas.getContext('2d');
       
       if (context) {
-        // Create ocean base
-        const oceanGradient = context.createRadialGradient(512, 256, 0, 512, 256, 512);
-        oceanGradient.addColorStop(0, '#4A90E2');
-        oceanGradient.addColorStop(0.5, '#2E86C1');
-        oceanGradient.addColorStop(1, '#1B4F72');
+        // Ocean base with gradient
+        const oceanGradient = context.createLinearGradient(0, 0, 0, 1024);
+        oceanGradient.addColorStop(0, '#1e3a8a');  // Deep blue at poles
+        oceanGradient.addColorStop(0.5, '#0ea5e9'); // Lighter blue at equator
+        oceanGradient.addColorStop(1, '#1e3a8a');   // Deep blue at poles
         
         context.fillStyle = oceanGradient;
-        context.fillRect(0, 0, 1024, 512);
+        context.fillRect(0, 0, 2048, 1024);
         
-        // Add continents with realistic shapes and colors
-        context.fillStyle = '#8D6E63'; // Brown for land
+        // Add realistic continents with proper colors
+        context.fillStyle = '#8b5a3c'; // Brown for land base
         
-        // North America
+        // North America (more detailed)
         context.beginPath();
-        context.ellipse(200, 150, 80, 60, 0, 0, 2 * Math.PI);
+        context.moveTo(300, 200);
+        context.quadraticCurveTo(250, 150, 400, 180);
+        context.quadraticCurveTo(450, 200, 420, 280);
+        context.quadraticCurveTo(380, 320, 320, 300);
+        context.quadraticCurveTo(280, 250, 300, 200);
         context.fill();
         
         // South America
         context.beginPath();
-        context.ellipse(250, 280, 40, 80, 0, 0, 2 * Math.PI);
+        context.ellipse(380, 450, 60, 120, 0.2, 0, 2 * Math.PI);
         context.fill();
         
         // Europe
         context.beginPath();
-        context.ellipse(480, 120, 30, 25, 0, 0, 2 * Math.PI);
+        context.ellipse(1100, 180, 40, 30, 0, 0, 2 * Math.PI);
         context.fill();
         
         // Africa
         context.beginPath();
-        context.ellipse(520, 220, 50, 90, 0, 0, 2 * Math.PI);
+        context.moveTo(1050, 250);
+        context.quadraticCurveTo(1120, 280, 1100, 400);
+        context.quadraticCurveTo(1080, 500, 1020, 480);
+        context.quadraticCurveTo(1000, 350, 1050, 250);
         context.fill();
         
-        // Asia
+        // Asia (larger and more detailed)
         context.beginPath();
-        context.ellipse(700, 150, 120, 70, 0, 0, 2 * Math.PI);
+        context.moveTo(1200, 150);
+        context.quadraticCurveTo(1400, 120, 1600, 180);
+        context.quadraticCurveTo(1650, 250, 1580, 300);
+        context.quadraticCurveTo(1400, 280, 1200, 150);
         context.fill();
         
         // Australia
         context.beginPath();
-        context.ellipse(800, 320, 60, 40, 0, 0, 2 * Math.PI);
+        context.ellipse(1650, 550, 80, 50, 0, 0, 2 * Math.PI);
         context.fill();
         
-        // Add green vegetation on continents
-        context.fillStyle = '#4CAF50';
+        // Add green vegetation areas
+        context.fillStyle = '#22c55e';
         
-        // Green areas on North America
+        // Amazon rainforest
         context.beginPath();
-        context.ellipse(180, 140, 30, 20, 0, 0, 2 * Math.PI);
+        context.ellipse(360, 420, 30, 60, 0, 0, 2 * Math.PI);
         context.fill();
         
-        // Green areas on South America
+        // North American forests
         context.beginPath();
-        context.ellipse(240, 260, 20, 40, 0, 0, 2 * Math.PI);
+        context.ellipse(350, 220, 40, 25, 0, 0, 2 * Math.PI);
         context.fill();
         
-        // Green areas on Africa
+        // African vegetation
         context.beginPath();
-        context.ellipse(510, 200, 25, 30, 0, 0, 2 * Math.PI);
+        context.ellipse(1070, 350, 25, 40, 0, 0, 2 * Math.PI);
         context.fill();
         
-        // Green areas on Asia
+        // Asian forests
         context.beginPath();
-        context.ellipse(680, 140, 40, 25, 0, 0, 2 * Math.PI);
+        context.ellipse(1450, 200, 60, 30, 0, 0, 2 * Math.PI);
+        context.fill();
+        
+        // Add deserts (sandy color)
+        context.fillStyle = '#f4a460';
+        
+        // Sahara Desert
+        context.beginPath();
+        context.ellipse(1080, 280, 50, 20, 0, 0, 2 * Math.PI);
+        context.fill();
+        
+        // Arabian Desert
+        context.beginPath();
+        context.ellipse(1200, 300, 30, 15, 0, 0, 2 * Math.PI);
         context.fill();
         
         // Add ice caps
-        context.fillStyle = '#E8F4FD';
+        context.fillStyle = '#f8fafc';
+        
+        // Arctic ice cap
         context.beginPath();
-        context.ellipse(512, 50, 200, 30, 0, 0, 2 * Math.PI);
+        context.ellipse(1024, 80, 800, 60, 0, 0, 2 * Math.PI);
         context.fill();
         
+        // Antarctic ice cap
         context.beginPath();
-        context.ellipse(512, 462, 200, 30, 0, 0, 2 * Math.PI);
+        context.ellipse(1024, 944, 800, 60, 0, 0, 2 * Math.PI);
         context.fill();
         
-        // Add some cloud-like patterns
-        context.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        for (let i = 0; i < 20; i++) {
-          const x = Math.random() * 1024;
-          const y = Math.random() * 512;
-          const radius = 20 + Math.random() * 40;
+        // Add mountain ranges (darker brown)
+        context.fillStyle = '#654321';
+        
+        // Rocky Mountains
+        context.beginPath();
+        context.ellipse(320, 240, 8, 40, 0.3, 0, 2 * Math.PI);
+        context.fill();
+        
+        // Andes Mountains
+        context.beginPath();
+        context.ellipse(370, 450, 6, 100, 0.1, 0, 2 * Math.PI);
+        context.fill();
+        
+        // Himalayas
+        context.beginPath();
+        context.ellipse(1400, 240, 80, 8, 0, 0, 2 * Math.PI);
+        context.fill();
+        
+        // Add subtle cloud patterns
+        context.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        for (let i = 0; i < 30; i++) {
+          const x = Math.random() * 2048;
+          const y = Math.random() * 1024;
+          const width = 40 + Math.random() * 80;
+          const height = width * 0.4;
+          
           context.beginPath();
-          context.ellipse(x, y, radius, radius * 0.6, 0, 0, 2 * Math.PI);
+          context.ellipse(x, y, width, height, 0, 0, 2 * Math.PI);
           context.fill();
         }
       }
       
-      const fallbackTexture = new THREE.CanvasTexture(canvas);
-      fallbackTexture.wrapS = THREE.RepeatWrapping;
-      fallbackTexture.wrapT = THREE.RepeatWrapping;
-      setTexture(fallbackTexture);
+      const earthTexture = new THREE.CanvasTexture(canvas);
+      earthTexture.wrapS = THREE.RepeatWrapping;
+      earthTexture.wrapT = THREE.RepeatWrapping;
+      console.log('Detailed Earth texture created successfully');
+      return earthTexture;
     };
 
-    // Start loading textures
-    tryLoadTexture(0);
+    // Set the texture immediately
+    const earthTexture = createDetailedEarthTexture();
+    setTexture(earthTexture);
+
+    // Try to load a real Earth texture as backup
+    const loader = new THREE.TextureLoader();
+    
+    // High-quality Earth texture URLs
+    const textureUrls = [
+      'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/planets/earth_atmos_2048.jpg',
+      'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
+      'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg'
+    ];
+
+    let currentUrlIndex = 0;
+    
+    const tryLoadTexture = () => {
+      if (currentUrlIndex >= textureUrls.length) {
+        console.log('All texture URLs failed, using procedural texture');
+        return;
+      }
+
+      const url = textureUrls[currentUrlIndex];
+      console.log(`Attempting to load Earth texture from: ${url}`);
+      
+      loader.load(
+        url,
+        (loadedTexture) => {
+          console.log('Real Earth texture loaded successfully!');
+          loadedTexture.wrapS = THREE.RepeatWrapping;
+          loadedTexture.wrapT = THREE.RepeatWrapping;
+          setTexture(loadedTexture);
+        },
+        (progress) => {
+          console.log(`Loading progress: ${Math.round((progress.loaded / progress.total) * 100)}%`);
+        },
+        (error) => {
+          console.warn(`Failed to load texture from ${url}:`, error);
+          currentUrlIndex++;
+          tryLoadTexture();
+        }
+      );
+    };
+
+    // Start loading real texture
+    tryLoadTexture();
 
   }, []);
 
@@ -189,10 +241,10 @@ function Earth() {
     <mesh ref={meshRef} position={[0, 0, 0]}>
       <sphereGeometry args={[2.5, 64, 32]} />
       <meshPhongMaterial 
-        map={texture} 
+        map={texture}
         color="#ffffff"
-        shininess={100}
-        specular="#222222"
+        shininess={30}
+        specular="#111111"
       />
     </mesh>
   );
@@ -237,29 +289,28 @@ const EchoCulture = () => {
           {/* Starfield background */}
           <Stars />
           
-          {/* Realistic lighting setup */}
-          <ambientLight intensity={0.4} color="#ffffff" />
+          {/* Lighting setup */}
+          <ambientLight intensity={0.3} color="#ffffff" />
           <directionalLight 
             position={[5, 3, 5]} 
-            intensity={1}
+            intensity={1.2}
             color="#ffffff"
-            castShadow
           />
           <pointLight 
             position={[-5, -3, -5]} 
-            intensity={0.3}
+            intensity={0.4}
             color="#4A90E2"
           />
           
-          {/* Earth with realistic texture */}
+          {/* Earth */}
           <Earth />
           
-          {/* Enhanced orbit controls */}
+          {/* Controls */}
           <OrbitControls 
             enableDamping={true}
             dampingFactor={0.05}
             autoRotate={true}
-            autoRotateSpeed={0.8}
+            autoRotateSpeed={0.5}
             minDistance={4}
             maxDistance={12}
             enablePan={false}
