@@ -347,6 +347,25 @@ const Discover = () => {
           </div>
         ))}
 
+        {/* Echo Culture Section */}
+        <div className="mb-8 animate-fade-in" style={{ animationDelay: `${0.2 + audioSections.length * 0.1}s` }}>
+          <div 
+            className="flex items-center justify-between mb-4 cursor-pointer hover:bg-white/5 rounded-lg p-2 transition-all duration-300"
+            onClick={() => navigate("/echo-culture")}
+          >
+            <div className="flex items-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-green-500 rounded-lg flex items-center justify-center text-xl mr-4">
+                🌍
+              </div>
+              <div>
+                <h3 className="text-white text-xl font-semibold">Echo Culture</h3>
+                <p className="text-white/60 text-sm">Stories, folklore, and tales from around the world</p>
+              </div>
+            </div>
+            <ArrowLeft className="w-5 h-5 text-white/60 rotate-180" />
+          </div>
+        </div>
+
         {/* Your Likes Section */}
         <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
           <div className="flex items-center justify-between mb-4">

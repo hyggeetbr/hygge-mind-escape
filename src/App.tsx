@@ -27,6 +27,7 @@ import NotFound from "./pages/NotFound";
 import GoalSetting from "./pages/GoalSetting";
 import LongTermGoals from "./pages/LongTermGoals";
 import ShortTermGoals from "./pages/ShortTermGoals";
+import EchoCulture from "./pages/EchoCulture";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/yoga" element={<Yoga />} />
           <Route path="/ask-ai" element={<AskAI />} />
           <Route path="/discover" element={<Discover />} />
+          <Route path="/echo-culture" element={<EchoCulture />} />
           <Route path="/community" element={<Community />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/premium" element={<Premium />} />
