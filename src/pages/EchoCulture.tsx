@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -61,7 +60,7 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
       ctx.fillStyle = oceanGradient;
       ctx.fillRect(0, 0, 2048, 1024);
       
-      // India (South Asia)
+      // India (South Asia) - Green landmass
       ctx.fillStyle = '#4caf50';
       ctx.beginPath();
       ctx.moveTo(1300, 350);
@@ -72,7 +71,7 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
       ctx.quadraticCurveTo(1285, 370, 1300, 350);
       ctx.fill();
       
-      // China (East Asia)
+      // China (East Asia) - Orange landmass
       ctx.fillStyle = '#ff9800';
       ctx.beginPath();
       ctx.moveTo(1450, 250);
@@ -83,13 +82,13 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
       ctx.quadraticCurveTo(1435, 260, 1450, 250);
       ctx.fill();
       
-      // Japan (Island nation east of China)
+      // Japan (Island nation) - Pink landmass
       ctx.fillStyle = '#e91e63';
       ctx.beginPath();
       ctx.ellipse(1650, 300, 25, 60, Math.PI / 6, 0, 2 * Math.PI);
       ctx.fill();
       
-      // Small Japanese islands
+      // Additional Japanese islands
       ctx.beginPath();
       ctx.ellipse(1670, 280, 8, 15, Math.PI / 4, 0, 2 * Math.PI);
       ctx.fill();
@@ -173,9 +172,6 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
       ref={meshRef} 
       position={[0, 0, 0]} 
       onClick={handleClick}
-      onPointerOver={(e) => {
-        e.target.style.cursor = 'pointer';
-      }}
     >
       <sphereGeometry args={[2.5, 64, 32]} />
       <meshPhongMaterial 
