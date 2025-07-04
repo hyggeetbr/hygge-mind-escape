@@ -1,28 +1,45 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stars, Sphere } from "@react-three/drei";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
 // Earth component
 function Earth() {
   const earthRef = useRef<THREE.Mesh>(null);
 
+  useEffect(() => {
+    console.log('Earth component mounted', earthRef.current);
+  }, []);
+
   return (
     <Sphere ref={earthRef} args={[2, 32, 32]} position={[0, 0, 0]}>
-      <meshStandardMaterial 
+      <meshBasicMaterial 
         color="#4A90E2"
-        roughness={0.8}
-        metalness={0.2}
+        wireframe={false}
       />
     </Sphere>
   );
 }
 
+// Fallback Earth component in case Three.js fails
+function FallbackEarth() {
+  return (
+    <div className="w-64 h-64 bg-blue-500 rounded-full mx-auto flex items-center justify-center shadow-2xl">
+      <div className="text-white text-6xl">🌍</div>
+    </div>
+  );
+}
+
 const EchoCulture = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('EchoCulture component mounted');
+  }, []);
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -48,25 +65,33 @@ const EchoCulture = () => {
       </div>
 
       {/* 3D Earth Canvas */}
-      <div className="relative z-10 h-[calc(100vh-200px)]">
+      <div className="relative z-10 h-[calc(100vh-200px)] bg-gray-900">
         <Canvas
           camera={{ position: [0, 0, 6], fov: 45 }}
-          style={{ background: 'transparent' }}
+          style={{ width: '100%', height: '100%' }}
+          onCreated={(state) => {
+            console.log('Canvas created', state);
+          }}
+          fallback={<FallbackEarth />}
         >
-          {/* Ambient lighting */}
-          <ambientLight intensity={0.4} />
+          {/* Very bright ambient lighting */}
+          <ambientLight intensity={1.2} />
           
-          {/* Directional light (sun) */}
+          {/* Multiple directional lights */}
           <directionalLight 
-            position={[5, 5, 5]} 
-            intensity={1.5} 
+            position={[10, 10, 5]} 
+            intensity={2} 
+          />
+          <directionalLight 
+            position={[-10, -10, -5]} 
+            intensity={1} 
           />
           
           {/* Stars background */}
           <Stars 
             radius={100} 
             depth={50} 
-            count={5000} 
+            count={3000} 
             factor={4} 
             saturation={0} 
             fade={true}
