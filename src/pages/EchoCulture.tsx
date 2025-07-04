@@ -1,21 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stars, Sphere } from "@react-three/drei";
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import * as THREE from "three";
 
-// Earth component with realistic textures
+// Earth component
 function Earth() {
   const earthRef = useRef<THREE.Mesh>(null);
 
   return (
-    <Sphere ref={earthRef} args={[2, 64, 64]} position={[0, 0, 0]}>
-      <meshPhongMaterial 
+    <Sphere ref={earthRef} args={[2, 32, 32]} position={[0, 0, 0]}>
+      <meshStandardMaterial 
         color="#4A90E2"
-        shininess={100}
-        specular={new THREE.Color(0x111111)}
+        roughness={0.8}
+        metalness={0.2}
       />
     </Sphere>
   );
@@ -51,30 +51,26 @@ const EchoCulture = () => {
       <div className="relative z-10 h-[calc(100vh-200px)]">
         <Canvas
           camera={{ position: [0, 0, 6], fov: 45 }}
-          gl={{ antialias: true, alpha: true }}
+          style={{ background: 'transparent' }}
         >
           {/* Ambient lighting */}
-          <ambientLight intensity={0.3} />
+          <ambientLight intensity={0.4} />
           
           {/* Directional light (sun) */}
           <directionalLight 
-            position={[5, 3, 5]} 
-            intensity={1} 
-            castShadow 
+            position={[5, 5, 5]} 
+            intensity={1.5} 
           />
-          
-          {/* Point light for additional illumination */}
-          <pointLight position={[-5, -3, -5]} intensity={0.5} />
           
           {/* Stars background */}
           <Stars 
-            radius={300} 
-            depth={60} 
+            radius={100} 
+            depth={50} 
             count={5000} 
-            factor={7} 
+            factor={4} 
             saturation={0} 
-            fade 
-            speed={0.5}
+            fade={true}
+            speed={1}
           />
           
           {/* Earth */}
@@ -106,14 +102,14 @@ const EchoCulture = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-30">
+      <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-50">
         <div className="flex justify-around py-4 px-2">
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/dashboard")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <ArrowLeft className="w-4 h-4 text-white/60 rotate-180" />
+              <Home className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Home</span>
           </div>
@@ -122,7 +118,7 @@ const EchoCulture = () => {
             onClick={() => navigate("/discover")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <div className="w-4 h-4 text-white/60">🎵</div>
+              <Music className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Echo</span>
           </div>
@@ -131,7 +127,7 @@ const EchoCulture = () => {
             onClick={() => navigate("/community")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <div className="w-4 h-4 text-white/60">👥</div>
+              <Users className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Community</span>
           </div>
@@ -140,7 +136,7 @@ const EchoCulture = () => {
             onClick={() => navigate("/ask-ai")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <div className="w-4 h-4 text-white/60">🤖</div>
+              <Bot className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Lumina</span>
           </div>
