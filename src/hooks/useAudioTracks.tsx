@@ -38,12 +38,11 @@ export const useAudioTracks = (category?: string, subcategory?: string) => {
           .order('created_at', { ascending: false });
 
         if (category && subcategory) {
-          // For daily_wisdom subcategories, check for the combined format (e.g., daily_wisdom_ancient_teachings)
-          const combinedCategory = `${category}_${subcategory}`;
-          console.log('Looking for combined category:', combinedCategory);
-          query = query.eq('category', combinedCategory);
+          // For daily_wisdom with subcategories
+          console.log('Looking for category:', category, 'and subcategory:', subcategory);
+          query = query.eq('category', category).eq('subcategory', subcategory);
         } else if (category) {
-          // For regular categories, use exact match
+          // For regular categories without subcategories
           console.log('Looking for category:', category);
           query = query.eq('category', category);
         }
@@ -55,7 +54,7 @@ export const useAudioTracks = (category?: string, subcategory?: string) => {
           setError(error.message);
         } else {
           console.log('Fetched audio tracks:', data);
-          console.log('Track categories found:', data?.map(t => ({ title: t.title, category: t.category })));
+          console.log('Track categories found:', data?.map(t => ({ title: t.title, category: t.category, subcategory: t.subcategory })));
           setTracks((data as AudioTrack[]) || []);
         }
       } catch (err) {

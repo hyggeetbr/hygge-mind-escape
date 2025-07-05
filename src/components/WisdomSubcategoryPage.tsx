@@ -1,4 +1,3 @@
-
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Home, Users, Bot, Music, Play, Heart, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";

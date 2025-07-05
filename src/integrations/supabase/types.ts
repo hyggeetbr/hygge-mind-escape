@@ -210,6 +210,7 @@ export type Database = {
           id: string
           is_public: boolean
           play_count: number
+          subcategory: string | null
           title: string
           updated_at: string
           uploaded_by: string | null
@@ -227,6 +228,7 @@ export type Database = {
           id?: string
           is_public?: boolean
           play_count?: number
+          subcategory?: string | null
           title: string
           updated_at?: string
           uploaded_by?: string | null
@@ -244,6 +246,7 @@ export type Database = {
           id?: string
           is_public?: boolean
           play_count?: number
+          subcategory?: string | null
           title?: string
           updated_at?: string
           uploaded_by?: string | null
