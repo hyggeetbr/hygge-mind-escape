@@ -37,6 +37,51 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
   const [buttonsVisible, setButtonsVisible] = useState(true);
   const { camera } = useThree();
 
+  // Create procedural ocean texture
+  useEffect(() => {
+    if (meshRef.current) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 256;
+      const context = canvas.getContext('2d');
+      
+      if (context) {
+        // Create ocean gradient
+        const gradient = context.createLinearGradient(0, 0, 0, 256);
+        gradient.addColorStop(0, '#1a237e'); // Deep ocean blue
+        gradient.addColorStop(0.3, '#1565c0'); // Medium blue
+        gradient.addColorStop(0.7, '#2196f3'); // Light blue
+        gradient.addColorStop(1, '#64b5f6'); // Shallow water
+        
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 512, 256);
+        
+        // Add some noise for ocean variation
+        const imageData = context.getImageData(0, 0, 512, 256);
+        const data = imageData.data;
+        
+        for (let i = 0; i < data.length; i += 4) {
+          const noise = (Math.random() - 0.5) * 30;
+          data[i] = Math.max(0, Math.min(255, data[i] + noise)); // R
+          data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise)); // G
+          data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise)); // B
+        }
+        
+        context.putImageData(imageData, 0, 0);
+        
+        // Create texture from canvas
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        
+        // Update material with new texture
+        const material = meshRef.current.material as THREE.MeshPhongMaterial;
+        material.map = texture;
+        material.needsUpdate = true;
+      }
+    }
+  }, []);
+
   useFrame(() => {
     if (meshRef.current) {
       // Get camera position
@@ -80,8 +125,10 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
         <sphereGeometry args={[2.5, 64, 32]} />
         <meshPhongMaterial 
           color="#1565c0"
-          shininess={10}
-          specular="#444444"
+          shininess={30}
+          specular="#888888"
+          transparent={true}
+          opacity={0.95}
         />
       </mesh>
 
@@ -201,15 +248,16 @@ const EchoCulture = () => {
         >
           <Stars />
           
-          <ambientLight intensity={0.3} color="#ffffff" />
+          <ambientLight intensity={0.2} color="#ffffff" />
           <directionalLight 
             position={[5, 3, 5]} 
-            intensity={1.2}
+            intensity={1.5}
             color="#ffffff"
+            castShadow
           />
           <pointLight 
             position={[-5, -3, -5]} 
-            intensity={0.4}
+            intensity={0.3}
             color="#4A90E2"
           />
           
