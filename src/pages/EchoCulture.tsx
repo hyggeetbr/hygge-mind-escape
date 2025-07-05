@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,7 @@ function Stars() {
   );
 }
 
-// Earth component with clickable country buttons
+// Earth component with clickable country flag buttons
 function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [buttonsVisible, setButtonsVisible] = useState(true);
@@ -62,6 +63,16 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
     onCountryClick(country);
   };
 
+  // Flag emojis for each country
+  const countryFlags = {
+    China: "🇨🇳",
+    India: "🇮🇳", 
+    Japan: "🇯🇵",
+    Greece: "🇬🇷",
+    Russia: "🇷🇺",
+    Scandinavia: "🇸🇪" // Using Sweden flag to represent Scandinavia
+  };
+
   return (
     <group>
       {/* Earth sphere */}
@@ -74,33 +85,72 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
         />
       </mesh>
 
-      {/* Country buttons - only visible when on bright side */}
+      {/* Country flag buttons - only visible when on bright side */}
       {buttonsVisible && (
         <>
+          {/* China */}
           <Html position={[1.8, 0.8, 1.2]} distanceFactor={8}>
             <button
               onClick={() => handleCountryClick('China')}
-              className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 border border-gray-300 shadow-lg cursor-pointer"
+              className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 shadow-lg cursor-pointer hover:bg-gray-100 flex items-center justify-center text-2xl transition-all hover:scale-110"
+              title="China"
             >
-              China
+              {countryFlags.China}
             </button>
           </Html>
 
+          {/* India */}
           <Html position={[1.2, -0.5, 2]} distanceFactor={8}>
             <button
               onClick={() => handleCountryClick('India')}
-              className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 border border-gray-300 shadow-lg cursor-pointer"
+              className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 shadow-lg cursor-pointer hover:bg-gray-100 flex items-center justify-center text-2xl transition-all hover:scale-110"
+              title="India"
             >
-              India
+              {countryFlags.India}
             </button>
           </Html>
 
+          {/* Japan */}
           <Html position={[2.2, 0.2, 0.8]} distanceFactor={8}>
             <button
               onClick={() => handleCountryClick('Japan')}
-              className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 border border-gray-300 shadow-lg cursor-pointer"
+              className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 shadow-lg cursor-pointer hover:bg-gray-100 flex items-center justify-center text-2xl transition-all hover:scale-110"
+              title="Japan"
             >
-              Japan
+              {countryFlags.Japan}
+            </button>
+          </Html>
+
+          {/* Greece */}
+          <Html position={[0.8, 1.2, 1.8]} distanceFactor={8}>
+            <button
+              onClick={() => handleCountryClick('Greece')}
+              className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 shadow-lg cursor-pointer hover:bg-gray-100 flex items-center justify-center text-2xl transition-all hover:scale-110"
+              title="Greece"
+            >
+              {countryFlags.Greece}
+            </button>
+          </Html>
+
+          {/* Russia */}
+          <Html position={[2.0, 1.5, 0.5]} distanceFactor={8}>
+            <button
+              onClick={() => handleCountryClick('Russia')}
+              className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 shadow-lg cursor-pointer hover:bg-gray-100 flex items-center justify-center text-2xl transition-all hover:scale-110"
+              title="Russia"
+            >
+              {countryFlags.Russia}
+            </button>
+          </Html>
+
+          {/* Scandinavia */}
+          <Html position={[0.5, 1.8, 1.0]} distanceFactor={8}>
+            <button
+              onClick={() => handleCountryClick('Scandinavia')}
+              className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 shadow-lg cursor-pointer hover:bg-gray-100 flex items-center justify-center text-2xl transition-all hover:scale-110"
+              title="Scandinavia"
+            >
+              {countryFlags.Scandinavia}
             </button>
           </Html>
         </>
@@ -135,7 +185,7 @@ const EchoCulture = () => {
       {/* Instructions */}
       <div className="relative z-20 px-6 mb-4">
         <p className="text-white/70 text-center text-sm">
-          Click on India, China, or Japan to explore their folklore
+          Click on the flag icons to explore folklore from different countries
         </p>
       </div>
 
