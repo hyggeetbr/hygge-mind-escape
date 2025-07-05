@@ -37,13 +37,11 @@ export const useAudioTracks = (category?: string, subcategory?: string) => {
           .eq('is_public', true)
           .order('created_at', { ascending: false });
 
-        if (category) {
-          if (subcategory) {
-            // For subcategory queries, look for both the new format and the subcategory column
-            query = query.or(`category.eq.${category}_${subcategory},and(category.eq.${category},subcategory.eq.${subcategory})`);
-          } else {
-            query = query.eq('category', category);
-          }
+        if (category && subcategory) {
+          // For subcategory queries, check both the combined format and the separate subcategory column
+          query = query.or(`category.eq.${category}_${subcategory},and(category.eq.${category},subcategory.eq.${subcategory})`);
+        } else if (category) {
+          query = query.eq('category', category);
         }
 
         const { data, error } = await query;
