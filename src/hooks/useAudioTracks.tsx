@@ -55,7 +55,7 @@ export const useAudioTracks = (category?: string, subcategory?: string) => {
           setError(error.message);
         } else {
           console.log('Fetched audio tracks:', data);
-          console.log('Track categories found:', data?.map(t => ({ title: t.title, category: t.category, subcategory: t.subcategory })));
+          console.log('Track categories found:', data?.map(t => ({ title: t.title, category: t.category })));
           setTracks((data as AudioTrack[]) || []);
         }
       } catch (err) {
