@@ -1,3 +1,4 @@
+
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Home, Users, Bot, Music, Play, Heart, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -90,7 +91,7 @@ const WisdomSubcategoryPage = ({ title, description, subcategory, icon, color }:
       <div className="relative z-10 px-6 mb-8">
         <div className={`w-full h-64 bg-gradient-to-br ${color} rounded-xl flex items-center justify-center mb-6`}>
           <div className="text-center text-white">
-            <div className="mb-4">{icon}</div>
+            <div className="flex justify-center mb-4">{icon}</div>
             <h2 className="text-2xl font-bold mb-2">{title}</h2>
             <p className="text-lg opacity-80">{description}</p>
             <p className="text-sm opacity-60 mt-2">{tracks.length} tracks available</p>
