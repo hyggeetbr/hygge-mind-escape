@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
@@ -29,46 +28,61 @@ import LongTermGoals from "./pages/LongTermGoals";
 import ShortTermGoals from "./pages/ShortTermGoals";
 import EchoCulture from "./pages/EchoCulture";
 import Folklore from "./pages/Folklore";
+import DailyWisdomSections from "./pages/DailyWisdomSections";
+import AncientTeachings from "./pages/DailyWisdom/AncientTeachings";
+import ModernMindfulness from "./pages/DailyWisdom/ModernMindfulness";
+import WisdomFromWorld from "./pages/DailyWisdom/WisdomFromWorld";
+import EmotionalWisdom from "./pages/DailyWisdom/EmotionalWisdom";
+import EverydayPhilosophy from "./pages/DailyWisdom/EverydayPhilosophy";
+import WomensWisdom from "./pages/DailyWisdom/WomensWisdom";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipPrimitive.Provider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/meditate" element={<Meditate />} />
-          <Route path="/todays-reading" element={<TodaysReading />} />
-          <Route path="/todays-reading/:id" element={<ArticleDetail />} />
-          <Route path="/yoga" element={<Yoga />} />
-          <Route path="/ask-ai" element={<AskAI />} />
-          <Route path="/discover" element={<Discover />} />
-          <Route path="/echo-culture" element={<EchoCulture />} />
-          <Route path="/folklore/:country" element={<Folklore />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/premium" element={<Premium />} />
-          <Route path="/goal-setting" element={<GoalSetting />} />
-          <Route path="/long-term-goals" element={<LongTermGoals />} />
-          <Route path="/short-term-goals" element={<ShortTermGoals />} />
-          <Route path="/article/:id" element={<ArticleDetail />} />
-          <Route path="/post/:id" element={<PostDetail />} />
-          <Route path="/user/:userId" element={<UserProfile />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/sleep" element={<Sleep />} />
-          <Route path="/sounds" element={<Sounds />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/support" element={<Support />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipPrimitive.Provider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClient client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/meditate" element={<Meditate />} />
+            <Route path="/todays-reading" element={<TodaysReading />} />
+            <Route path="/todays-reading/:id" element={<ArticleDetail />} />
+            <Route path="/yoga" element={<Yoga />} />
+            <Route path="/ask-ai" element={<AskAI />} />
+            <Route path="/discover" element={<Discover />} />
+            <Route path="/echo-culture" element={<EchoCulture />} />
+            <Route path="/folklore/:country" element={<Folklore />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/premium" element={<Premium />} />
+            <Route path="/goal-setting" element={<GoalSetting />} />
+            <Route path="/long-term-goals" element={<LongTermGoals />} />
+            <Route path="/short-term-goals" element={<ShortTermGoals />} />
+            <Route path="/article/:id" element={<ArticleDetail />} />
+            <Route path="/post/:id" element={<PostDetail />} />
+            <Route path="/user/:userId" element={<UserProfile />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/sleep" element={<Sleep />} />
+            <Route path="/sounds" element={<Sounds />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/daily-wisdom-sections" element={<DailyWisdomSections />} />
+            <Route path="/daily-wisdom/ancient-teachings" element={<AncientTeachings />} />
+            <Route path="/daily-wisdom/modern-mindfulness" element={<ModernMindfulness />} />
+            <Route path="/daily-wisdom/wisdom-from-world" element={<WisdomFromWorld />} />
+            <Route path="/daily-wisdom/emotional-wisdom" element={<EmotionalWisdom />} />
+            <Route path="/daily-wisdom/everyday-philosophy" element={<EverydayPhilosophy />} />
+            <Route path="/daily-wisdom/womens-wisdom" element={<WomensWisdom />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClient>
+  );
+}
 
 export default App;

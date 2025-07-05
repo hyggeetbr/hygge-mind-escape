@@ -44,7 +44,8 @@ const Discover = () => {
       tracks: wisdomTracks,
       loading: wisdomLoading,
       incrementPlayCount: incrementWisdomPlay,
-      category: 'daily_wisdom'
+      category: 'daily_wisdom',
+      hasSubcategories: true
     },
     {
       title: "Sleep Sounds",
@@ -90,8 +91,12 @@ const Discover = () => {
     }
   };
 
-  const handleSectionClick = (category: string) => {
-    setSelectedSection(category);
+  const handleSectionClick = (category: string, hasSubcategories?: boolean) => {
+    if (hasSubcategories && category === 'daily_wisdom') {
+      navigate('/daily-wisdom-sections');
+    } else {
+      setSelectedSection(category);
+    }
   };
 
   const handleBackToSections = () => {
@@ -331,7 +336,7 @@ const Discover = () => {
           <div key={section.title} className="mb-8 animate-fade-in" style={{ animationDelay: `${0.2 + sectionIndex * 0.1}s` }}>
             <div 
               className="flex items-center justify-between mb-4 cursor-pointer hover:bg-white/5 rounded-lg p-2 transition-all duration-300"
-              onClick={() => handleSectionClick(section.category)}
+              onClick={() => handleSectionClick(section.category, section.hasSubcategories)}
             >
               <div className="flex items-center">
                 <div className={`w-12 h-12 bg-gradient-to-br ${section.color} rounded-lg flex items-center justify-center text-xl mr-4`}>
@@ -339,7 +344,9 @@ const Discover = () => {
                 </div>
                 <div>
                   <h3 className="text-white text-xl font-semibold">{section.title}</h3>
-                  <p className="text-white/60 text-sm">{section.description} • {getTotalDuration(section.tracks)}</p>
+                  <p className="text-white/60 text-sm">
+                    {section.description} • {section.hasSubcategories ? 'Multiple categories' : getTotalDuration(section.tracks)}
+                  </p>
                 </div>
               </div>
               <ArrowLeft className="w-5 h-5 text-white/60 rotate-180" />

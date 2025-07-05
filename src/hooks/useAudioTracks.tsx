@@ -8,7 +8,8 @@ export interface AudioTrack {
   description: string | null;
   file_url: string;
   file_path: string;
-  category: 'morning_affirmations' | 'daily_wisdom' | 'sleep_sounds';
+  category: string;
+  subcategory: string | null;
   duration_seconds: number | null;
   file_size_bytes: number | null;
   uploaded_by: string | null;
@@ -20,7 +21,7 @@ export interface AudioTrack {
   updated_at: string;
 }
 
-export const useAudioTracks = (category?: string) => {
+export const useAudioTracks = (category?: string, subcategory?: string) => {
   const [tracks, setTracks] = useState<AudioTrack[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +29,7 @@ export const useAudioTracks = (category?: string) => {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        console.log('Fetching audio tracks for category:', category);
+        console.log('Fetching audio tracks for category:', category, 'subcategory:', subcategory);
         
         let query = supabase
           .from('audio_tracks')
@@ -37,7 +38,12 @@ export const useAudioTracks = (category?: string) => {
           .order('created_at', { ascending: false });
 
         if (category) {
-          query = query.eq('category', category);
+          if (subcategory) {
+            // For subcategory queries, look for both the new format and the subcategory column
+            query = query.or(`category.eq.${category}_${subcategory},and(category.eq.${category},subcategory.eq.${subcategory})`);
+          } else {
+            query = query.eq('category', category);
+          }
         }
 
         const { data, error } = await query;
@@ -47,7 +53,6 @@ export const useAudioTracks = (category?: string) => {
           setError(error.message);
         } else {
           console.log('Fetched audio tracks:', data);
-          // Type assertion to ensure the data matches our AudioTrack interface
           setTracks((data as AudioTrack[]) || []);
         }
       } catch (err) {
@@ -59,7 +64,7 @@ export const useAudioTracks = (category?: string) => {
     };
 
     fetchTracks();
-  }, [category]);
+  }, [category, subcategory]);
 
   const incrementPlayCount = async (trackId: string) => {
     try {
