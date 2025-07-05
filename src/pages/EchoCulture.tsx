@@ -115,7 +115,7 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
     Japan: "🇯🇵",
     Greece: "🇬🇷",
     Russia: "🇷🇺",
-    Scandinavia: "🇸🇪" // Using Sweden flag to represent Scandinavia
+    Scandinavia: "🇳🇴" // Using Norway flag to better represent Scandinavia
   };
 
   return (
@@ -194,10 +194,14 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
           <Html position={[0.5, 1.8, 1.0]} distanceFactor={8}>
             <button
               onClick={() => handleCountryClick('Scandinavia')}
-              className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 shadow-lg cursor-pointer hover:bg-gray-100 flex items-center justify-center text-2xl transition-all hover:scale-110"
+              className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 shadow-lg cursor-pointer hover:bg-gray-100 flex items-center justify-center overflow-hidden transition-all hover:scale-110"
               title="Scandinavia"
             >
-              {countryFlags.Scandinavia}
+              <img 
+                src="/lovable-uploads/54893b32-0cc6-40fc-abd3-9b5d1ab4438d.png" 
+                alt="Scandinavian flag"
+                className="w-full h-full object-cover"
+              />
             </button>
           </Html>
         </>
