@@ -1,6 +1,5 @@
-
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Home, Users, Bot, Music, BookOpen, Lightbulb, Globe, Heart, Coffee, Crown } from "lucide-react";
+import { ArrowLeft, Home, Users, Bot, Music, BookOpen, Lightbulb, Globe, Heart, Coffee } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const DailyWisdomSections = () => {
@@ -15,7 +14,7 @@ const DailyWisdomSections = () => {
       route: "/daily-wisdom/ancient-teachings"
     },
     {
-      title: "Modern Mindfulness",
+      title: "Modern Mindfulness", 
       description: "Contemporary approaches to mindful living and awareness",
       icon: <Lightbulb className="w-8 h-8" />,
       color: "from-blue-500 to-teal-500",
@@ -41,13 +40,6 @@ const DailyWisdomSections = () => {
       icon: <Coffee className="w-8 h-8" />,
       color: "from-purple-500 to-indigo-500",
       route: "/daily-wisdom/everyday-philosophy"
-    },
-    {
-      title: "Women's Wisdom",
-      description: "Insights and teachings from inspiring women throughout history",
-      icon: <Crown className="w-8 h-8" />,
-      color: "from-violet-500 to-purple-600",
-      route: "/daily-wisdom/womens-wisdom"
     }
   ];
 

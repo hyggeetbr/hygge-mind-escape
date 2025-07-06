@@ -35,7 +35,6 @@ import ModernMindfulness from "./pages/DailyWisdom/ModernMindfulness";
 import WisdomFromWorld from "./pages/DailyWisdom/WisdomFromWorld";
 import EmotionalWisdom from "./pages/DailyWisdom/EmotionalWisdom";
 import EverydayPhilosophy from "./pages/DailyWisdom/EverydayPhilosophy";
-import WomensWisdom from "./pages/DailyWisdom/WomensWisdom";
 
 const queryClient = new QueryClient();
 
@@ -78,7 +77,6 @@ function App() {
             <Route path="/daily-wisdom/wisdom-from-world" element={<WisdomFromWorld />} />
             <Route path="/daily-wisdom/emotional-wisdom" element={<EmotionalWisdom />} />
             <Route path="/daily-wisdom/everyday-philosophy" element={<EverydayPhilosophy />} />
-            <Route path="/daily-wisdom/womens-wisdom" element={<WomensWisdom />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
