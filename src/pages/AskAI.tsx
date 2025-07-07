@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send, Sparkles, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -147,7 +148,7 @@ const AskAI = () => {
   };
 
   return (
-    <div className="min-h-screen calm-gradient relative overflow-hidden flex">
+    <div className="min-h-screen bg-black relative overflow-hidden flex">
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
@@ -207,7 +208,7 @@ const AskAI = () => {
                   key={msg.id || index}
                   className={`rounded-lg p-3 max-w-[75%] ${
                     msg.role === "user"
-                      ? "self-end bg-calm-purple text-white"
+                      ? "self-end bg-purple-600 text-white"
                       : "self-start bg-white/20 text-white"
                   }`}
                 >
@@ -222,27 +223,27 @@ const AskAI = () => {
             </div>
 
             {/* Input Area */}
-            <div className="calm-card p-4 border-black">
+            <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20">
               <div className="flex items-end space-x-3">
                 <Textarea
                   placeholder="Ask me anything about mindfulness, meditation, or wellness..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="flex-1 min-h-[60px] resize-none border-black bg-transparent focus:ring-0 text-black placeholder:text-black/60 focus:border-black"
+                  className="flex-1 min-h-[60px] resize-none border-white/30 bg-white/10 focus:ring-0 text-white placeholder:text-white/60 focus:border-white/50"
                   disabled={isLoading}
                 />
                 <Button
                   onClick={handleSend}
                   disabled={!message.trim() || isLoading}
-                  className="bg-calm-purple hover:bg-calm-purple/90 text-white px-4 py-2"
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
-            {/* Quick Suggestions - Fixed font color */}
+            {/* Quick Suggestions */}
             {(!currentSessionId || messages.length <= 1) && (
               <div className="mt-6 animate-fade-in" style={{ animationDelay: "0.2s" }}>
                 <h3 className="text-white text-lg font-medium mb-4">Quick Questions</h3>
@@ -256,7 +257,7 @@ const AskAI = () => {
                     <button
                       key={index}
                       onClick={() => setMessage(suggestion)}
-                      className="calm-card p-3 text-left hover:bg-white/5 transition-colors"
+                      className="bg-white/10 backdrop-blur-md p-3 rounded-lg text-left hover:bg-white/20 transition-colors border border-white/20"
                       disabled={isLoading}
                     >
                       <span className="text-white">{suggestion}</span>
@@ -268,8 +269,8 @@ const AskAI = () => {
           </div>
         </div>
 
-        {/* Bottom Navigation - Updated */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
+        {/* Bottom Navigation */}
+        <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-30">
           <div className="flex justify-around py-4 px-2">
             <div 
               className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
@@ -300,7 +301,7 @@ const AskAI = () => {
             </div>
             <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
               <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                <Bot className="w-4 h-4 text-calm-purple" />
+                <Bot className="w-4 h-4 text-black" />
               </div>
               <span className="text-white text-xs font-medium">Lumina</span>
             </div>
