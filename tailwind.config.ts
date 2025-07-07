@@ -63,16 +63,16 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Calm-inspired colors
-				calm: {
-					'purple-dark': 'rgb(88 28 135)',
-					'purple': 'rgb(139 69 255)',
-					'purple-light': 'rgb(196 181 253)',
-					'blue': 'rgb(59 130 246)',
-					'orange': 'rgb(251 146 60)',
-					'white': 'rgb(255 255 255)',
-					'text-light': 'rgb(255 255 255 / 0.8)',
-					'text-muted': 'rgb(255 255 255 / 0.6)',
+				// Botanical-inspired colors
+				botanical: {
+					'purple': 'rgb(139 118 147)',
+					'blue': 'rgb(147 197 253)',
+					'cream': 'rgb(254 249 195)',
+					'sage': 'rgb(156 163 175)',
+					'lavender': 'rgb(196 181 253)',
+					'text-dark': 'rgb(75 85 99)',
+					'text-medium': 'rgb(107 114 128)',
+					'text-light': 'rgb(156 163 175)',
 				}
 			},
 			fontFamily: {

@@ -12,44 +12,49 @@ interface Theme {
 
 const themes: Theme[] = [
   {
+    id: "botanical",
+    name: "Botanical",
+    background: "url('/lovable-uploads/8ec4329a-116c-403a-85d5-6d85d61efc18.png')"
+  },
+  {
     id: "pattern1",
     name: "Geometric",
-    background: "radial-gradient(circle at 20% 50%, #120a8f 0%, transparent 50%), radial-gradient(circle at 80% 20%, #ffffff 0%, transparent 50%), radial-gradient(circle at 40% 80%, #7c3aed 0%, transparent 50%), linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)"
+    background: "radial-gradient(circle at 20% 50%, #8b7693 0%, transparent 50%), radial-gradient(circle at 80% 20%, #93c5fd 0%, transparent 50%), radial-gradient(circle at 40% 80%, #c4b5fd 0%, transparent 50%), linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%)"
   },
   {
     id: "pattern2", 
     name: "Waves",
-    background: "linear-gradient(45deg, #0f172a 25%, transparent 25%), linear-gradient(-45deg, #0f172a 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1e293b 75%), linear-gradient(-45deg, transparent 75%, #1e293b 75%), linear-gradient(135deg, #334155 0%, #0ea5e9 100%)"
+    background: "linear-gradient(45deg, #f9fafb 25%, transparent 25%), linear-gradient(-45deg, #f9fafb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e7eb 75%), linear-gradient(-45deg, transparent 75%, #e5e7eb 75%), linear-gradient(135deg, #d1d5db 0%, #93c5fd 100%)"
   },
   {
     id: "pattern3",
     name: "Dots",
-    background: "radial-gradient(circle, #ffffff 2px, transparent 2px), radial-gradient(circle, #a855f7 1px, transparent 1px), linear-gradient(135deg, #581c87 0%, #7c3aed 50%, #a855f7 100%)"
+    background: "radial-gradient(circle, #8b7693 2px, transparent 2px), radial-gradient(circle, #c4b5fd 1px, transparent 1px), linear-gradient(135deg, #e5e7eb 0%, #c4b5fd 50%, #93c5fd 100%)"
   },
   {
     id: "pattern4",
     name: "Forest",
-    background: "conic-gradient(from 90deg at 50% 0%, transparent, #16a34a 50%, transparent), linear-gradient(180deg, #14532d 0%, #16a34a 50%, #22c55e 100%)"
+    background: "conic-gradient(from 90deg at 50% 0%, transparent, #10b981 50%, transparent), linear-gradient(180deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)"
   },
   {
     id: "pattern5",
     name: "Sunset",
-    background: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px), linear-gradient(180deg, #9a3412 0%, #ea580c 50%, #f97316 100%)"
+    background: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(139,118,147,0.1) 10px, rgba(139,118,147,0.1) 20px), linear-gradient(180deg, #fed7aa 0%, #fdba74 50%, #fb923c 100%)"
   },
   {
     id: "pattern6",
     name: "Rose",
-    background: "radial-gradient(ellipse at top, #f43f5e 0%, transparent 70%), radial-gradient(ellipse at bottom, #881337 0%, transparent 70%), linear-gradient(180deg, #881337 0%, #e11d48 50%, #f43f5e 100%)"
+    background: "radial-gradient(ellipse at top, #fda4af 0%, transparent 70%), radial-gradient(ellipse at bottom, #be185d 0%, transparent 70%), linear-gradient(180deg, #fce7f3 0%, #fbcfe8 50%, #f9a8d4 100%)"
   },
   {
     id: "pattern7",
     name: "Mint",
-    background: "linear-gradient(90deg, transparent 50%, rgba(255,255,255,0.1) 50%), linear-gradient(180deg, #065f46 0%, #059669 50%, #10b981 100%)"
+    background: "linear-gradient(90deg, transparent 50%, rgba(139,118,147,0.1) 50%), linear-gradient(180deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)"
   },
   {
     id: "pattern8",
     name: "Amber",
-    background: "conic-gradient(from 180deg at 50% 50%, #92400e, #d97706, #f59e0b, #92400e), linear-gradient(180deg, rgba(146,64,14,0.8) 0%, rgba(217,119,6,0.6) 50%, rgba(245,158,11,0.4) 100%)"
+    background: "conic-gradient(from 180deg at 50% 50%, #d97706, #f59e0b, #fbbf24, #d97706), linear-gradient(180deg, rgba(217,119,6,0.3) 0%, rgba(245,158,11,0.2) 50%, rgba(251,191,36,0.1) 100%)"
   }
 ];
 
@@ -121,7 +126,6 @@ const ThemeSelector = ({ onThemeChange }: ThemeSelectorProps) => {
         return;
       }
 
-      // Removed the success toast notification
     } catch (error) {
       console.error('Error:', error);
     }
@@ -133,17 +137,23 @@ const ThemeSelector = ({ onThemeChange }: ThemeSelectorProps) => {
 
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-30">
-      <div className="flex space-x-3 bg-white/10 backdrop-blur-md rounded-full p-3 border border-white/20">
+      <div className="flex space-x-3 bg-white/80 backdrop-blur-md rounded-full p-3 border border-botanical-purple/30">
         {themes.map((theme) => (
           <button
             key={theme.id}
             onClick={() => handleThemeSelect(theme)}
             className={`w-8 h-8 rounded-full border-2 transition-all duration-200 ${
               selectedTheme === theme.id 
-                ? 'border-white scale-110' 
-                : 'border-white/30 hover:border-white/60'
+                ? 'border-botanical-purple scale-110' 
+                : 'border-botanical-sage/50 hover:border-botanical-purple/70'
             }`}
-            style={{ background: theme.background }}
+            style={{ 
+              background: theme.id === 'botanical' 
+                ? `url('/lovable-uploads/8ec4329a-116c-403a-85d5-6d85d61efc18.png')` 
+                : theme.background,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
             title={theme.name}
           />
         ))}
