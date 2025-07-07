@@ -1,7 +1,9 @@
 
-import React, { useRef, useState } from "react";
-import { X, Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
+import React, { useRef, useState, useEffect } from "react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface VideoPlayerProps {
   video: {
@@ -21,50 +23,99 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   onViewIncrement 
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [watchedSeconds, setWatchedSeconds] = useState(0);
+  const { user } = useAuth();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-        if (!hasStarted) {
-          onViewIncrement(video.id);
-          setHasStarted(true);
+  // Start tracking time when video plays
+  const handlePlay = () => {
+    if (!hasStarted) {
+      onViewIncrement(video.id);
+      setHasStarted(true);
+    }
+    
+    // Start timer
+    intervalRef.current = setInterval(() => {
+      setWatchedSeconds(prev => prev + 1);
+    }, 1000);
+  };
+
+  // Stop tracking time when video pauses or ends
+  const handlePauseOrEnd = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  // Update meditation minutes in database
+  useEffect(() => {
+    const updateMeditationMinutes = async () => {
+      if (user && watchedSeconds > 0 && watchedSeconds % 60 === 0) {
+        // Update every minute
+        const minutesToAdd = 1;
+        
+        try {
+          await supabase.rpc('update_daily_activity', {
+            p_user_id: user.id,
+            p_activity_type: 'meditation',
+            p_minutes: minutesToAdd
+          });
+        } catch (error) {
+          console.error('Error updating meditation minutes:', error);
         }
       }
-      setIsPlaying(!isPlaying);
-    }
-  };
+    };
 
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
+    updateMeditationMinutes();
+  }, [watchedSeconds, user]);
 
-  const toggleFullscreen = () => {
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+  // Auto-play video when component mounts
+  useEffect(() => {
     if (videoRef.current) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        videoRef.current.requestFullscreen();
+      videoRef.current.play().catch(console.error);
+    }
+  }, []);
+
+  const handleClose = () => {
+    // Final update for any remaining seconds
+    if (user && watchedSeconds > 0) {
+      const remainingMinutes = Math.floor((watchedSeconds % 60) / 60);
+      if (remainingMinutes > 0) {
+        supabase.rpc('update_daily_activity', {
+          p_user_id: user.id,
+          p_activity_type: 'meditation',
+          p_minutes: remainingMinutes
+        }).catch(console.error);
       }
     }
+    
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    onClose();
   };
 
-  const handleVideoEnd = () => {
-    setIsPlaying(false);
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
       <div className="relative w-full h-full max-w-4xl mx-auto flex flex-col">
-        {/* Header */}
+        {/* Header with close button and timer */}
         <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -72,12 +123,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               {video.description && (
                 <p className="text-white/70 text-sm mt-1">{video.description}</p>
               )}
-              <p className="text-white/60 text-xs mt-1">{video.view_count} views</p>
+              <p className="text-white/60 text-xs mt-1">
+                Meditation time: {formatTime(watchedSeconds)}
+              </p>
             </div>
             <Button
               variant="ghost"
               size="icon"
-              onClick={onClose}
+              onClick={handleClose}
               className="text-white hover:bg-white/20"
             >
               <X size={24} />
@@ -85,59 +138,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           </div>
         </div>
 
-        {/* Video Player */}
+        {/* Video Player - No controls */}
         <div className="flex-1 flex items-center justify-center relative">
           <video
             ref={videoRef}
             src={video.file_url}
             className="w-full h-full object-contain"
-            onEnded={handleVideoEnd}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
+            onPlay={handlePlay}
+            onPause={handlePauseOrEnd}
+            onEnded={handlePauseOrEnd}
             controls={false}
+            disablePictureInPicture
+            controlsList="nodownload nofullscreen noremoteplayback"
+            onContextMenu={(e) => e.preventDefault()} // Disable right-click menu
           />
-          
-          {/* Play/Pause Overlay */}
-          <div 
-            className="absolute inset-0 flex items-center justify-center cursor-pointer"
-            onClick={togglePlay}
-          >
-            {!isPlaying && (
-              <div className="bg-black/50 rounded-full p-4 hover:bg-black/70 transition-colors">
-                <Play className="text-white w-12 h-12" fill="white" />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Controls */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-          <div className="flex items-center justify-center space-x-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={togglePlay}
-              className="text-white hover:bg-white/20"
-            >
-              {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleMute}
-              className="text-white hover:bg-white/20"
-            >
-              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleFullscreen}
-              className="text-white hover:bg-white/20"
-            >
-              <Maximize size={20} />
-            </Button>
-          </div>
         </div>
       </div>
     </div>
