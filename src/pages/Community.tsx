@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Home, Users, Bot, Music, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
 import { PostCard } from "@/components/PostCard";
@@ -15,10 +16,10 @@ const Community = () => {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   
   const {
     allPosts,
+    userPosts,
     toggleLike,
     addComment,
     getPostComments,
@@ -87,13 +88,7 @@ const Community = () => {
           <ArrowLeft size={20} />
         </Button>
         <h1 className="text-white text-xl font-medium">Community</h1>
-        <Button 
-          variant="ghost"
-          onClick={() => setLeaderboardOpen(true)}
-          className="text-white/80 hover:bg-white/10 hover:text-white"
-        >
-          <Users size={20} />
-        </Button>
+        <div className="w-10 h-10"></div>
       </div>
 
       {/* Main Content */}
@@ -109,28 +104,94 @@ const Community = () => {
           </Button>
         </div>
 
-        {/* Posts */}
-        <div className="space-y-6 animate-fade-in">
-          {loading ? (
-            <div className="text-center text-white/60 py-8">Loading posts...</div>
-          ) : posts.length === 0 ? (
-            <div className="text-center text-white/60 py-8">
-              <p>No posts yet. Be the first to share!</p>
-            </div>
-          ) : (
-            posts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                onLike={toggleLike}
-                onComment={addComment}
-                onShare={handleShare}
-                onGetComments={getPostComments}
-                onDelete={user?.id === post.user_id ? deletePost : undefined}
-                isOwnPost={user?.id === post.user_id}
-              />
-            ))
-          )}
+        {/* Tabs for different sections */}
+        <div className="animate-fade-in">
+          <Tabs defaultValue="community" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-md border border-white/20">
+              <TabsTrigger value="community" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
+                Community Posts
+              </TabsTrigger>
+              <TabsTrigger value="your-posts" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
+                Your Posts
+              </TabsTrigger>
+              <TabsTrigger value="leaderboard" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
+                Leaderboard
+              </TabsTrigger>
+              <TabsTrigger value="family" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
+                Family
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="community" className="mt-6 space-y-6">
+              {loading ? (
+                <div className="text-center text-white/60 py-8">Loading posts...</div>
+              ) : posts.length === 0 ? (
+                <div className="text-center text-white/60 py-8">
+                  <p>No posts yet. Be the first to share!</p>
+                </div>
+              ) : (
+                posts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    onLike={toggleLike}
+                    onComment={addComment}
+                    onShare={handleShare}
+                    onGetComments={getPostComments}
+                    onDelete={user?.id === post.user_id ? deletePost : undefined}
+                    isOwnPost={user?.id === post.user_id}
+                  />
+                ))
+              )}
+            </TabsContent>
+
+            <TabsContent value="your-posts" className="mt-6 space-y-6">
+              {loading ? (
+                <div className="text-center text-white/60 py-8">Loading your posts...</div>
+              ) : userPosts.length === 0 ? (
+                <div className="text-center text-white/60 py-8">
+                  <p>You haven't created any posts yet.</p>
+                </div>
+              ) : (
+                userPosts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    onLike={toggleLike}
+                    onComment={addComment}
+                    onShare={handleShare}
+                    onGetComments={getPostComments}
+                    onDelete={deletePost}
+                    isOwnPost={true}
+                  />
+                ))
+              )}
+            </TabsContent>
+
+            <TabsContent value="leaderboard" className="mt-6">
+              <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-6">
+                <CommunityLeaderboard />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="family" className="mt-6">
+              <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-6">
+                <div className="text-center text-white py-8">
+                  <Users className="w-12 h-12 text-white/60 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-white mb-2">Family Feature</h3>
+                  <p className="text-white/60">
+                    Connect with your family members and share your wellness journey together.
+                  </p>
+                  <Button 
+                    className="mt-4 bg-white/20 hover:bg-white/30 text-white border border-white/30"
+                    onClick={() => {/* Add family functionality */}}
+                  >
+                    Add Family Members
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 
@@ -187,27 +248,6 @@ const Community = () => {
         onClose={() => setShowCreatePost(false)}
         onSubmit={handlePostCreated}
       />
-      
-      {leaderboardOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-black">Community Leaderboard</h3>
-                <Button
-                  onClick={() => setLeaderboardOpen(false)}
-                  variant="ghost"
-                  size="sm"
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </Button>
-              </div>
-              <CommunityLeaderboard />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
