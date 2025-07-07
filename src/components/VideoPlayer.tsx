@@ -26,6 +26,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [hasStarted, setHasStarted] = useState(false);
   const [watchedSeconds, setWatchedSeconds] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showControls, setShowControls] = useState(false);
   const { user } = useAuth();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -181,7 +182,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         </div>
 
         {/* Video Player */}
-        <div className="flex-1 flex items-center justify-center relative">
+        <div 
+          className="flex-1 flex items-center justify-center relative"
+          onMouseEnter={() => setShowControls(true)}
+          onMouseLeave={() => setShowControls(false)}
+          onTouchStart={() => setShowControls(true)}
+          onTouchEnd={() => setTimeout(() => setShowControls(false), 3000)}
+        >
           <video
             ref={videoRef}
             src={video.file_url}
@@ -193,19 +200,22 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             disablePictureInPicture
             controlsList="nodownload nofullscreen noremoteplayback"
             onContextMenu={(e) => e.preventDefault()}
+            autoPlay
           />
           
-          {/* Play/Pause Button Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={togglePlayPause}
-              className="w-16 h-16 rounded-full bg-black/50 hover:bg-black/70 text-white border-2 border-white/30 hover:border-white/50 transition-all"
-            >
-              {isPlaying ? <Pause size={32} /> : <Play size={32} />}
-            </Button>
-          </div>
+          {/* Play/Pause Button Overlay - Only show on hover/touch */}
+          {showControls && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={togglePlayPause}
+                className="w-16 h-16 rounded-full bg-black/50 hover:bg-black/70 text-white border-2 border-white/30 hover:border-white/50 transition-all"
+              >
+                {isPlaying ? <Pause size={32} /> : <Play size={32} />}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
