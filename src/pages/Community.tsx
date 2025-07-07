@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, User, Bell, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -320,14 +321,14 @@ const Community = () => {
         onSubmit={handleCreatePost}
       />
 
-      {/* Bottom Navigation - Updated */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
+      {/* Bottom Navigation - Fixed with proper colors */}
+      <div className="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-md border-t border-white/20 z-30">
         <div className="flex justify-around py-4 px-2">
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/dashboard")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+            <div className="w-6 h-6 flex items-center justify-center">
               <Home className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Home</span>
@@ -336,14 +337,14 @@ const Community = () => {
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/discover")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+            <div className="w-6 h-6 flex items-center justify-center">
               <Music className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Echo</span>
           </div>
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-              <Users className="w-4 h-4 text-purple-600" />
+              <Users className="w-4 h-4 text-black" />
             </div>
             <span className="text-white text-xs font-medium">Community</span>
           </div>
@@ -351,7 +352,7 @@ const Community = () => {
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/ask-ai")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+            <div className="w-6 h-6 flex items-center justify-center">
               <Bot className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Lumina</span>
