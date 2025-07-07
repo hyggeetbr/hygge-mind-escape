@@ -19,10 +19,8 @@ export const usePulseContent = () => {
     queryFn: async () => {
       console.log("Fetching pulse content...");
       
-      // Since we can't use the RPC function due to TypeScript limitations,
-      // we'll use a raw SQL query instead
       const { data, error } = await supabase
-        .from("pulse_content" as any)
+        .from("pulse_content")
         .select("*")
         .eq("is_active", true)
         .order("position", { ascending: true });
@@ -33,7 +31,7 @@ export const usePulseContent = () => {
       }
 
       console.log("Pulse content fetched:", data);
-      return (data as PulseContent[]) || [];
+      return data as PulseContent[];
     },
   });
 };

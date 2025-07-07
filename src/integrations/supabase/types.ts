@@ -616,6 +616,39 @@ export type Database = {
           },
         ]
       }
+      pulse_content: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          position: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          position?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          position?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reading_sessions: {
         Row: {
           article_id: string
