@@ -11,6 +11,7 @@ import TodaysReading from "./pages/TodaysReading";
 import Yoga from "./pages/Yoga";
 import AskAI from "./pages/AskAI";
 import Discover from "./pages/Discover";
+import Pulse from "./pages/Pulse";
 import Community from "./pages/Community";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
@@ -54,6 +55,7 @@ function App() {
             <Route path="/yoga" element={<Yoga />} />
             <Route path="/ask-ai" element={<AskAI />} />
             <Route path="/discover" element={<Discover />} />
+            <Route path="/pulse" element={<Pulse />} />
             <Route path="/echo-culture" element={<EchoCulture />} />
             <Route path="/folklore/:country" element={<Folklore />} />
             <Route path="/community" element={<Community />} />

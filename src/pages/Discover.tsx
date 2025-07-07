@@ -1,6 +1,5 @@
-
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2 } from "lucide-react";
+import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAudioTracks } from "@/hooks/useAudioTracks";
@@ -270,6 +269,15 @@ const Discover = () => {
             </div>
             <div 
               className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+              onClick={() => navigate("/pulse")}
+            >
+              <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+                <Zap className="w-4 h-4 text-white/60" />
+              </div>
+              <span className="text-white/60 text-xs">Pulse</span>
+            </div>
+            <div 
+              className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
               onClick={() => navigate("/community")}
             >
               <div className="w-6 h-6 text-white/60 flex items-center justify-center">
@@ -482,6 +490,15 @@ const Discover = () => {
               <Music className="w-4 h-4 text-black" />
             </div>
             <span className="text-white text-xs font-medium">Echo</span>
+          </div>
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={() => navigate("/pulse")}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-white/60" />
+            </div>
+            <span className="text-white/60 text-xs">Pulse</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"

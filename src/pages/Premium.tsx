@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Crown, Star, Check, Sparkles, Home, Users, Bot, Music } from "lucide-react";
+import { ArrowLeft, Crown, Star, Check, Sparkles, Home, Users, Bot, Music, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Premium = () => {
@@ -7,7 +7,7 @@ const Premium = () => {
 
   const features = [
     "Unlimited access to all meditations",
-    "Exclusive premium content library",
+    "Exclusive premium content library", 
     "Advanced progress tracking",
     "Offline downloads",
     "Ad-free experience",
@@ -24,7 +24,7 @@ const Premium = () => {
       popular: false
     },
     {
-      name: "Yearly",
+      name: "Yearly", 
       price: "$59.99",
       period: "/year",
       popular: true,
@@ -193,6 +193,15 @@ const Premium = () => {
               <Music className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Echo</span>
+          </div>
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={() => navigate("/pulse")}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-white/60" />
+            </div>
+            <span className="text-white/60 text-xs">Pulse</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
