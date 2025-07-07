@@ -145,8 +145,8 @@ const PulseContentViewer = ({ content }: PulseContentViewerProps) => {
     >
       {content.map((item, index) => (
         <div key={item.id} className="h-screen flex flex-col snap-start">
-          {/* Image Section - Takes up 65% of screen height */}
-          <div className="h-[65vh] bg-gray-900 flex items-center justify-center relative">
+          {/* Image Section - Takes up 15% of screen height */}
+          <div className="h-[15vh] bg-gray-900 flex items-center justify-center relative">
             {item.image_url ? (
               <img
                 src={item.image_url}
@@ -165,8 +165,8 @@ const PulseContentViewer = ({ content }: PulseContentViewerProps) => {
             </div>
           </div>
 
-          {/* Content Section - Takes up 35% of screen height */}
-          <div className="h-[35vh] bg-black p-6 space-y-4 overflow-y-auto">
+          {/* Content Section - Takes up 85% of screen height */}
+          <div className="h-[85vh] bg-black p-6 space-y-4 overflow-y-auto">
             <h2 className="text-xl font-bold text-white leading-tight">
               {item.title}
             </h2>
