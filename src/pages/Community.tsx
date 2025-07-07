@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Home, Users, Bot, Music, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
 import { PostCard } from "@/components/PostCard";
 import { CreatePostDialog } from "@/components/CreatePostDialog";
-import CommunityLeaderboard from "@/components/CommunityLeaderboard";
+import { CommunityLeaderboard } from "@/components/CommunityLeaderboard";
 import { useAuth } from "@/hooks/useAuth";
 
 const Community = () => {
@@ -17,25 +18,31 @@ const Community = () => {
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   
   const {
+    allPosts,
     toggleLike,
     addComment,
     getPostComments,
     createPost,
-    deletePost
+    deletePost,
+    loadPosts
   } = useCommunityPosts();
 
   const loadCommunityPosts = async () => {
     setLoading(true);
     try {
-      const posts = await useCommunityPosts().getCommunityPosts();
-      setPosts(posts || []);
+      await loadPosts();
+      setPosts(allPosts || []);
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePostCreated = (newPost: any) => {
-    setPosts([newPost, ...posts]);
+  const handlePostCreated = async (title: string, description: string, imageFile?: File) => {
+    const success = await createPost(title, description, imageFile);
+    if (success) {
+      await loadCommunityPosts();
+    }
+    return success;
   };
 
   const handleShare = (post: any) => {
@@ -55,6 +62,10 @@ const Community = () => {
   useEffect(() => {
     loadCommunityPosts();
   }, []);
+
+  useEffect(() => {
+    setPosts(allPosts);
+  }, [allPosts]);
 
   return (
     <div className="min-h-screen calm-gradient relative overflow-hidden">
@@ -172,11 +183,31 @@ const Community = () => {
       </div>
 
       <CreatePostDialog
-        isOpen={showCreatePost}
+        open={showCreatePost}
         onClose={() => setShowCreatePost(false)}
-        onPostCreated={handlePostCreated}
+        onSubmit={handlePostCreated}
       />
-       <CommunityLeaderboard isOpen={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} />
+      
+      {leaderboardOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-semibold text-black">Community Leaderboard</h3>
+                <Button
+                  onClick={() => setLeaderboardOpen(false)}
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </Button>
+              </div>
+              <CommunityLeaderboard />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

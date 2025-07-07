@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Calendar, Target, Trophy, Book, Music, Palette, Home, Users, Bot, Zap } from "lucide-react";
@@ -7,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import UsernameDialog from "@/components/UsernameDialog";
+import { UsernameDialog } from "@/components/UsernameDialog";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -283,7 +284,7 @@ const Dashboard = () => {
       </div>
 
       <UsernameDialog 
-        isOpen={showUsernameDialog} 
+        open={showUsernameDialog} 
         onClose={() => setShowUsernameDialog(false)}
         onUsernameSet={handleUsernameSet}
       />
