@@ -80,8 +80,8 @@ const PulseContentViewer = ({ content }: PulseContentViewerProps) => {
       onWheel={handleScroll}
     >
       <div className="h-full flex flex-col">
-        {/* Image Section - Empty for now as requested */}
-        <div className="flex-1 bg-gray-900 flex items-center justify-center">
+        {/* Image Section - Takes up 65% of screen height like in reference */}
+        <div className="h-[65vh] bg-gray-900 flex items-center justify-center relative">
           {currentContent.image_url ? (
             <img
               src={currentContent.image_url}
@@ -91,11 +91,18 @@ const PulseContentViewer = ({ content }: PulseContentViewerProps) => {
           ) : (
             <div className="text-gray-500 text-lg">Image placeholder</div>
           )}
+          
+          {/* Progress Indicator - positioned on image like in reference */}
+          <div className="absolute top-4 right-4 bg-black bg-opacity-50 rounded-full px-3 py-1">
+            <span className="text-white text-sm">
+              {currentIndex + 1} / {content.length}
+            </span>
+          </div>
         </div>
 
-        {/* Content Section */}
-        <div className="bg-black p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-white leading-tight">
+        {/* Content Section - Takes up 35% of screen height like in reference */}
+        <div className="h-[35vh] bg-black p-6 space-y-4 overflow-y-auto">
+          <h2 className="text-xl font-bold text-white leading-tight">
             {currentContent.title}
           </h2>
           <p className="text-gray-300 text-base leading-relaxed">
@@ -104,7 +111,7 @@ const PulseContentViewer = ({ content }: PulseContentViewerProps) => {
         </div>
 
         {/* Navigation Dots */}
-        <div className="absolute bottom-4 right-4 flex flex-col space-y-2">
+        <div className="absolute bottom-20 right-4 flex flex-col space-y-2">
           {content.map((_, index) => (
             <button
               key={index}
@@ -116,16 +123,9 @@ const PulseContentViewer = ({ content }: PulseContentViewerProps) => {
           ))}
         </div>
 
-        {/* Progress Indicator */}
-        <div className="absolute top-4 right-4 bg-black bg-opacity-50 rounded-full px-3 py-1">
-          <span className="text-white text-sm">
-            {currentIndex + 1} / {content.length}
-          </span>
-        </div>
-
         {/* Swipe Hint */}
         {currentIndex === 0 && (
-          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-gray-400 text-sm animate-pulse">
+          <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 text-gray-400 text-sm animate-pulse">
             Swipe up for next
           </div>
         )}
