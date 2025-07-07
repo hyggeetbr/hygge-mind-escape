@@ -28,7 +28,16 @@ export const usePulseContent = () => {
         throw error;
       }
 
-      return data as PulseContent[];
+      return (data as any[]).map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        content: item.content,
+        image_url: item.image_url,
+        position: item.position,
+        is_active: item.is_active,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+      })) as PulseContent[];
     },
   });
 };
