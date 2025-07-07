@@ -17,8 +17,10 @@ export const usePulseContent = () => {
   return useQuery({
     queryKey: ["pulse-content"],
     queryFn: async () => {
+      console.log("Fetching pulse content...");
+      
       const { data, error } = await supabase
-        .from("pulse_content" as any)
+        .from("pulse_content")
         .select("*")
         .eq("is_active", true)
         .order("position", { ascending: true });
@@ -28,7 +30,13 @@ export const usePulseContent = () => {
         throw error;
       }
 
-      return (data as any[]).map((item: any) => ({
+      console.log("Pulse content fetched:", data);
+
+      if (!data) {
+        return [];
+      }
+
+      return data.map((item: any) => ({
         id: item.id,
         title: item.title,
         content: item.content,
