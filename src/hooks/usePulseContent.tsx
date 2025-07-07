@@ -18,7 +18,7 @@ export const usePulseContent = () => {
     queryKey: ["pulse-content"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("pulse_content")
+        .from("pulse_content" as any)
         .select("*")
         .eq("is_active", true)
         .order("position", { ascending: true });
