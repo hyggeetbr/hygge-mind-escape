@@ -316,12 +316,12 @@ const Discover = () => {
           variant="ghost"
           size="icon"
           onClick={() => navigate("/dashboard")}
-          className="text-white/80 hover:bg-white/10 hover:text-white"
+          className="text-black/80 hover:bg-white/10 hover:text-black"
         >
           <ArrowLeft size={20} />
         </Button>
-        <h1 className="text-white text-xl font-medium">Echo</h1>
-        <Button variant="ghost" size="icon" className="text-white/80 hover:bg-white/10 hover:text-white">
+        <h1 className="text-black text-xl font-medium">Echo</h1>
+        <Button variant="ghost" size="icon" className="text-black/80 hover:bg-white/10 hover:text-black">
           <Search size={20} />
         </Button>
       </div>
@@ -330,8 +330,8 @@ const Discover = () => {
       <div className="relative z-10 px-6 pb-32">
         {/* Welcome Section */}
         <div className="mb-8 animate-fade-in">
-          <h2 className="text-white text-3xl font-light mb-2" style={{ fontFamily: 'Georgia, serif' }}>Hygge Echo</h2>
-          <p className="text-white/70 text-lg">
+          <h2 className="text-black text-3xl font-light mb-2" style={{ fontFamily: 'Georgia, serif' }}>Hygge Echo</h2>
+          <p className="text-black/70 text-lg">
             Discover audio content to enhance your mindful journey
           </p>
         </div>
@@ -340,11 +340,11 @@ const Discover = () => {
         <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
           <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-xl p-4">
             <div className="flex items-center space-x-3">
-              <Search className="w-5 h-5 text-white/60" />
+              <Search className="w-5 h-5 text-black/60" />
               <input 
                 type="text" 
                 placeholder="Search for affirmations, wisdom, sounds..."
-                className="flex-1 bg-transparent border-none outline-none text-white placeholder-white/60"
+                className="flex-1 bg-transparent border-none outline-none text-black placeholder-black/60"
               />
             </div>
           </div>
@@ -362,13 +362,13 @@ const Discover = () => {
                   {section.icon}
                 </div>
                 <div>
-                  <h3 className="text-white text-xl font-semibold">{section.title}</h3>
-                  <p className="text-white/60 text-sm">
+                  <h3 className="text-black text-xl font-semibold">{section.title}</h3>
+                  <p className="text-black/60 text-sm">
                     {section.description} • {section.hasSubcategories ? 'Multiple categories' : getTotalDuration(section.tracks)}
                   </p>
                 </div>
               </div>
-              <ArrowLeft className="w-5 h-5 text-white/60 rotate-180" />
+              <ArrowLeft className="w-5 h-5 text-black/60 rotate-180" />
             </div>
           </div>
         ))}
@@ -384,22 +384,22 @@ const Discover = () => {
                 🌍
               </div>
               <div>
-                <h3 className="text-white text-xl font-semibold">Echo Culture</h3>
-                <p className="text-white/60 text-sm">Stories, folklore, and tales from around the world</p>
+                <h3 className="text-black text-xl font-semibold">Echo Culture</h3>
+                <p className="text-black/60 text-sm">Stories, folklore, and tales from around the world</p>
               </div>
             </div>
-            <ArrowLeft className="w-5 h-5 text-white/60 rotate-180" />
+            <ArrowLeft className="w-5 h-5 text-black/60 rotate-180" />
           </div>
         </div>
 
         {/* Your Likes Section */}
         <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-white text-xl font-semibold">Your Likes</h3>
+            <h3 className="text-black text-xl font-semibold">Your Likes</h3>
             <Button
               variant="ghost"
               size="sm"
-              className="text-white/60 hover:text-white hover:bg-white/10"
+              className="text-black/60 hover:text-black hover:bg-white/10"
             >
               <Heart className="w-4 h-4 mr-2" />
               {likedTracks.length}
@@ -408,14 +408,14 @@ const Discover = () => {
           
           {likesLoading ? (
             <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-8 text-center">
-              <Heart className="w-12 h-12 text-white/30 mx-auto mb-4 animate-pulse" />
-              <p className="text-white/60">Loading likes...</p>
+              <Heart className="w-12 h-12 text-black/30 mx-auto mb-4 animate-pulse" />
+              <p className="text-black/60">Loading likes...</p>
             </div>
           ) : likedTracks.length === 0 ? (
             <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-8 text-center">
-              <Heart className="w-12 h-12 text-white/30 mx-auto mb-4" />
-              <p className="text-white/60 mb-2">No liked tracks yet</p>
-              <p className="text-white/40 text-sm">Tracks you like will appear here</p>
+              <Heart className="w-12 h-12 text-black/30 mx-auto mb-4" />
+              <p className="text-black/60 mb-2">No liked tracks yet</p>
+              <p className="text-black/40 text-sm">Tracks you like will appear here</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -438,8 +438,8 @@ const Discover = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-white font-medium">{track.title}</h4>
-                        <div className="flex items-center space-x-3 text-white/60 text-sm">
+                        <h4 className="text-black font-medium">{track.title}</h4>
+                        <div className="flex items-center space-x-3 text-black/60 text-sm">
                           <span className="flex items-center space-x-1">
                             <Clock className="w-3 h-3" />
                             <span>{formatDuration(track.duration_seconds)}</span>

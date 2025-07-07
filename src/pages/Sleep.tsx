@@ -58,7 +58,16 @@ const Sleep = () => {
   };
 
   return (
-    <div className="min-h-screen calm-gradient relative overflow-hidden">
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{ 
+        background: `url('/lovable-uploads/2004a855-3429-476d-b43b-f05812ef647f.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
@@ -94,7 +103,7 @@ const Sleep = () => {
           {sleepContent.map((item, index) => (
             <div 
               key={item.title}
-              className="calm-card p-6 cursor-pointer transform transition-all duration-300 hover:scale-105"
+              className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
               style={{ animationDelay: `${0.1 + index * 0.1}s` }}
             >
               <div className="flex items-center space-x-4">
@@ -102,11 +111,11 @@ const Sleep = () => {
                   <item.icon className="w-8 h-8 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-800 text-lg mb-1">{item.title}</h3>
-                  <p className="text-gray-600 mb-2">{item.description}</p>
-                  <p className="text-calm-purple text-sm font-medium">{item.duration}</p>
+                  <h3 className="font-semibold text-white text-lg mb-1">{item.title}</h3>
+                  <p className="text-white/70 mb-2">{item.description}</p>
+                  <p className="text-white/90 text-sm font-medium">{item.duration}</p>
                 </div>
-                <div className="text-gray-400">›</div>
+                <div className="text-white/40">›</div>
               </div>
             </div>
           ))}
@@ -115,7 +124,7 @@ const Sleep = () => {
         {/* Featured Content */}
         <div className="mt-8 animate-fade-in" style={{ animationDelay: "0.5s" }}>
           <h3 className="text-white text-xl font-medium mb-4">Tonight's Featured</h3>
-          <div className="calm-card p-0 overflow-hidden">
+          <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-0 overflow-hidden">
             <div className="relative h-48 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center">
               <div className="text-center text-white">
                 <Moon className="w-12 h-12 mx-auto mb-4 opacity-80" />
@@ -126,10 +135,10 @@ const Sleep = () => {
             <div className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-gray-800">Sleep Story</p>
-                  <p className="text-gray-600 text-sm">25 minutes</p>
+                  <p className="font-medium text-white">Sleep Story</p>
+                  <p className="text-white/70 text-sm">25 minutes</p>
                 </div>
-                <Button className="bg-calm-purple hover:bg-calm-purple/90 text-white rounded-full px-6">
+                <Button className="bg-white/20 hover:bg-white/30 text-white rounded-full px-6 border border-white/30">
                   Listen Now
                 </Button>
               </div>
@@ -139,7 +148,7 @@ const Sleep = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
+      <div className="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-md border-t border-white/20 z-30">
         <div className="flex justify-around py-4 px-2">
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
