@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PulseContent } from "@/hooks/usePulseContent";
 
 interface PulseContentViewerProps {
@@ -8,56 +8,120 @@ interface PulseContentViewerProps {
 
 const PulseContentViewer = ({ content }: PulseContentViewerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const touchStartY = useRef<number | null>(null);
+  const touchEndY = useRef<number | null>(null);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const minSwipeDistance = 50;
 
+  const scrollToIndex = (index: number) => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const targetScrollTop = index * window.innerHeight;
+      
+      setIsScrolling(true);
+      container.scrollTo({
+        top: targetScrollTop,
+        behavior: 'smooth'
+      });
+
+      // Clear existing timeout
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+      
+      // Set scrolling to false after animation completes
+      scrollTimeout.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 500);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex < content.length - 1) {
+      const newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      scrollToIndex(newIndex);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      scrollToIndex(newIndex);
+    }
+  };
+
   const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientY);
+    touchEndY.current = null;
+    touchStartY.current = e.targetTouches[0].clientY;
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientY);
+    touchEndY.current = e.targetTouches[0].clientY;
   };
 
   const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
+    if (!touchStartY.current || !touchEndY.current || isScrolling) return;
     
-    const distance = touchStart - touchEnd;
+    const distance = touchStartY.current - touchEndY.current;
     const isUpSwipe = distance > minSwipeDistance;
     const isDownSwipe = distance < -minSwipeDistance;
 
-    if (isUpSwipe && currentIndex < content.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-    if (isDownSwipe && currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+    if (isUpSwipe) {
+      handleNext();
+    } else if (isDownSwipe) {
+      handlePrev();
     }
   };
 
   const handleScroll = (e: React.WheelEvent) => {
     e.preventDefault();
-    if (e.deltaY > 0 && currentIndex < content.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else if (e.deltaY < 0 && currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+    if (isScrolling) return;
+    
+    if (e.deltaY > 0) {
+      handleNext();
+    } else if (e.deltaY < 0) {
+      handlePrev();
+    }
+  };
+
+  const handleManualScroll = () => {
+    if (containerRef.current && !isScrolling) {
+      const container = containerRef.current;
+      const scrollTop = container.scrollTop;
+      const newIndex = Math.round(scrollTop / window.innerHeight);
+      
+      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < content.length) {
+        setCurrentIndex(newIndex);
+      }
     }
   };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown" && currentIndex < content.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else if (e.key === "ArrowUp" && currentIndex > 0) {
-        setCurrentIndex(currentIndex - 1);
+      if (isScrolling) return;
+      
+      if (e.key === "ArrowDown") {
+        handleNext();
+      } else if (e.key === "ArrowUp") {
+        handlePrev();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentIndex, content.length]);
+  }, [currentIndex, content.length, isScrolling]);
+
+  useEffect(() => {
+    // Scroll to top on component mount
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+  }, []);
 
   if (!content || content.length === 0) {
     return (
@@ -69,67 +133,79 @@ const PulseContentViewer = ({ content }: PulseContentViewerProps) => {
     );
   }
 
-  const currentContent = content[currentIndex];
-
   return (
     <div
-      className="h-screen bg-black text-white overflow-hidden relative"
+      ref={containerRef}
+      className="h-screen bg-black text-white overflow-y-auto snap-y snap-mandatory"
+      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
       onWheel={handleScroll}
+      onScroll={handleManualScroll}
     >
-      <div className="h-full flex flex-col">
-        {/* Image Section - Takes up 65% of screen height like in reference */}
-        <div className="h-[65vh] bg-gray-900 flex items-center justify-center relative">
-          {currentContent.image_url ? (
-            <img
-              src={currentContent.image_url}
-              alt={currentContent.title}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="text-gray-500 text-lg">Image placeholder</div>
-          )}
-          
-          {/* Progress Indicator - positioned on image like in reference */}
-          <div className="absolute top-4 right-4 bg-black bg-opacity-50 rounded-full px-3 py-1">
-            <span className="text-white text-sm">
-              {currentIndex + 1} / {content.length}
-            </span>
+      <style jsx>{`
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+      
+      {content.map((item, index) => (
+        <div key={item.id} className="h-screen flex flex-col snap-start">
+          {/* Image Section - Takes up 65% of screen height */}
+          <div className="h-[65vh] bg-gray-900 flex items-center justify-center relative">
+            {item.image_url ? (
+              <img
+                src={item.image_url}
+                alt={item.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="text-gray-500 text-lg">Image placeholder</div>
+            )}
+            
+            {/* Progress Indicator - positioned on image */}
+            <div className="absolute top-4 right-4 bg-black bg-opacity-50 rounded-full px-3 py-1">
+              <span className="text-white text-sm">
+                {index + 1} / {content.length}
+              </span>
+            </div>
+          </div>
+
+          {/* Content Section - Takes up 35% of screen height */}
+          <div className="h-[35vh] bg-black p-6 space-y-4 overflow-y-auto">
+            <h2 className="text-xl font-bold text-white leading-tight">
+              {item.title}
+            </h2>
+            <p className="text-gray-300 text-base leading-relaxed">
+              {item.content}
+            </p>
           </div>
         </div>
+      ))}
 
-        {/* Content Section - Takes up 35% of screen height like in reference */}
-        <div className="h-[35vh] bg-black p-6 space-y-4 overflow-y-auto">
-          <h2 className="text-xl font-bold text-white leading-tight">
-            {currentContent.title}
-          </h2>
-          <p className="text-gray-300 text-base leading-relaxed">
-            {currentContent.content}
-          </p>
-        </div>
-
-        {/* Navigation Dots */}
-        <div className="absolute bottom-20 right-4 flex flex-col space-y-2">
-          {content.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex ? "bg-white" : "bg-gray-600"
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Swipe Hint */}
-        {currentIndex === 0 && (
-          <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 text-gray-400 text-sm animate-pulse">
-            Swipe up for next
-          </div>
-        )}
+      {/* Navigation Dots - Fixed position */}
+      <div className="fixed bottom-20 right-4 flex flex-col space-y-2 z-10">
+        {content.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              setCurrentIndex(index);
+              scrollToIndex(index);
+            }}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              index === currentIndex ? "bg-white" : "bg-gray-600"
+            }`}
+          />
+        ))}
       </div>
+
+      {/* Swipe Hint */}
+      {currentIndex === 0 && (
+        <div className="fixed bottom-32 left-1/2 transform -translate-x-1/2 text-gray-400 text-sm animate-pulse z-10">
+          Swipe up for next
+        </div>
+      )}
     </div>
   );
 };
