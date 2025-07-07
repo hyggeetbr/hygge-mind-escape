@@ -1,56 +1,41 @@
-
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, User, Bell, Home, Users, Bot, Music } from "lucide-react";
+import { ArrowLeft, Plus, Home, Users, Bot, Music, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
-import { useNotifications } from "@/hooks/useNotifications";
-import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { PostCard } from "@/components/PostCard";
-import { UsernameDialog } from "@/components/UsernameDialog";
-import { CommunityLeaderboard } from "@/components/CommunityLeaderboard";
-import { FamilyMembersView } from "@/components/FamilyMembersView";
+import { CreatePostDialog } from "@/components/CreatePostDialog";
+import CommunityLeaderboard from "@/components/CommunityLeaderboard";
 import { useAuth } from "@/hooks/useAuth";
 
 const Community = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [showCreatePost, setShowCreatePost] = useState(false);
-  const [showUsernameDialog, setShowUsernameDialog] = useState(false);
-  const [activeTab, setActiveTab] = useState<'community' | 'yours' | 'leaderboard' | 'family'>('community');
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   
   const {
-    allPosts,
-    userPosts,
-    loading,
-    userProfile,
-    createPost,
     toggleLike,
     addComment,
     getPostComments,
-    checkUserProfile,
+    createPost,
     deletePost
   } = useCommunityPosts();
 
-  const { unreadCount } = useNotifications();
-
-  const handleCreatePost = async (title: string, description: string, image?: File) => {
-    console.log('Community handleCreatePost called with:', { title, description, hasImage: !!image });
-    const success = await createPost(title, description, image);
-    console.log('Create post success:', success);
-    return success;
+  const loadCommunityPosts = async () => {
+    setLoading(true);
+    try {
+      const posts = await useCommunityPosts().getCommunityPosts();
+      setPosts(posts || []);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUsernameSet = (username: string) => {
-    console.log('Username set:', username);
-    setShowUsernameDialog(false);
-    // Reload posts to update the username display
-    window.location.reload();
-  };
-
-  const handleUsernameChange = () => {
-    console.log('Opening username change dialog');
-    setShowUsernameDialog(true);
+  const handlePostCreated = (newPost: any) => {
+    setPosts([newPost, ...posts]);
   };
 
   const handleShare = (post: any) => {
@@ -67,38 +52,9 @@ const Community = () => {
     }
   };
 
-  if (!user) {
-    return (
-      <div className="min-h-screen calm-gradient flex items-center justify-center">
-        <div className="text-center text-white">
-          <h2 className="text-2xl font-light mb-4">Please sign in to view the community</h2>
-          <Button onClick={() => navigate("/")}>Go to Login</Button>
-        </div>
-      </div>
-    );
-  }
-
-  const communityPosts = allPosts.filter(post => post.user_id !== user.id);
-
-  console.log('Community render - Posts:', { 
-    allPosts: allPosts.length, 
-    userPosts: userPosts.length, 
-    communityPosts: communityPosts.length,
-    activeTab,
-    userProfile
-  });
-
-  // Show loading if we're still waiting for user profile to load
-  if (userProfile === undefined && loading) {
-    return (
-      <div className="min-h-screen calm-gradient flex items-center justify-center">
-        <div className="text-center text-white">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
-          <p>Loading community...</p>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    loadCommunityPosts();
+  }, []);
 
   return (
     <div className="min-h-screen calm-gradient relative overflow-hidden">
@@ -119,216 +75,62 @@ const Community = () => {
         >
           <ArrowLeft size={20} />
         </Button>
-        
         <h1 className="text-white text-xl font-medium">Community</h1>
-        
-        <div className="flex items-center space-x-2">
-          {/* Notifications bell */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/notifications")}
-            className="text-white/80 hover:bg-white/10 hover:text-white relative"
-          >
-            <Bell size={20} />
-            {unreadCount > 0 && (
-              <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-medium">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              </div>
-            )}
-          </Button>
-          
-          {/* Profile button - always visible */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleUsernameChange}
-            className="text-white/80 hover:bg-white/10 hover:text-white w-8 h-8 rounded-full bg-white/20"
-          >
-            <User size={16} />
-          </Button>
-          
-          {/* Show create post button only when not on Family tab */}
-          {activeTab !== 'family' && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowCreatePost(true)}
-              className="text-white/80 hover:bg-white/10 hover:text-white"
-            >
-              <Plus size={20} />
-            </Button>
-          )}
-        </div>
+        <Button 
+          variant="ghost"
+          onClick={() => setLeaderboardOpen(true)}
+          className="text-white/80 hover:bg-white/10 hover:text-white"
+        >
+          <Users size={20} />
+        </Button>
       </div>
 
       {/* Main Content */}
       <div className="relative z-10 px-6 pb-32">
-        <div className="mb-8 animate-fade-in">
-          <h2 className="text-white text-3xl font-light mb-4">Connect & Inspire</h2>
-          <p className="text-white/70 text-lg leading-relaxed">
-            Share your journey and be inspired by our mindful community.
-          </p>
+        {/* Create Post Button */}
+        <div className="mb-6 animate-fade-in">
+          <Button 
+            className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/30"
+            onClick={() => setShowCreatePost(true)}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Create a Post
+          </Button>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="mb-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <div className="flex space-x-1 bg-white/10 backdrop-blur-md rounded-lg p-1">
-            <button
-              onClick={() => setActiveTab('community')}
-              className={`flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-                activeTab === 'community'
-                  ? 'bg-white text-purple-700 font-semibold'
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Community Wall
-            </button>
-            <button
-              onClick={() => setActiveTab('yours')}
-              className={`flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-                activeTab === 'yours'
-                  ? 'bg-white text-purple-700 font-semibold'
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Your Posts
-            </button>
-            <button
-              onClick={() => setActiveTab('leaderboard')}
-              className={`flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-                activeTab === 'leaderboard'
-                  ? 'bg-white text-purple-700 font-semibold'
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Leaderboard
-            </button>
-            <button
-              onClick={() => setActiveTab('family')}
-              className={`flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-                activeTab === 'family'
-                  ? 'bg-white text-purple-700 font-semibold'
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Family
-            </button>
-          </div>
-        </div>
-
-        {/* Posts Content */}
-        <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-          {activeTab === 'family' ? (
-            <FamilyMembersView />
-          ) : activeTab === 'leaderboard' ? (
-            <CommunityLeaderboard />
-          ) : loading ? (
-            <div className="text-center text-white py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
-              <p>Loading posts...</p>
+        {/* Posts */}
+        <div className="space-y-6 animate-fade-in">
+          {loading ? (
+            <div className="text-center text-white/60 py-8">Loading posts...</div>
+          ) : posts.length === 0 ? (
+            <div className="text-center text-white/60 py-8">
+              <p>No posts yet. Be the first to share!</p>
             </div>
           ) : (
-            <>
-              {activeTab === 'community' && (
-                <div>
-                  {communityPosts.length === 0 ? (
-                    <div className="text-center py-12">
-                      <div className="bg-white rounded-lg p-8 border border-gray-200">
-                        <p className="text-black text-lg font-medium">
-                          There are no posts from any community members yet.
-                        </p>
-                        <p className="text-gray-600 text-sm mt-2">
-                          Be the first to share something inspiring!
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      {communityPosts.map((post) => (
-                        <PostCard
-                          key={post.id}
-                          post={post}
-                          onLike={toggleLike}
-                          onComment={addComment}
-                          onShare={handleShare}
-                          onGetComments={getPostComments}
-                          isOwnPost={false}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeTab === 'yours' && (
-                <div>
-                  {userPosts.length === 0 ? (
-                    <div className="text-center py-12">
-                      <div className="bg-white rounded-lg p-8 border border-gray-200">
-                        <p className="text-black text-lg font-medium">
-                          You haven't posted anything yet.
-                        </p>
-                        <p className="text-gray-600 text-sm mt-2">
-                          Share your mindfulness journey with the community!
-                        </p>
-                        <Button 
-                          onClick={() => setShowCreatePost(true)}
-                          className="mt-4 bg-purple-600 hover:bg-purple-700 text-white"
-                        >
-                          Create Your First Post
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      {userPosts.map((post) => (
-                        <PostCard
-                          key={post.id}
-                          post={post}
-                          onLike={toggleLike}
-                          onComment={addComment}
-                          onShare={handleShare}
-                          onGetComments={getPostComments}
-                          onDelete={deletePost}
-                          isOwnPost={true}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
+            posts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                onLike={toggleLike}
+                onComment={addComment}
+                onShare={handleShare}
+                onGetComments={getPostComments}
+                onDelete={user?.id === post.user_id ? deletePost : undefined}
+                isOwnPost={user?.id === post.user_id}
+              />
+            ))
           )}
         </div>
       </div>
 
-      {/* Username Dialog */}
-      <UsernameDialog
-        open={showUsernameDialog}
-        onClose={() => setShowUsernameDialog(false)}
-        onUsernameSet={handleUsernameSet}
-        isFirstTime={false}
-        currentUsername={userProfile?.username || ''}
-      />
-
-      {/* Create Post Dialog */}
-      <CreatePostDialog
-        open={showCreatePost}
-        onClose={() => setShowCreatePost(false)}
-        onSubmit={handleCreatePost}
-      />
-
-      {/* Bottom Navigation - Fixed with proper colors */}
-      <div className="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-md border-t border-white/20 z-30">
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
         <div className="flex justify-around py-4 px-2">
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/dashboard")}
           >
-            <div className="w-6 h-6 flex items-center justify-center">
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
               <Home className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Home</span>
@@ -337,10 +139,19 @@ const Community = () => {
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/discover")}
           >
-            <div className="w-6 h-6 flex items-center justify-center">
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
               <Music className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Echo</span>
+          </div>
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={() => navigate("/pulse")}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-white/60" />
+            </div>
+            <span className="text-white/60 text-xs">Pulse</span>
           </div>
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
@@ -352,13 +163,20 @@ const Community = () => {
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/ask-ai")}
           >
-            <div className="w-6 h-6 flex items-center justify-center">
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
               <Bot className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Lumina</span>
           </div>
         </div>
       </div>
+
+      <CreatePostDialog
+        isOpen={showCreatePost}
+        onClose={() => setShowCreatePost(false)}
+        onPostCreated={handlePostCreated}
+      />
+       <CommunityLeaderboard isOpen={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} />
     </div>
   );
 };
