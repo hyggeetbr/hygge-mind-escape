@@ -174,46 +174,64 @@ const Dashboard = () => {
         </Card>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-fade-in">
-          <Card className="bg-calm-orange/10 hover:bg-calm-orange/20 transition-colors cursor-pointer">
+        <div className="grid grid-cols-2 gap-4 mb-6 animate-fade-in">
+          <Card 
+            className="bg-calm-orange/10 hover:bg-calm-orange/20 transition-colors cursor-pointer"
+            onClick={() => navigate("/meditate")}
+          >
             <CardHeader>
-              <CardTitle className="text-black flex items-center">
-                <Palette className="mr-2 w-4 h-4" />
-                Set a Theme
+              <CardTitle className="text-black flex items-center text-sm">
+                <Calendar className="mr-2 w-4 h-4" />
+                Meditate
               </CardTitle>
-              <CardDescription className="text-gray-500">
-                Personalize your Hygge experience
-              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={() => navigate("/profile")}
-              >
-                Customize
-              </Button>
+              <p className="text-xs text-gray-600">Start your meditation session</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-calm-purple/10 hover:bg-calm-purple/20 transition-colors cursor-pointer">
+          <Card 
+            className="bg-calm-purple/10 hover:bg-calm-purple/20 transition-colors cursor-pointer"
+            onClick={() => navigate("/yoga")}
+          >
             <CardHeader>
-              <CardTitle className="text-black flex items-center">
-                <Trophy className="mr-2 w-4 h-4" />
-                View Leaderboard
+              <CardTitle className="text-black flex items-center text-sm">
+                <Target className="mr-2 w-4 h-4" />
+                Yoga
               </CardTitle>
-              <CardDescription className="text-gray-500">
-                See how you rank in the community
-              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={() => navigate("/leaderboard")}
-              >
-                Check Rankings
-              </Button>
+              <p className="text-xs text-gray-600">Practice yoga poses</p>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="bg-calm-blue/10 hover:bg-calm-blue/20 transition-colors cursor-pointer"
+            onClick={() => navigate("/todays-reading")}
+          >
+            <CardHeader>
+              <CardTitle className="text-black flex items-center text-sm">
+                <Book className="mr-2 w-4 h-4" />
+                Reading
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-gray-600">Read today's articles</p>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="bg-calm-green/10 hover:bg-calm-green/20 transition-colors cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
+            <CardHeader>
+              <CardTitle className="text-black flex items-center text-sm">
+                <Palette className="mr-2 w-4 h-4" />
+                Profile
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-gray-600">Customize your profile</p>
             </CardContent>
           </Card>
         </div>
