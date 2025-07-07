@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
+import ThemeSelector from "@/components/ThemeSelector";
 
 // Stars background component
 function Stars() {
@@ -212,42 +212,59 @@ function Earth({ onCountryClick }: { onCountryClick: (country: string) => void }
 
 const EchoCulture = () => {
   const navigate = useNavigate();
+  const [currentBackground, setCurrentBackground] = useState("url('/lovable-uploads/8ec4329a-116c-403a-85d5-6d85d61efc18.png')");
 
   const handleCountryClick = (country: string) => {
     navigate(`/folklore/${country.toLowerCase()}`);
   };
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{ 
+        background: currentBackground,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      {/* Floating background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-botanical-lavender/30 rounded-full blur-xl" />
+        <div className="floating-element absolute top-40 right-20 w-48 h-48 bg-botanical-sage/25 rounded-full blur-2xl" />
+        <div className="floating-element absolute bottom-32 left-32 w-24 h-24 bg-botanical-cream/40 rounded-full blur-lg" />
+      </div>
+
       {/* Header */}
       <div className="relative z-20 flex items-center justify-between p-6">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => navigate("/discover")}
-          className="text-white/80 hover:bg-white/10 hover:text-white"
+          className="text-botanical-text-dark hover:bg-white/20 hover:text-botanical-text-dark"
         >
           <ArrowLeft size={20} />
         </Button>
-        <h1 className="text-white text-xl font-medium">Echo Culture</h1>
+        <h1 className="text-botanical-text-dark text-xl font-medium">Echo Culture</h1>
         <div className="w-10"></div>
       </div>
 
       {/* Instructions */}
       <div className="relative z-20 px-6 mb-4">
-        <p className="text-white/70 text-center text-sm">
+        <p className="text-botanical-text-medium text-center text-sm">
           Click on the flag icons to explore folklore from different countries
         </p>
       </div>
 
       {/* 3D Earth Canvas */}
-      <div className="relative z-10 h-[calc(100vh-200px)] bg-black">
+      <div className="relative z-10 h-[calc(100vh-200px)] bg-transparent">
         <Canvas
           camera={{ position: [0, 0, 8], fov: 50 }}
           style={{ width: '100%', height: '100%' }}
           onCreated={(state) => {
             console.log('Canvas created successfully');
-            state.scene.background = new THREE.Color(0x000000);
+            state.scene.background = null; // Remove black background to show botanical theme
           }}
         >
           <Stars />
@@ -282,46 +299,48 @@ const EchoCulture = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/20 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-botanical-purple/30 z-50">
         <div className="flex justify-around py-4 px-2">
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/dashboard")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Home className="w-4 h-4 text-white/60" />
+            <div className="w-6 h-6 text-botanical-text-light flex items-center justify-center">
+              <Home className="w-4 h-4 text-botanical-text-light" />
             </div>
-            <span className="text-white/60 text-xs">Home</span>
+            <span className="text-botanical-text-light text-xs">Home</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/discover")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Music className="w-4 h-4 text-white/60" />
+            <div className="w-6 h-6 bg-botanical-purple rounded-full flex items-center justify-center">
+              <Music className="w-4 h-4 text-white" />
             </div>
-            <span className="text-white/60 text-xs">Echo</span>
+            <span className="text-botanical-text-dark text-xs font-medium">Echo</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/community")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Users className="w-4 h-4 text-white/60" />
+            <div className="w-6 h-6 text-botanical-text-light flex items-center justify-center">
+              <Users className="w-4 h-4 text-botanical-text-light" />
             </div>
-            <span className="text-white/60 text-xs">Community</span>
+            <span className="text-botanical-text-light text-xs">Community</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/ask-ai")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Bot className="w-4 h-4 text-white/60" />
+            <div className="w-6 h-6 text-botanical-text-light flex items-center justify-center">
+              <Bot className="w-4 h-4 text-botanical-text-light" />
             </div>
-            <span className="text-white/60 text-xs">Lumina</span>
+            <span className="text-botanical-text-light text-xs">Lumina</span>
           </div>
         </div>
       </div>
+
+      <ThemeSelector onThemeChange={setCurrentBackground} />
     </div>
   );
 };
