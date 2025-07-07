@@ -8,6 +8,7 @@ import { useCommunityPosts } from "@/hooks/useCommunityPosts";
 import { PostCard } from "@/components/PostCard";
 import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { CommunityLeaderboard } from "@/components/CommunityLeaderboard";
+import { FamilyMembersView } from "@/components/FamilyMembersView";
 import { useAuth } from "@/hooks/useAuth";
 
 const Community = () => {
@@ -107,22 +108,22 @@ const Community = () => {
         {/* Tabs for different sections */}
         <div className="animate-fade-in">
           <Tabs defaultValue="community" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-md border border-white/20">
-              <TabsTrigger value="community" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
-                Community Posts
+            <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-md border border-white/20 mb-6">
+              <TabsTrigger value="community" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white text-xs">
+                Posts
               </TabsTrigger>
-              <TabsTrigger value="your-posts" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
+              <TabsTrigger value="your-posts" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white text-xs">
                 Your Posts
               </TabsTrigger>
-              <TabsTrigger value="leaderboard" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
+              <TabsTrigger value="leaderboard" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white text-xs">
                 Leaderboard
               </TabsTrigger>
-              <TabsTrigger value="family" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
+              <TabsTrigger value="family" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white text-xs">
                 Family
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="community" className="mt-6 space-y-6">
+            <TabsContent value="community" className="space-y-6">
               {loading ? (
                 <div className="text-center text-white/60 py-8">Loading posts...</div>
               ) : posts.length === 0 ? (
@@ -145,7 +146,7 @@ const Community = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="your-posts" className="mt-6 space-y-6">
+            <TabsContent value="your-posts" className="space-y-6">
               {loading ? (
                 <div className="text-center text-white/60 py-8">Loading your posts...</div>
               ) : userPosts.length === 0 ? (
@@ -168,27 +169,15 @@ const Community = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="leaderboard" className="mt-6">
+            <TabsContent value="leaderboard">
               <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-6">
                 <CommunityLeaderboard />
               </div>
             </TabsContent>
 
-            <TabsContent value="family" className="mt-6">
+            <TabsContent value="family">
               <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-6">
-                <div className="text-center text-white py-8">
-                  <Users className="w-12 h-12 text-white/60 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">Family Feature</h3>
-                  <p className="text-white/60">
-                    Connect with your family members and share your wellness journey together.
-                  </p>
-                  <Button 
-                    className="mt-4 bg-white/20 hover:bg-white/30 text-white border border-white/30"
-                    onClick={() => {/* Add family functionality */}}
-                  >
-                    Add Family Members
-                  </Button>
-                </div>
+                <FamilyMembersView />
               </div>
             </TabsContent>
           </Tabs>
