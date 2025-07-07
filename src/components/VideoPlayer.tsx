@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,27 +25,58 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasStarted, setHasStarted] = useState(false);
   const [watchedSeconds, setWatchedSeconds] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   const { user } = useAuth();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Start tracking time when video plays
   const handlePlay = () => {
+    console.log('Video play event triggered');
+    setIsPlaying(true);
+    
     if (!hasStarted) {
+      console.log('First time playing, incrementing view count');
       onViewIncrement(video.id);
       setHasStarted(true);
     }
     
     // Start timer
-    intervalRef.current = setInterval(() => {
-      setWatchedSeconds(prev => prev + 1);
-    }, 1000);
+    if (!intervalRef.current) {
+      console.log('Starting meditation timer');
+      intervalRef.current = setInterval(() => {
+        setWatchedSeconds(prev => {
+          const newSeconds = prev + 1;
+          console.log(`Meditation timer: ${newSeconds} seconds`);
+          return newSeconds;
+        });
+      }, 1000);
+    }
   };
 
   // Stop tracking time when video pauses or ends
   const handlePauseOrEnd = () => {
+    console.log('Video pause/end event triggered');
+    setIsPlaying(false);
+    
     if (intervalRef.current) {
+      console.log('Stopping meditation timer');
       clearInterval(intervalRef.current);
       intervalRef.current = null;
+    }
+  };
+
+  // Toggle play/pause
+  const togglePlayPause = async () => {
+    if (!videoRef.current) return;
+    
+    try {
+      if (isPlaying) {
+        await videoRef.current.pause();
+      } else {
+        await videoRef.current.play();
+      }
+    } catch (error) {
+      console.error('Error toggling video playback:', error);
     }
   };
 
@@ -55,13 +86,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       if (user && watchedSeconds > 0 && watchedSeconds % 60 === 0) {
         // Update every minute
         const minutesToAdd = 1;
+        console.log(`Updating meditation minutes: +${minutesToAdd}`);
         
         try {
-          await supabase.rpc('update_daily_activity', {
+          const { error } = await supabase.rpc('update_daily_activity', {
             p_user_id: user.id,
             p_activity_type: 'meditation',
             p_minutes: minutesToAdd
           });
+          
+          if (error) {
+            console.error('Error updating meditation minutes:', error);
+          } else {
+            console.log('Successfully updated meditation minutes');
+          }
         } catch (error) {
           console.error('Error updating meditation minutes:', error);
         }
@@ -80,26 +118,26 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     };
   }, []);
 
-  // Auto-play video when component mounts
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(console.error);
-    }
-  }, []);
-
   const handleClose = async () => {
+    console.log('Closing video player, final update');
+    
     // Final update for any remaining seconds
     if (user && watchedSeconds > 0) {
-      const remainingMinutes = Math.floor((watchedSeconds % 60) / 60);
+      const remainingMinutes = Math.floor(watchedSeconds / 60);
       if (remainingMinutes > 0) {
+        console.log(`Final update: ${remainingMinutes} minutes`);
         try {
-          await supabase.rpc('update_daily_activity', {
+          const { error } = await supabase.rpc('update_daily_activity', {
             p_user_id: user.id,
             p_activity_type: 'meditation',
             p_minutes: remainingMinutes
           });
+          
+          if (error) {
+            console.error('Error in final meditation minutes update:', error);
+          }
         } catch (error) {
-          console.error('Error updating meditation minutes:', error);
+          console.error('Error in final meditation minutes update:', error);
         }
       }
     }
@@ -142,7 +180,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           </div>
         </div>
 
-        {/* Video Player - No controls */}
+        {/* Video Player */}
         <div className="flex-1 flex items-center justify-center relative">
           <video
             ref={videoRef}
@@ -154,8 +192,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             controls={false}
             disablePictureInPicture
             controlsList="nodownload nofullscreen noremoteplayback"
-            onContextMenu={(e) => e.preventDefault()} // Disable right-click menu
+            onContextMenu={(e) => e.preventDefault()}
           />
+          
+          {/* Play/Pause Button Overlay */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={togglePlayPause}
+              className="w-16 h-16 rounded-full bg-black/50 hover:bg-black/70 text-white border-2 border-white/30 hover:border-white/50 transition-all"
+            >
+              {isPlaying ? <Pause size={32} /> : <Play size={32} />}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
