@@ -36,7 +36,7 @@ export const usePulseContent = () => {
         return [];
       }
 
-      return data.map((item: any) => ({
+      return data.map((item) => ({
         id: item.id,
         title: item.title,
         content: item.content,
