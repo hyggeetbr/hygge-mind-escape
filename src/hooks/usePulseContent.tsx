@@ -19,8 +19,13 @@ export const usePulseContent = () => {
     queryFn: async () => {
       console.log("Fetching pulse content...");
       
-      // Use the database function to fetch pulse content
-      const { data, error } = await supabase.rpc('get_pulse_content');
+      // Since we can't use the RPC function due to TypeScript limitations,
+      // we'll use a raw SQL query instead
+      const { data, error } = await supabase
+        .from("pulse_content" as any)
+        .select("*")
+        .eq("is_active", true)
+        .order("position", { ascending: true });
 
       if (error) {
         console.error("Error fetching pulse content:", error);
