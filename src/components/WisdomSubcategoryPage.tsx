@@ -65,7 +65,16 @@ const WisdomSubcategoryPage = ({ title, description, subcategory, icon, color }:
   }
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{ 
+        background: `url('/lovable-uploads/319bf469-b741-415d-9dc0-4182ba77363a.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />

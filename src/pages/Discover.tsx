@@ -148,7 +148,7 @@ const Discover = () => {
       <div 
         className="min-h-screen relative overflow-hidden"
         style={{ 
-          background: `url('/lovable-uploads/83a598e8-529f-4c5b-a996-a312a1ddaad5.png')`,
+          background: `url('/lovable-uploads/319bf469-b741-415d-9dc0-4182ba77363a.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
@@ -296,7 +296,7 @@ const Discover = () => {
     <div 
       className="min-h-screen relative overflow-hidden"
       style={{ 
-        background: `url('/lovable-uploads/83a598e8-529f-4c5b-a996-a312a1ddaad5.png')`,
+        background: `url('/lovable-uploads/319bf469-b741-415d-9dc0-4182ba77363a.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
