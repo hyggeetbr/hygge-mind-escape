@@ -1,15 +1,15 @@
 
-import { Lightbulb } from "lucide-react";
 import WisdomSubcategoryPage from "@/components/WisdomSubcategoryPage";
+import { Brain } from "lucide-react";
 
 const ModernMindfulness = () => {
   return (
     <WisdomSubcategoryPage
       title="Modern Mindfulness"
-      description="Contemporary approaches to mindful living and awareness"
+      description="Contemporary approaches to mindfulness and mental wellness"
       subcategory="modern_mindfulness"
-      icon={<Lightbulb className="w-16 h-16" />}
-      color="from-blue-500 to-teal-500"
+      icon={<Brain className="w-16 h-16" />}
+      color="from-blue-500 to-purple-600"
     />
   );
 };

@@ -46,7 +46,6 @@ export const FamilyMembersView = () => {
       
       if (success) {
         console.log('Nudge sent successfully!');
-        // No toast notification - just return success
         return true;
       } else {
         console.error('Failed to send nudge - sendNudge returned false');
@@ -61,8 +60,8 @@ export const FamilyMembersView = () => {
   if (loading || addingMember) {
     return (
       <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
-        <p className="text-white">Loading...</p>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading...</p>
       </div>
     );
   }
@@ -75,10 +74,10 @@ export const FamilyMembersView = () => {
     <div className="space-y-6">
       {/* Header with Add Button */}
       <div className="flex items-center justify-between">
-        <h2 className="text-white text-2xl font-light">{getUsernameForHeader()}'s Family</h2>
+        <h2 className="text-gray-800 text-2xl font-light">{getUsernameForHeader()}'s Family</h2>
         <Button
           onClick={() => setShowAddDialog(true)}
-          className="bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white/30"
+          className="bg-gray-200 hover:bg-gray-300 text-gray-800 border border-gray-300"
           size="sm"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -90,7 +89,7 @@ export const FamilyMembersView = () => {
       {familyMembers.length === 0 ? (
         <div className="text-center py-12">
           <div className="bg-white rounded-lg p-8 border border-gray-200">
-            <p className="text-black text-lg font-medium mb-2">
+            <p className="text-gray-800 text-lg font-medium mb-2">
               No family members yet
             </p>
             <p className="text-gray-600 text-sm mb-4">
@@ -98,7 +97,7 @@ export const FamilyMembersView = () => {
             </p>
             <Button 
               onClick={() => setShowAddDialog(true)}
-              className="bg-purple-600 hover:bg-purple-700 text-white"
+              className="bg-gray-600 hover:bg-gray-700 text-white"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Your First Family Member
@@ -108,18 +107,18 @@ export const FamilyMembersView = () => {
       ) : (
         <div className="space-y-4">
           {familyMembers.map((member) => (
-            <div key={member.id} className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
+            <div key={member.id} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <Avatar className="w-12 h-12">
                     <AvatarImage src={member.avatar_url} />
-                    <AvatarFallback className="bg-purple-100 text-purple-700">
+                    <AvatarFallback className="bg-gray-100 text-gray-700">
                       {member.username.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="text-white font-medium text-lg">{member.username}</h3>
-                    <p className="text-black text-sm font-medium">Streak: {member.streak_count} days</p>
+                    <h3 className="text-gray-800 font-medium text-lg">{member.username}</h3>
+                    <p className="text-gray-600 text-sm font-medium">Streak: {member.streak_count} days</p>
                   </div>
                 </div>
                 
@@ -129,7 +128,7 @@ export const FamilyMembersView = () => {
                     onClick={() => handleNudgeClick(member)}
                     variant="ghost"
                     size="sm"
-                    className="text-white/70 hover:text-yellow-400 hover:bg-yellow-500/20"
+                    className="text-gray-500 hover:text-yellow-500 hover:bg-yellow-50"
                   >
                     <Star className="w-4 h-4" />
                   </Button>
@@ -140,20 +139,20 @@ export const FamilyMembersView = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-white/70 hover:text-red-400 hover:bg-red-500/20"
+                        className="text-gray-500 hover:text-red-500 hover:bg-red-50"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="bg-white">
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-black">Remove Family Member</AlertDialogTitle>
-                        <AlertDialogDescription className="text-black">
+                        <AlertDialogTitle className="text-gray-800">Remove Family Member</AlertDialogTitle>
+                        <AlertDialogDescription className="text-gray-600">
                           Are you sure you want to remove {member.username} from your family? This action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel className="text-black bg-white border-gray-300 hover:bg-gray-100">Cancel</AlertDialogCancel>
+                        <AlertDialogCancel className="text-gray-800 bg-white border-gray-300 hover:bg-gray-100">Cancel</AlertDialogCancel>
                         <AlertDialogAction 
                           onClick={() => removeFamilyMember(member.id)}
                           className="bg-red-600 hover:bg-red-700 text-white"
@@ -166,27 +165,27 @@ export const FamilyMembersView = () => {
                 </div>
               </div>
 
-              {/* Stats Grid - Fixed consistent background */}
+              {/* Stats Grid */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                    <p className="text-black text-xs uppercase tracking-wide mb-1 font-medium">Meditation</p>
-                    <p className="text-black text-xl font-semibold">{member.meditation_minutes}</p>
-                    <p className="text-black text-xs font-medium">minutes</p>
+                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                    <p className="text-gray-600 text-xs uppercase tracking-wide mb-1 font-medium">Meditation</p>
+                    <p className="text-gray-800 text-xl font-semibold">{member.meditation_minutes}</p>
+                    <p className="text-gray-600 text-xs font-medium">minutes</p>
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                    <p className="text-black text-xs uppercase tracking-wide mb-1 font-medium">Yoga</p>
-                    <p className="text-black text-xl font-semibold">{member.yoga_minutes}</p>
-                    <p className="text-black text-xs font-medium">minutes</p>
+                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                    <p className="text-gray-600 text-xs uppercase tracking-wide mb-1 font-medium">Yoga</p>
+                    <p className="text-gray-800 text-xl font-semibold">{member.yoga_minutes}</p>
+                    <p className="text-gray-600 text-xs font-medium">minutes</p>
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                    <p className="text-black text-xs uppercase tracking-wide mb-1 font-medium">Reading</p>
-                    <p className="text-black text-xl font-semibold">{member.reading_minutes}</p>
-                    <p className="text-black text-xs font-medium">minutes</p>
+                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                    <p className="text-gray-600 text-xs uppercase tracking-wide mb-1 font-medium">Reading</p>
+                    <p className="text-gray-800 text-xl font-semibold">{member.reading_minutes}</p>
+                    <p className="text-gray-600 text-xs font-medium">minutes</p>
                   </div>
                 </div>
               </div>
@@ -214,17 +213,17 @@ export const FamilyMembersView = () => {
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <DialogContent className="bg-white">
           <DialogHeader>
-            <DialogTitle className="text-black text-center">Success!</DialogTitle>
+            <DialogTitle className="text-gray-800 text-center">Success!</DialogTitle>
           </DialogHeader>
           <div className="text-center py-4">
-            <p className="text-black">
+            <p className="text-gray-800">
               User has been successfully added to the family! Refresh the page to see your family members.
             </p>
           </div>
           <div className="flex justify-center">
             <Button 
               onClick={() => setShowSuccessDialog(false)}
-              className="bg-purple-600 hover:bg-purple-700 text-white"
+              className="bg-gray-600 hover:bg-gray-700 text-white"
             >
               OK
             </Button>

@@ -1,15 +1,15 @@
 
-import { Globe } from "lucide-react";
 import WisdomSubcategoryPage from "@/components/WisdomSubcategoryPage";
+import { Globe } from "lucide-react";
 
 const WisdomFromWorld = () => {
   return (
     <WisdomSubcategoryPage
-      title="Wisdom from the World"
-      description="Universal insights from diverse cultures and traditions"
+      title="Wisdom From World"
+      description="Global perspectives on wisdom and life philosophy"
       subcategory="wisdom_from_world"
       icon={<Globe className="w-16 h-16" />}
-      color="from-green-500 to-emerald-500"
+      color="from-green-500 to-teal-600"
     />
   );
 };

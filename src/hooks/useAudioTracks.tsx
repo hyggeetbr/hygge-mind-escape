@@ -37,14 +37,14 @@ export const useAudioTracks = (category?: string, subcategory?: string) => {
           .eq('is_public', true)
           .order('created_at', { ascending: false });
 
-        if (category && subcategory) {
-          // For daily_wisdom with subcategories
-          console.log('Looking for category:', category, 'and subcategory:', subcategory);
-          query = query.eq('category', category).eq('subcategory', subcategory);
-        } else if (category) {
-          // For regular categories without subcategories
-          console.log('Looking for category:', category);
+        if (category) {
           query = query.eq('category', category);
+          
+          // If we have a subcategory, filter by it
+          if (subcategory) {
+            console.log('Filtering by subcategory:', subcategory);
+            query = query.eq('subcategory', subcategory);
+          }
         }
 
         const { data, error } = await query;

@@ -1,15 +1,15 @@
 
-import { Coffee } from "lucide-react";
 import WisdomSubcategoryPage from "@/components/WisdomSubcategoryPage";
+import { Lightbulb } from "lucide-react";
 
 const EverydayPhilosophy = () => {
   return (
     <WisdomSubcategoryPage
       title="Everyday Philosophy"
-      description="Practical wisdom for daily life decisions and challenges"
+      description="Practical philosophy for daily life and decision making"
       subcategory="everyday_philosophy"
-      icon={<Coffee className="w-16 h-16" />}
-      color="from-purple-500 to-indigo-500"
+      icon={<Lightbulb className="w-16 h-16" />}
+      color="from-indigo-500 to-purple-600"
     />
   );
 };
