@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Calendar, Target, Trophy, Book, Music, Palette, Home, Users, Bot, Zap } from "lucide-react";
+import { Calendar, Target, Trophy, Book, Music, Palette, Home, Users, Bot, Zap, User, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { UsernameDialog } from "@/components/UsernameDialog";
+import ThemeSelector from "@/components/ThemeSelector";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const [readingMinutes, setReadingMinutes] = useState(0);
   const [showUsernameDialog, setShowUsernameDialog] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
+  const [background, setBackground] = useState("url('/lovable-uploads/8ec4329a-116c-403a-85d5-6d85d61efc18.png')");
 
   useEffect(() => {
     if (!user) return;
@@ -27,7 +29,7 @@ const Dashboard = () => {
       try {
         const { data: profile, error: profileError } = await supabase
           .from('user_profiles')
-          .select('username')
+          .select('username, theme_preference')
           .eq('id', user.id)
           .single();
 
@@ -42,10 +44,19 @@ const Dashboard = () => {
           setShowUsernameDialog(true);
         }
 
-        // Fetch dummy data for meditation, yoga, and reading
-        setMeditationMinutes(Math.floor(Math.random() * 60));
-        setYogaMinutes(Math.floor(Math.random() * 60));
-        setReadingMinutes(Math.floor(Math.random() * 60));
+        // Fetch today's activity data from database
+        const { data: dailyActivity, error: activityError } = await supabase
+          .from('daily_activities')
+          .select('meditation_minutes, yoga_minutes, reading_minutes')
+          .eq('user_id', user.id)
+          .eq('date', new Date().toISOString().split('T')[0])
+          .single();
+
+        if (dailyActivity) {
+          setMeditationMinutes(dailyActivity.meditation_minutes || 0);
+          setYogaMinutes(dailyActivity.yoga_minutes || 0);
+          setReadingMinutes(dailyActivity.reading_minutes || 0);
+        }
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -89,6 +100,16 @@ const Dashboard = () => {
     }
   };
 
+  const handleThemeChange = (newBackground: string) => {
+    setBackground(newBackground);
+    document.body.style.backgroundImage = newBackground;
+  };
+
+  // Calculate progress percentages
+  const meditationProgress = Math.min((meditationMinutes / 20) * 100, 100);
+  const yogaProgress = Math.min((yogaMinutes / 30) * 100, 100);
+  const readingProgress = Math.min((readingMinutes / 15) * 100, 100);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center calm-gradient">
@@ -103,7 +124,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen calm-gradient relative overflow-hidden">
+    <div className="min-h-screen calm-gradient relative overflow-hidden" style={{ backgroundImage: background }}>
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
@@ -112,132 +133,182 @@ const Dashboard = () => {
       </div>
 
       {/* Header */}
-      <div className="relative z-20 p-6">
-        <h1 className="text-white text-3xl font-light mb-1">
-          Welcome, {username || "User"}!
-        </h1>
-        <p className="text-white/60 text-sm">
-          Your daily dose of calm and productivity
-        </p>
+      <div className="relative z-20 flex items-center justify-between p-6">
+        <div>
+          <h1 className="text-white text-3xl font-light mb-1">
+            Welcome, {username || "User"}!
+          </h1>
+          <p className="text-white/60 text-sm">
+            Your daily dose of calm and productivity
+          </p>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate("/profile")}
+          className="text-white/80 hover:bg-white/10 hover:text-white rounded-full"
+        >
+          <User size={24} />
+        </Button>
       </div>
 
       {/* Main Content */}
       <div className="relative z-10 px-6 pb-32">
-        {/* Goals Overview */}
-        <Card className="mb-6 animate-fade-in">
+        {/* Goals Overview with Circular Progress */}
+        <Card className="mb-6 animate-fade-in glass-effect">
           <CardHeader>
             <CardTitle className="text-black">Today's Goals</CardTitle>
             <CardDescription className="text-gray-500">
               Track your daily progress
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="flex items-center space-x-4">
-              <Calendar className="w-5 h-5 text-gray-500" />
-              <div>
-                <h3 className="text-sm font-medium text-black">Meditation</h3>
-                <p className="text-xs text-gray-500">
-                  {meditationMinutes} / 20 minutes
-                </p>
-                <Progress
-                  value={meditationMinutes}
-                  max={20}
-                  className="h-2 rounded-full"
-                />
+          <CardContent className="grid grid-cols-3 gap-6">
+            {/* Meditation Progress Circle */}
+            <div className="flex flex-col items-center text-center">
+              <div className="relative w-16 h-16 mb-2">
+                <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="28" fill="none" stroke="#e5e7eb" strokeWidth="4"/>
+                  <circle 
+                    cx="32" 
+                    cy="32" 
+                    r="28" 
+                    fill="none" 
+                    stroke="#f97316" 
+                    strokeWidth="4"
+                    strokeDasharray={`${2 * Math.PI * 28}`}
+                    strokeDashoffset={`${2 * Math.PI * 28 * (1 - meditationProgress / 100)}`}
+                    className="transition-all duration-300"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-semibold text-gray-700">{Math.round(meditationProgress)}%</span>
+                </div>
               </div>
+              <Calendar className="w-4 h-4 text-orange-500 mb-1" />
+              <h3 className="text-sm font-medium text-black">Meditation</h3>
+              <p className="text-xs text-gray-500">{meditationMinutes} / 20 min</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <Target className="w-5 h-5 text-gray-500" />
-              <div>
-                <h3 className="text-sm font-medium text-black">Yoga</h3>
-                <p className="text-xs text-gray-500">{yogaMinutes} / 30 minutes</p>
-                <Progress
-                  value={yogaMinutes}
-                  max={30}
-                  className="h-2 rounded-full"
-                />
+
+            {/* Yoga Progress Circle */}
+            <div className="flex flex-col items-center text-center">
+              <div className="relative w-16 h-16 mb-2">
+                <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="28" fill="none" stroke="#e5e7eb" strokeWidth="4"/>
+                  <circle 
+                    cx="32" 
+                    cy="32" 
+                    r="28" 
+                    fill="none" 
+                    stroke="#8b5cf6" 
+                    strokeWidth="4"
+                    strokeDasharray={`${2 * Math.PI * 28}`}
+                    strokeDashoffset={`${2 * Math.PI * 28 * (1 - yogaProgress / 100)}`}
+                    className="transition-all duration-300"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-semibold text-gray-700">{Math.round(yogaProgress)}%</span>
+                </div>
               </div>
+              <Target className="w-4 h-4 text-purple-500 mb-1" />
+              <h3 className="text-sm font-medium text-black">Yoga</h3>
+              <p className="text-xs text-gray-500">{yogaMinutes} / 30 min</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <Book className="w-5 h-5 text-gray-500" />
-              <div>
-                <h3 className="text-sm font-medium text-black">Reading</h3>
-                <p className="text-xs text-gray-500">{readingMinutes} / 15 minutes</p>
-                <Progress
-                  value={readingMinutes}
-                  max={15}
-                  className="h-2 rounded-full"
-                />
+
+            {/* Reading Progress Circle */}
+            <div className="flex flex-col items-center text-center">
+              <div className="relative w-16 h-16 mb-2">
+                <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="28" fill="none" stroke="#e5e7eb" strokeWidth="4"/>
+                  <circle 
+                    cx="32" 
+                    cy="32" 
+                    r="28" 
+                    fill="none" 
+                    stroke="#3b82f6" 
+                    strokeWidth="4"
+                    strokeDasharray={`${2 * Math.PI * 28}`}
+                    strokeDashoffset={`${2 * Math.PI * 28 * (1 - readingProgress / 100)}`}
+                    className="transition-all duration-300"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-semibold text-gray-700">{Math.round(readingProgress)}%</span>
+                </div>
               </div>
+              <Book className="w-4 h-4 text-blue-500 mb-1" />
+              <h3 className="text-sm font-medium text-black">Reading</h3>
+              <p className="text-xs text-gray-500">{readingMinutes} / 15 min</p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-4 mb-6 animate-fade-in">
+        {/* Large Action Buttons */}
+        <div className="grid grid-cols-1 gap-4 mb-6 animate-fade-in">
           <Card 
-            className="bg-calm-orange/10 hover:bg-calm-orange/20 transition-colors cursor-pointer"
+            className="bg-gradient-to-r from-orange-400/20 to-orange-600/20 hover:from-orange-400/30 hover:to-orange-600/30 transition-all duration-300 cursor-pointer border-orange-200/30 backdrop-blur-md"
             onClick={() => navigate("/meditate")}
           >
-            <CardHeader>
-              <CardTitle className="text-black flex items-center text-sm">
-                <Calendar className="mr-2 w-4 h-4" />
-                Meditate
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-gray-600">Start your meditation session</p>
+            <CardContent className="flex items-center p-6">
+              <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mr-4">
+                <Calendar className="w-8 h-8 text-orange-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-800">Meditate</h3>
+                <p className="text-gray-600">Find your inner peace and calm your mind</p>
+              </div>
             </CardContent>
           </Card>
 
           <Card 
-            className="bg-calm-purple/10 hover:bg-calm-purple/20 transition-colors cursor-pointer"
+            className="bg-gradient-to-r from-purple-400/20 to-purple-600/20 hover:from-purple-400/30 hover:to-purple-600/30 transition-all duration-300 cursor-pointer border-purple-200/30 backdrop-blur-md"
             onClick={() => navigate("/yoga")}
           >
-            <CardHeader>
-              <CardTitle className="text-black flex items-center text-sm">
-                <Target className="mr-2 w-4 h-4" />
-                Yoga
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-gray-600">Practice yoga poses</p>
+            <CardContent className="flex items-center p-6">
+              <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mr-4">
+                <Target className="w-8 h-8 text-purple-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-800">Yoga</h3>
+                <p className="text-gray-600">Strengthen your body and enhance flexibility</p>
+              </div>
             </CardContent>
           </Card>
 
           <Card 
-            className="bg-calm-blue/10 hover:bg-calm-blue/20 transition-colors cursor-pointer"
+            className="bg-gradient-to-r from-blue-400/20 to-blue-600/20 hover:from-blue-400/30 hover:to-blue-600/30 transition-all duration-300 cursor-pointer border-blue-200/30 backdrop-blur-md"
             onClick={() => navigate("/todays-reading")}
           >
-            <CardHeader>
-              <CardTitle className="text-black flex items-center text-sm">
-                <Book className="mr-2 w-4 h-4" />
-                Reading
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-gray-600">Read today's articles</p>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className="bg-calm-green/10 hover:bg-calm-green/20 transition-colors cursor-pointer"
-            onClick={() => navigate("/profile")}
-          >
-            <CardHeader>
-              <CardTitle className="text-black flex items-center text-sm">
-                <Palette className="mr-2 w-4 h-4" />
-                Profile
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-gray-600">Customize your profile</p>
+            <CardContent className="flex items-center p-6">
+              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mr-4">
+                <Book className="w-8 h-8 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-800">Reading</h3>
+                <p className="text-gray-600">Expand your knowledge with curated articles</p>
+              </div>
             </CardContent>
           </Card>
         </div>
 
+        {/* Goal Setting Button */}
+        <Card 
+          className="mb-6 animate-fade-in bg-gradient-to-r from-green-400/20 to-green-600/20 hover:from-green-400/30 hover:to-green-600/30 transition-all duration-300 cursor-pointer border-green-200/30 backdrop-blur-md"
+          onClick={() => navigate("/goal-setting")}
+        >
+          <CardContent className="flex items-center p-4">
+            <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mr-4">
+              <Trophy className="w-6 h-6 text-green-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-800">Set Goals</h3>
+              <p className="text-sm text-gray-600">Define your personal wellness objectives</p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Daily Inspiration */}
-        <Card className="animate-fade-in">
+        <Card className="animate-fade-in glass-effect">
           <CardHeader>
             <CardTitle className="text-black">Daily Inspiration</CardTitle>
             <CardDescription className="text-gray-500">
@@ -252,6 +323,9 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Theme Selector */}
+      <ThemeSelector onThemeChange={handleThemeChange} />
       
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
