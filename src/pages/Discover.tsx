@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, Play, Pause, Home, Users, Bot, Music, Heart, Clock, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -144,7 +145,16 @@ const Discover = () => {
     if (!section) return null;
 
     return (
-      <div className="min-h-screen bg-black relative overflow-hidden">
+      <div 
+        className="min-h-screen relative overflow-hidden"
+        style={{ 
+          background: `url('/lovable-uploads/83a598e8-529f-4c5b-a996-a312a1ddaad5.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
         {/* Floating background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
@@ -283,7 +293,16 @@ const Discover = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{ 
+        background: `url('/lovable-uploads/83a598e8-529f-4c5b-a996-a312a1ddaad5.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
