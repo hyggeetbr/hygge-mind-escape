@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send, Sparkles, Home, Users, Bot, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -148,7 +147,16 @@ const AskAI = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden flex">
+    <div 
+      className="min-h-screen relative overflow-hidden flex"
+      style={{ 
+        background: `url('/lovable-uploads/ea250fd8-d534-4b38-80e4-518bd164ae0f.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
