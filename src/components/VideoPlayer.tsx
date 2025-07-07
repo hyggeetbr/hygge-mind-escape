@@ -87,16 +87,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
   }, []);
 
-  const handleClose = () => {
+  const handleClose = async () => {
     // Final update for any remaining seconds
     if (user && watchedSeconds > 0) {
       const remainingMinutes = Math.floor((watchedSeconds % 60) / 60);
       if (remainingMinutes > 0) {
-        supabase.rpc('update_daily_activity', {
-          p_user_id: user.id,
-          p_activity_type: 'meditation',
-          p_minutes: remainingMinutes
-        }).catch(console.error);
+        try {
+          await supabase.rpc('update_daily_activity', {
+            p_user_id: user.id,
+            p_activity_type: 'meditation',
+            p_minutes: remainingMinutes
+          });
+        } catch (error) {
+          console.error('Error updating meditation minutes:', error);
+        }
       }
     }
     
