@@ -136,20 +136,13 @@ const PulseContentViewer = ({ content }: PulseContentViewerProps) => {
   return (
     <div
       ref={containerRef}
-      className="h-screen bg-black text-white overflow-y-auto snap-y snap-mandatory"
-      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      className="h-screen bg-black text-white overflow-y-auto snap-y snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
       onWheel={handleScroll}
       onScroll={handleManualScroll}
     >
-      <style jsx>{`
-        div::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-      
       {content.map((item, index) => (
         <div key={item.id} className="h-screen flex flex-col snap-start">
           {/* Image Section - Takes up 65% of screen height */}
