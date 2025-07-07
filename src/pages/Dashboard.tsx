@@ -112,19 +112,19 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center calm-gradient">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="relative">
           <div className="absolute inset-0 animate-ping">
-            <span className="text-5xl text-white/30 font-light">Hygge</span>
+            <span className="text-5xl text-gray-400 font-light">Hygge</span>
           </div>
-          <span className="relative text-5xl text-white font-light animate-fade-in">Hygge</span>
+          <span className="relative text-5xl text-gray-600 font-light animate-fade-in">Hygge</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen calm-gradient relative overflow-hidden" style={{ backgroundImage: background }}>
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden" style={{ backgroundImage: background }}>
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
@@ -135,10 +135,10 @@ const Dashboard = () => {
       {/* Header */}
       <div className="relative z-20 flex items-center justify-between p-6">
         <div>
-          <h1 className="text-white text-3xl font-light mb-1">
+          <h1 className="text-gray-800 text-3xl font-light mb-1">
             Welcome, {username || "User"}!
           </h1>
-          <p className="text-white/60 text-sm">
+          <p className="text-gray-600 text-sm">
             Your daily dose of calm and productivity
           </p>
         </div>
@@ -146,7 +146,7 @@ const Dashboard = () => {
           variant="ghost"
           size="icon"
           onClick={() => navigate("/profile")}
-          className="text-white/80 hover:bg-white/10 hover:text-white rounded-full"
+          className="text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-full"
         >
           <User size={24} />
         </Button>
@@ -157,8 +157,8 @@ const Dashboard = () => {
         {/* Goals Overview with Circular Progress */}
         <Card className="mb-6 animate-fade-in glass-effect">
           <CardHeader>
-            <CardTitle className="text-black">Today's Goals</CardTitle>
-            <CardDescription className="text-gray-500">
+            <CardTitle className="text-gray-800">Today's Goals</CardTitle>
+            <CardDescription className="text-gray-600">
               Track your daily progress
             </CardDescription>
           </CardHeader>
@@ -185,8 +185,8 @@ const Dashboard = () => {
                 </div>
               </div>
               <Calendar className="w-4 h-4 text-orange-500 mb-1" />
-              <h3 className="text-sm font-medium text-black">Meditation</h3>
-              <p className="text-xs text-gray-500">{meditationMinutes} / 20 min</p>
+              <h3 className="text-sm font-medium text-gray-800">Meditation</h3>
+              <p className="text-xs text-gray-600">{meditationMinutes} / 20 min</p>
             </div>
 
             {/* Yoga Progress Circle */}
@@ -211,8 +211,8 @@ const Dashboard = () => {
                 </div>
               </div>
               <Target className="w-4 h-4 text-purple-500 mb-1" />
-              <h3 className="text-sm font-medium text-black">Yoga</h3>
-              <p className="text-xs text-gray-500">{yogaMinutes} / 30 min</p>
+              <h3 className="text-sm font-medium text-gray-800">Yoga</h3>
+              <p className="text-xs text-gray-600">{yogaMinutes} / 30 min</p>
             </div>
 
             {/* Reading Progress Circle */}
@@ -237,8 +237,8 @@ const Dashboard = () => {
                 </div>
               </div>
               <Book className="w-4 h-4 text-blue-500 mb-1" />
-              <h3 className="text-sm font-medium text-black">Reading</h3>
-              <p className="text-xs text-gray-500">{readingMinutes} / 15 min</p>
+              <h3 className="text-sm font-medium text-gray-800">Reading</h3>
+              <p className="text-xs text-gray-600">{readingMinutes} / 15 min</p>
             </div>
           </CardContent>
         </Card>
@@ -310,8 +310,8 @@ const Dashboard = () => {
         {/* Daily Inspiration */}
         <Card className="animate-fade-in glass-effect">
           <CardHeader>
-            <CardTitle className="text-black">Daily Inspiration</CardTitle>
-            <CardDescription className="text-gray-500">
+            <CardTitle className="text-gray-800">Daily Inspiration</CardTitle>
+            <CardDescription className="text-gray-600">
               A quote to brighten your day
             </CardDescription>
           </CardHeader>
@@ -328,49 +328,49 @@ const Dashboard = () => {
       <ThemeSelector onThemeChange={handleThemeChange} />
       
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 z-30">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 z-30">
         <div className="flex justify-around py-4 px-2">
           <div className="flex flex-col items-center space-y-1 min-w-0 flex-1">
-            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-              <Home className="w-4 h-4 text-black" />
+            <div className="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
+              <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="text-white text-xs font-medium">Home</span>
+            <span className="text-gray-800 text-xs font-medium">Home</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/discover")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Music className="w-4 h-4 text-white/60" />
+            <div className="w-6 h-6 text-gray-400 flex items-center justify-center">
+              <Music className="w-4 h-4 text-gray-400" />
             </div>
-            <span className="text-white/60 text-xs">Echo</span>
+            <span className="text-gray-400 text-xs">Echo</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/pulse")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white/60" />
+            <div className="w-6 h-6 text-gray-400 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-gray-400" />
             </div>
-            <span className="text-white/60 text-xs">Pulse</span>
+            <span className="text-gray-400 text-xs">Pulse</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/community")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Users className="w-4 h-4 text-white/60" />
+            <div className="w-6 h-6 text-gray-400 flex items-center justify-center">
+              <Users className="w-4 h-4 text-gray-400" />
             </div>
-            <span className="text-white/60 text-xs">Community</span>
+            <span className="text-gray-400 text-xs">Community</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/ask-ai")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Bot className="w-4 h-4 text-white/60" />
+            <div className="w-6 h-6 text-gray-400 flex items-center justify-center">
+              <Bot className="w-4 h-4 text-gray-400" />
             </div>
-            <span className="text-white/60 text-xs">Lumina</span>
+            <span className="text-gray-400 text-xs">Lumina</span>
           </div>
         </div>
       </div>
