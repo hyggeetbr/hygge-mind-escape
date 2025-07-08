@@ -1,4 +1,5 @@
 
+
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -192,48 +193,38 @@ const Yoga = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20">
         <div className="flex justify-around py-4 px-2">
           <button 
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer hover:bg-white/10 p-2 rounded transition-colors"
             onClick={() => navigate("/dashboard")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Home className="w-4 h-4 text-white/60" />
-            </div>
+            <Home className="w-4 h-4 text-white/60" />
             <span className="text-white/60 text-xs">Home</span>
           </button>
           <button 
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer hover:bg-white/10 p-2 rounded transition-colors"
             onClick={() => navigate("/discover")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Music className="w-4 h-4 text-white/60" />
-            </div>
+            <Music className="w-4 h-4 text-white/60" />
             <span className="text-white/60 text-xs">Echo</span>
           </button>
           <button 
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer hover:bg-white/10 p-2 rounded transition-colors"
             onClick={() => navigate("/pulse")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white/60" />
-            </div>
+            <Zap className="w-4 h-4 text-white/60" />
             <span className="text-white/60 text-xs">Pulse</span>
           </button>
           <button 
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer hover:bg-white/10 p-2 rounded transition-colors"
             onClick={() => navigate("/community")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Users className="w-4 h-4 text-white/60" />
-            </div>
+            <Users className="w-4 h-4 text-white/60" />
             <span className="text-white/60 text-xs">Community</span>
           </button>
           <button 
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer hover:bg-white/10 p-2 rounded transition-colors"
             onClick={() => navigate("/ask-ai")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Bot className="w-4 h-4 text-white/60" />
-            </div>
+            <Bot className="w-4 h-4 text-white/60" />
             <span className="text-white/60 text-xs">Lumina</span>
           </button>
         </div>
@@ -243,3 +234,4 @@ const Yoga = () => {
 };
 
 export default Yoga;
+
