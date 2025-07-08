@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -190,7 +191,7 @@ const Yoga = () => {
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20">
         <div className="flex justify-around py-4 px-2">
-          <div 
+          <button 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/dashboard")}
           >
@@ -198,8 +199,8 @@ const Yoga = () => {
               <Home className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Home</span>
-          </div>
-          <div 
+          </button>
+          <button 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/discover")}
           >
@@ -207,8 +208,8 @@ const Yoga = () => {
               <Music className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Echo</span>
-          </div>
-          <div 
+          </button>
+          <button 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/pulse")}
           >
@@ -216,8 +217,8 @@ const Yoga = () => {
               <Zap className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Pulse</span>
-          </div>
-          <div 
+          </button>
+          <button 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/community")}
           >
@@ -225,8 +226,8 @@ const Yoga = () => {
               <Users className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Community</span>
-          </div>
-          <div 
+          </button>
+          <button 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/ask-ai")}
           >
@@ -234,7 +235,7 @@ const Yoga = () => {
               <Bot className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Lumina</span>
-          </div>
+          </button>
         </div>
       </div>
     </div>
