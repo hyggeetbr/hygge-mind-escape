@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -52,6 +52,10 @@ const ThemeSelector = ({ onThemeChange }: ThemeSelectorProps) => {
   const { toast } = useToast();
   const [selectedTheme, setSelectedTheme] = useState(themes[0].id);
   const [loading, setLoading] = useState(true);
+  const [hasLoadedInitialTheme, setHasLoadedInitialTheme] = useState(false);
+
+  // Memoize the theme change callback to prevent unnecessary re-renders
+  const stableOnThemeChange = useCallback(onThemeChange, []);
 
   useEffect(() => {
     const loadUserTheme = async () => {
@@ -73,11 +77,12 @@ const ThemeSelector = ({ onThemeChange }: ThemeSelectorProps) => {
           return;
         }
 
-        if (data?.theme_preference) {
+        if (data?.theme_preference && !hasLoadedInitialTheme) {
           const theme = themes.find(t => t.id === data.theme_preference);
           if (theme) {
             setSelectedTheme(theme.id);
-            onThemeChange(theme.background);
+            stableOnThemeChange(theme.background);
+            setHasLoadedInitialTheme(true);
           }
         }
       } catch (error) {
@@ -87,13 +92,15 @@ const ThemeSelector = ({ onThemeChange }: ThemeSelectorProps) => {
       }
     };
 
-    loadUserTheme();
-  }, [user, onThemeChange]);
+    if (!hasLoadedInitialTheme) {
+      loadUserTheme();
+    }
+  }, [user, stableOnThemeChange, hasLoadedInitialTheme]);
 
   const handleThemeSelect = async (theme: Theme) => {
     // Immediately update the UI state to prevent flickering
     setSelectedTheme(theme.id);
-    onThemeChange(theme.background);
+    stableOnThemeChange(theme.background);
 
     if (!user) return;
 
