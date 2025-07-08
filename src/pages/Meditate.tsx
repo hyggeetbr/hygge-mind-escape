@@ -2,21 +2,65 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowLeft, Home, Users, Bot, Music, Zap, Play, Clock } from "lucide-react";
-import { useVideoTracks } from "@/hooks/useVideoTracks";
-import { VideoPlayer } from "@/components/VideoPlayer";
+import { ArrowLeft, Home, Users, Bot, Music, Zap, Play, Pause, Square } from "lucide-react";
 
 const Meditate = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const [selectedVideo, setSelectedVideo] = useState<any | null>(null);
-  const { tracks, loading: tracksLoading, incrementViewCount } = useVideoTracks('meditation');
+  const [breathTimerActive, setBreathTimerActive] = useState(false);
+  const [breathTimeLeft, setBreathTimeLeft] = useState(7 * 60); // 7 minutes in seconds
+  const [breathTimerCompleted, setBreathTimerCompleted] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
       navigate("/", { replace: true });
     }
   }, [user, loading, navigate]);
+
+  // Breath Awareness Timer Logic
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (breathTimerActive && breathTimeLeft > 0) {
+      interval = setInterval(() => {
+        setBreathTimeLeft((prev) => {
+          if (prev <= 1) {
+            setBreathTimerActive(false);
+            setBreathTimerCompleted(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [breathTimerActive, breathTimeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  const handleBreathPlayPause = () => {
+    if (breathTimerCompleted) {
+      // Reset meditation
+      setBreathTimeLeft(7 * 60);
+      setBreathTimerCompleted(false);
+      setBreathTimerActive(true);
+    } else {
+      setBreathTimerActive(!breathTimerActive);
+    }
+  };
+
+  const handleBreathStop = () => {
+    setBreathTimerActive(false);
+    setBreathTimeLeft(7 * 60);
+    setBreathTimerCompleted(false);
+  };
 
   if (loading) {
     return (
@@ -35,34 +79,15 @@ const Meditate = () => {
     );
   }
 
-  const handleVideoClick = (video: any) => {
-    setSelectedVideo(video);
-  };
-
   const handleRadhaMeditation = () => {
     navigate("/radha-meditation");
   };
 
-  const formatDuration = (seconds: number | null) => {
-    if (!seconds) return "Unknown";
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
-  if (selectedVideo) {
-    return (
-      <VideoPlayer 
-        video={selectedVideo} 
-        onClose={() => setSelectedVideo(null)}
-        onViewIncrement={incrementViewCount}
-      />
-    );
-  }
-
   const handleBack = () => {
     navigate("/dashboard");
   };
+
+  const breathProgress = ((7 * 60 - breathTimeLeft) / (7 * 60)) * 100;
 
   return (
     <div 
@@ -98,104 +123,135 @@ const Meditate = () => {
       <div className="relative z-10 px-6 pb-24">
         <div className="mb-8 text-center animate-fade-in">
           <h1 className="text-botanical-text-dark text-2xl font-light mb-2">
-            Meditation Videos
+            Meditation Types
           </h1>
           <p className="text-botanical-text-medium text-sm italic">
-            Guided meditation practices for inner peace
+            Choose your meditation practice
           </p>
         </div>
 
         {/* Meditation Types Section */}
-        <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.05s" }}>
-          <h2 className="text-botanical-text-dark text-lg font-medium mb-4">Meditation Types</h2>
-          
-          <div className="space-y-3">
-            {/* Breath Awareness */}
-            <div className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-botanical-sage/20 rounded-full flex items-center justify-center">
-                  <span className="text-2xl">🌬️</span>
-                </div>
-                <div>
-                  <h3 className="font-medium text-botanical-text-dark">Breath Awareness</h3>
-                  <p className="text-botanical-text-medium text-sm">Focus on the natural rhythm of your breath</p>
-                </div>
+        <div className="space-y-6 animate-fade-in" style={{ animationDelay: "0.05s" }}>
+          {/* Breath Awareness with Timer */}
+          <div className="calm-card p-6">
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="w-12 h-12 bg-botanical-sage/20 rounded-full flex items-center justify-center">
+                <span className="text-2xl">🌬️</span>
+              </div>
+              <div>
+                <h3 className="font-medium text-botanical-text-dark">Breath Awareness</h3>
+                <p className="text-botanical-text-medium text-sm">Focus on the natural rhythm of your breath</p>
               </div>
             </div>
 
-            {/* Radha Meditation */}
-            <div 
-              onClick={handleRadhaMeditation}
-              className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
-            >
+            {/* Timer Display */}
+            <div className="flex flex-col items-center space-y-6">
+              {/* Timer Circle */}
+              <div className="relative">
+                <div className="w-40 h-40 rounded-full border-4 border-gray-300 flex items-center justify-center overflow-hidden">
+                  {/* Progress ring */}
+                  <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="none"
+                      stroke="rgba(156, 163, 175, 0.3)"
+                      strokeWidth="2"
+                      className="opacity-30"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="none"
+                      stroke="rgb(156, 163, 175)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeDasharray={`${2 * Math.PI * 45}`}
+                      strokeDashoffset={`${2 * Math.PI * 45 * (1 - breathProgress / 100)}`}
+                      className="transition-all duration-1000 ease-linear"
+                    />
+                  </svg>
+                  
+                  {/* Timer display */}
+                  <div className="text-center">
+                    <div className="text-3xl font-light text-botanical-text-dark mb-1">
+                      {formatTime(breathTimeLeft)}
+                    </div>
+                    <div className="text-botanical-text-medium text-xs uppercase tracking-widest">
+                      {breathTimerCompleted ? "Complete" : breathTimerActive ? "Breathing" : "Ready"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Control Buttons */}
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-2xl">✨</span>
-                </div>
-                <div>
-                  <h3 className="font-medium text-botanical-text-dark">Radha Meditation</h3>
-                  <p className="text-botanical-text-medium text-sm">7-minute cosmic meditation under the stars</p>
-                </div>
+                <button
+                  onClick={handleBreathPlayPause}
+                  className="w-12 h-12 rounded-full bg-botanical-sage/20 flex items-center justify-center text-botanical-text-dark hover:bg-botanical-sage/30 transition-all transform hover:scale-105"
+                >
+                  {breathTimerCompleted ? (
+                    <Play size={20} />
+                  ) : breathTimerActive ? (
+                    <Pause size={20} />
+                  ) : (
+                    <Play size={20} />
+                  )}
+                </button>
+                
+                <button
+                  onClick={handleBreathStop}
+                  className="w-10 h-10 rounded-full bg-white/70 backdrop-blur-md flex items-center justify-center text-botanical-text-dark hover:bg-white/90 transition-all"
+                >
+                  <Square size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Radha Meditation */}
+          <div 
+            onClick={handleRadhaMeditation}
+            className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
+          >
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center">
+                <span className="text-2xl">✨</span>
+              </div>
+              <div>
+                <h3 className="font-medium text-botanical-text-dark">Radha Meditation</h3>
+                <p className="text-botanical-text-medium text-sm">7-minute cosmic meditation under the stars</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Videos Section */}
-        <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <h2 className="text-botanical-text-dark text-lg font-medium mb-4">Available Videos</h2>
-          
-          {tracksLoading ? (
-            <div className="calm-card p-8 text-center">
-              <div className="text-botanical-text-medium animate-pulse">Loading meditation videos...</div>
-            </div>
-          ) : tracks.length === 0 ? (
-            <div className="calm-card p-8 text-center">
-              <div className="text-6xl mb-4">🧘</div>
-              <div className="text-botanical-text-medium mb-2">No meditation videos yet</div>
-              <div className="text-botanical-text-light text-sm">Videos will appear here once uploaded</div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {tracks.map((video, index) => (
-                <div
-                  key={video.id}
-                  onClick={() => handleVideoClick(video)}
-                  className="calm-card p-0 overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 animate-fade-in"
-                  style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+        {/* Completion Message for Breath Awareness */}
+        {breathTimerCompleted && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-30">
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 text-center border border-botanical-purple/20 mx-4">
+              <div className="text-6xl mb-4">🌬️</div>
+              <h2 className="text-botanical-text-dark text-2xl font-light mb-2">Breath Awareness Complete</h2>
+              <p className="text-botanical-text-medium mb-6">You have completed your 7-minute breath awareness session.</p>
+              <div className="flex space-x-4 justify-center">
+                <button
+                  onClick={() => setBreathTimerCompleted(false)}
+                  className="px-6 py-2 bg-botanical-sage/20 text-botanical-text-dark rounded-full hover:bg-botanical-sage/30 transition-all"
                 >
-                  <div className="relative h-32 bg-gradient-to-br from-botanical-purple via-botanical-purple to-botanical-lavender flex items-center justify-between px-6">
-                    <div className="flex items-center space-x-4">
-                      <Play className="w-12 h-12 text-white opacity-80" />
-                      <div className="text-white text-lg font-medium">{video.title.toUpperCase()}</div>
-                    </div>
-                    <div className="flex items-center space-x-2 text-white/80 text-sm">
-                      <div className="w-4 h-4 rounded bg-white/20 flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded"></div>
-                      </div>
-                      <span>{video.view_count} views</span>
-                      {video.duration_seconds && (
-                        <>
-                          <span>•</span>
-                          <div className="flex items-center space-x-1">
-                            <Clock className="w-3 h-3" />
-                            <span>{formatDuration(video.duration_seconds)}</span>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <div className="font-medium text-botanical-text-dark mb-1">{video.title}</div>
-                    {video.description && (
-                      <div className="text-botanical-text-medium text-sm">{video.description}</div>
-                    )}
-                  </div>
-                </div>
-              ))}
+                  Continue
+                </button>
+                <button
+                  onClick={() => setBreathTimerCompleted(false)}
+                  className="px-6 py-2 bg-white/70 text-botanical-text-dark rounded-full hover:bg-white/90 transition-all"
+                >
+                  Close
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom Navigation */}
