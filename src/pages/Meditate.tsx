@@ -1,7 +1,8 @@
+
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowLeft, Home, Users, Bot, Music, Zap } from "lucide-react";
+import { ArrowLeft, Home, Users, Bot, Music, Zap, Play, Clock } from "lucide-react";
 import { useVideoTracks } from "@/hooks/useVideoTracks";
 import { VideoPlayer } from "@/components/VideoPlayer";
 
