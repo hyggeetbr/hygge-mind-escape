@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Calendar, Target, Trophy, Book, Music, Palette, Home, Users, Bot, Zap, User, Settings } from "lucide-react";
@@ -104,10 +105,10 @@ const Dashboard = () => {
     document.body.style.backgroundImage = newBackground;
   };
 
-  // Calculate progress percentages
-  const meditationProgress = Math.min((meditationMinutes / 20) * 100, 100);
-  const yogaProgress = Math.min((yogaMinutes / 30) * 100, 100);
-  const readingProgress = Math.min((readingMinutes / 15) * 100, 100);
+  // Calculate progress percentages - all activities now have 7 minute goals
+  const meditationProgress = Math.min((meditationMinutes / 7) * 100, 100);
+  const yogaProgress = Math.min((yogaMinutes / 7) * 100, 100);
+  const readingProgress = Math.min((readingMinutes / 7) * 100, 100);
 
   if (loading) {
     return (
@@ -185,7 +186,7 @@ const Dashboard = () => {
               </div>
               <Calendar className="w-4 h-4 text-orange-500 mb-1" />
               <h3 className="text-sm font-medium text-gray-800">Meditation</h3>
-              <p className="text-xs text-gray-600">{meditationMinutes} / 20 min</p>
+              <p className="text-xs text-gray-600">{meditationMinutes} / 7 min</p>
             </div>
 
             {/* Yoga Progress Circle */}
@@ -211,7 +212,7 @@ const Dashboard = () => {
               </div>
               <Target className="w-4 h-4 text-purple-500 mb-1" />
               <h3 className="text-sm font-medium text-gray-800">Yoga</h3>
-              <p className="text-xs text-gray-600">{yogaMinutes} / 30 min</p>
+              <p className="text-xs text-gray-600">{yogaMinutes} / 7 min</p>
             </div>
 
             {/* Reading Progress Circle */}
@@ -237,7 +238,7 @@ const Dashboard = () => {
               </div>
               <Book className="w-4 h-4 text-blue-500 mb-1" />
               <h3 className="text-sm font-medium text-gray-800">Reading</h3>
-              <p className="text-xs text-gray-600">{readingMinutes} / 15 min</p>
+              <p className="text-xs text-gray-600">{readingMinutes} / 7 min</p>
             </div>
           </CardContent>
         </Card>
@@ -300,22 +301,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
-
-        {/* Daily Inspiration */}
-        <Card className="animate-fade-in glass-effect">
-          <CardHeader>
-            <CardTitle className="text-gray-800">Daily Inspiration</CardTitle>
-            <CardDescription className="text-gray-600">
-              A quote to brighten your day
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <blockquote className="text-lg italic text-gray-700">
-              "The mind is everything. What you think you become."
-            </blockquote>
-            <p className="text-sm text-gray-500">— Buddha</p>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Theme Selector */}
