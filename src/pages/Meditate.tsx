@@ -5,13 +5,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { ArrowLeft, Volume2, Play, Clock } from "lucide-react";
 import { useVideoTracks } from "@/hooks/useVideoTracks";
 import { VideoPlayer } from "@/components/VideoPlayer";
-import ThemeSelector from "@/components/ThemeSelector";
 
 const Meditate = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [selectedVideo, setSelectedVideo] = useState<any | null>(null);
-  const [currentBackground, setCurrentBackground] = useState("url('/lovable-uploads/8ec4329a-116c-403a-85d5-6d85d61efc18.png')");
   const { tracks, loading: tracksLoading, incrementViewCount } = useVideoTracks('meditation');
 
   useEffect(() => {
@@ -25,7 +23,7 @@ const Meditate = () => {
       <div 
         className="min-h-screen flex items-center justify-center relative overflow-hidden"
         style={{ 
-          background: currentBackground,
+          backgroundImage: "url('/lovable-uploads/3b468853-d557-4c9b-a5b1-3b7d5c1b40d8.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
@@ -66,7 +64,7 @@ const Meditate = () => {
     <div 
       className="min-h-screen relative overflow-hidden"
       style={{ 
-        background: currentBackground,
+        backgroundImage: "url('/lovable-uploads/3b468853-d557-4c9b-a5b1-3b7d5c1b40d8.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -126,12 +124,12 @@ const Meditate = () => {
                   className="calm-card p-0 overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 animate-fade-in"
                   style={{ animationDelay: `${0.2 + index * 0.1}s` }}
                 >
-                  <div className="relative h-32 bg-gradient-to-br from-botanical-purple via-botanical-purple to-botanical-lavender flex items-center justify-center">
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                  <div className="relative h-32 bg-gradient-to-br from-botanical-purple via-botanical-purple to-botanical-lavender flex items-center justify-between px-6">
+                    <div className="flex items-center space-x-4">
                       <Play className="w-12 h-12 text-white opacity-80" />
+                      <div className="text-white text-lg font-medium">{video.title.toUpperCase()}</div>
                     </div>
-                    <div className="text-white text-lg font-medium z-10">{video.title.toUpperCase()}</div>
-                    <div className="absolute bottom-3 left-4 flex items-center space-x-2 text-white/80 text-sm">
+                    <div className="flex items-center space-x-2 text-white/80 text-sm">
                       <div className="w-4 h-4 rounded bg-white/20 flex items-center justify-center">
                         <div className="w-2 h-2 bg-white rounded"></div>
                       </div>
@@ -157,25 +155,6 @@ const Meditate = () => {
               ))}
             </div>
           )}
-        </div>
-
-        {/* Categories */}
-        <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="calm-card p-4 text-center">
-              <div className="w-12 h-12 bg-botanical-blue/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <span className="text-botanical-blue text-xl">🧘</span>
-              </div>
-              <div className="font-medium text-botanical-text-dark text-sm">Meditation</div>
-            </div>
-
-            <div className="calm-card p-4 text-center">
-              <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <span className="text-orange-500 text-xl">🎵</span>
-              </div>
-              <div className="font-medium text-botanical-text-dark text-sm">Music</div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -277,8 +256,6 @@ const Meditate = () => {
           </div>
         </div>
       </div>
-
-      <ThemeSelector onThemeChange={setCurrentBackground} />
     </div>
   );
 };
