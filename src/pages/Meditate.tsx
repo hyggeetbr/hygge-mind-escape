@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -132,81 +131,18 @@ const Meditate = () => {
 
         {/* Meditation Types Section */}
         <div className="space-y-6 animate-fade-in" style={{ animationDelay: "0.05s" }}>
-          {/* Breath Awareness with Timer */}
-          <div className="calm-card p-6">
-            <div className="flex items-center space-x-4 mb-6">
+          {/* Breath Awareness - now clickable */}
+          <div 
+            onClick={() => navigate("/breath-awareness")}
+            className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
+          >
+            <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-botanical-sage/20 rounded-full flex items-center justify-center">
                 <span className="text-2xl">🌬️</span>
               </div>
               <div>
                 <h3 className="font-medium text-botanical-text-dark">Breath Awareness</h3>
-                <p className="text-botanical-text-medium text-sm">Focus on the natural rhythm of your breath</p>
-              </div>
-            </div>
-
-            {/* Timer Display */}
-            <div className="flex flex-col items-center space-y-6">
-              {/* Timer Circle */}
-              <div className="relative">
-                <div className="w-40 h-40 rounded-full border-4 border-gray-300 flex items-center justify-center overflow-hidden">
-                  {/* Progress ring */}
-                  <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      stroke="rgba(156, 163, 175, 0.3)"
-                      strokeWidth="2"
-                      className="opacity-30"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      stroke="rgb(156, 163, 175)"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 45}`}
-                      strokeDashoffset={`${2 * Math.PI * 45 * (1 - breathProgress / 100)}`}
-                      className="transition-all duration-1000 ease-linear"
-                    />
-                  </svg>
-                  
-                  {/* Timer display */}
-                  <div className="text-center">
-                    <div className="text-3xl font-light text-botanical-text-dark mb-1">
-                      {formatTime(breathTimeLeft)}
-                    </div>
-                    <div className="text-botanical-text-medium text-xs uppercase tracking-widest">
-                      {breathTimerCompleted ? "Complete" : breathTimerActive ? "Breathing" : "Ready"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Control Buttons */}
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={handleBreathPlayPause}
-                  className="w-12 h-12 rounded-full bg-botanical-sage/20 flex items-center justify-center text-botanical-text-dark hover:bg-botanical-sage/30 transition-all transform hover:scale-105"
-                >
-                  {breathTimerCompleted ? (
-                    <Play size={20} />
-                  ) : breathTimerActive ? (
-                    <Pause size={20} />
-                  ) : (
-                    <Play size={20} />
-                  )}
-                </button>
-                
-                <button
-                  onClick={handleBreathStop}
-                  className="w-10 h-10 rounded-full bg-white/70 backdrop-blur-md flex items-center justify-center text-botanical-text-dark hover:bg-white/90 transition-all"
-                >
-                  <Square size={16} />
-                </button>
+                <p className="text-botanical-text-medium text-sm">7-minute focused breathing meditation</p>
               </div>
             </div>
           </div>

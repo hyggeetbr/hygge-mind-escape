@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Meditate from "./pages/Meditate";
+import BreathAwareness from "./pages/BreathAwareness";
 import RadhaMeditation from "./pages/RadhaMeditation";
 import TodaysReading from "./pages/TodaysReading";
 import Yoga from "./pages/Yoga";
@@ -51,6 +52,7 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/meditate" element={<Meditate />} />
+            <Route path="/breath-awareness" element={<BreathAwareness />} />
             <Route path="/radha-meditation" element={<RadhaMeditation />} />
             <Route path="/todays-reading" element={<TodaysReading />} />
             <Route path="/todays-reading/:id" element={<ArticleDetail />} />
