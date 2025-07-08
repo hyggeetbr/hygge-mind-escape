@@ -25,7 +25,10 @@ const WisdomSubcategoryPage = ({ title, description, subcategory, icon, color }:
   const { tracks, loading, incrementPlayCount } = useAudioTracks('daily_wisdom', subcategory);
   const { likedTracks, toggleLike, isTrackLiked } = useUserLikes();
 
+  console.log('WisdomSubcategoryPage - subcategory:', subcategory, 'tracks:', tracks);
+
   const handlePlayTrack = (track: any, trackList: any[]) => {
+    console.log('Playing track in WisdomSubcategoryPage:', track.title, track.id);
     const trackIndex = trackList.findIndex(t => t.id === track.id);
     setCurrentTrackList(trackList);
     setCurrentTrackIndex(trackIndex >= 0 ? trackIndex : 0);
@@ -34,6 +37,7 @@ const WisdomSubcategoryPage = ({ title, description, subcategory, icon, color }:
   };
 
   const handleTrackChange = (newTrack: any, newIndex: number) => {
+    console.log('Track changed to:', newTrack.title);
     setFullScreenTrack(newTrack);
     setCurrentTrackIndex(newIndex);
     incrementPlayCount(newTrack.id);
@@ -118,7 +122,7 @@ const WisdomSubcategoryPage = ({ title, description, subcategory, icon, color }:
         ) : tracks.length === 0 ? (
           <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-lg p-8 text-center">
             <Music className="w-12 h-12 text-white/30 mx-auto mb-4" />
-            <p className="text-white/60 mb-2">No tracks yet</p>
+            <p className="text-white/60 mb-2">No tracks yet for {subcategory}</p>
             <p className="text-white/40 text-sm">Audio tracks will appear here once uploaded</p>
           </div>
         ) : (
@@ -151,6 +155,7 @@ const WisdomSubcategoryPage = ({ title, description, subcategory, icon, color }:
                         <span>{track.play_count} plays</span>
                         {track.artist && <span>• {track.artist}</span>}
                       </div>
+                      <div className="text-white/40 text-xs mt-1">Category: {track.subcategory}</div>
                     </div>
                   </div>
                   <Button

@@ -70,26 +70,42 @@ export const useAudioTracks = (category?: string, subcategory?: string) => {
 
   const incrementPlayCount = async (trackId: string) => {
     try {
+      console.log('Incrementing play count for track:', trackId);
+      
       // Record the play
-      await supabase
+      const { error: playError } = await supabase
         .from('audio_plays')
         .insert({
           track_id: trackId,
           user_id: (await supabase.auth.getUser()).data.user?.id || null
         });
 
+      if (playError) {
+        console.error('Error recording play:', playError);
+      }
+
       // Get current play count and increment it
-      const { data: trackData } = await supabase
+      const { data: trackData, error: fetchError } = await supabase
         .from('audio_tracks')
         .select('play_count')
         .eq('id', trackId)
         .single();
 
+      if (fetchError) {
+        console.error('Error fetching track data:', fetchError);
+        return;
+      }
+
       if (trackData) {
-        await supabase
+        const { error: updateError } = await supabase
           .from('audio_tracks')
           .update({ play_count: trackData.play_count + 1 })
           .eq('id', trackId);
+
+        if (updateError) {
+          console.error('Error updating play count:', updateError);
+          return;
+        }
 
         // Update local state
         setTracks(prev => prev.map(track => 
@@ -97,6 +113,8 @@ export const useAudioTracks = (category?: string, subcategory?: string) => {
             ? { ...track, play_count: track.play_count + 1 }
             : track
         ));
+
+        console.log('Successfully incremented play count for track:', trackId);
       }
     } catch (error) {
       console.error('Error incrementing play count:', error);
