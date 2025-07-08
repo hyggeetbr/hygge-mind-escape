@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Calendar, Target, Trophy, Book, Music, Palette, Home, Users, Bot, Zap, User, Settings } from "lucide-react";
@@ -243,69 +242,64 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Large Action Buttons */}
-        <div className="grid grid-cols-1 gap-4 mb-6 animate-fade-in">
+        {/* Main Activity Buttons - Horizontal Layout */}
+        <div className="grid grid-cols-3 gap-4 mb-6 animate-fade-in">
           <Card 
-            className="bg-gradient-to-r from-orange-400/20 to-orange-600/20 hover:from-orange-400/30 hover:to-orange-600/30 transition-all duration-300 cursor-pointer border-orange-200/30 backdrop-blur-md"
+            className="bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 transition-all duration-300 cursor-pointer border-orange-200 shadow-lg hover:shadow-xl"
             onClick={() => navigate("/meditate")}
           >
-            <CardContent className="flex items-center p-6">
-              <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mr-4">
-                <Calendar className="w-8 h-8 text-orange-600" />
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Calendar className="w-6 h-6 text-white" />
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-800">Meditate</h3>
-                <p className="text-gray-600">Find your inner peace and calm your mind</p>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">Meditate</h3>
+              <p className="text-sm text-gray-600">Find inner peace</p>
             </CardContent>
           </Card>
 
           <Card 
-            className="bg-gradient-to-r from-purple-400/20 to-purple-600/20 hover:from-purple-400/30 hover:to-purple-600/30 transition-all duration-300 cursor-pointer border-purple-200/30 backdrop-blur-md"
+            className="bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 transition-all duration-300 cursor-pointer border-purple-200 shadow-lg hover:shadow-xl"
             onClick={() => navigate("/yoga")}
           >
-            <CardContent className="flex items-center p-6">
-              <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mr-4">
-                <Target className="w-8 h-8 text-purple-600" />
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Target className="w-6 h-6 text-white" />
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-800">Yoga</h3>
-                <p className="text-gray-600">Strengthen your body and enhance flexibility</p>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">Yoga</h3>
+              <p className="text-sm text-gray-600">Strengthen body</p>
             </CardContent>
           </Card>
 
           <Card 
-            className="bg-gradient-to-r from-blue-400/20 to-blue-600/20 hover:from-blue-400/30 hover:to-blue-600/30 transition-all duration-300 cursor-pointer border-blue-200/30 backdrop-blur-md"
+            className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 transition-all duration-300 cursor-pointer border-blue-200 shadow-lg hover:shadow-xl"
             onClick={() => navigate("/todays-reading")}
           >
-            <CardContent className="flex items-center p-6">
-              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mr-4">
-                <Book className="w-8 h-8 text-blue-600" />
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Book className="w-6 h-6 text-white" />
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-800">Reading</h3>
-                <p className="text-gray-600">Expand your knowledge with curated articles</p>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">Reading</h3>
+              <p className="text-sm text-gray-600">Expand knowledge</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Goal Setting Button */}
-        <Card 
-          className="mb-6 animate-fade-in bg-gradient-to-r from-green-400/20 to-green-600/20 hover:from-green-400/30 hover:to-green-600/30 transition-all duration-300 cursor-pointer border-green-200/30 backdrop-blur-md"
-          onClick={() => navigate("/goal-setting")}
-        >
-          <CardContent className="flex items-center p-4">
-            <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mr-4">
-              <Trophy className="w-6 h-6 text-green-600" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-800">Set Goals</h3>
-              <p className="text-sm text-gray-600">Define your personal wellness objectives</p>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Get More From Hygge Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Get More From Hygge</h2>
+          <Card 
+            className="animate-fade-in bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 transition-all duration-300 cursor-pointer border-green-200 shadow-lg hover:shadow-xl max-w-xs"
+            onClick={() => navigate("/goal-setting")}
+          >
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Trophy className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">Set Goals</h3>
+              <p className="text-sm text-gray-600">Define wellness objectives</p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Daily Inspiration */}
         <Card className="animate-fade-in glass-effect">
