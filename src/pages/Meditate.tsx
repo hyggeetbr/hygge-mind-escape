@@ -39,6 +39,10 @@ const Meditate = () => {
     setSelectedVideo(video);
   };
 
+  const handleRadhaMeditation = () => {
+    navigate("/radha-meditation");
+  };
+
   const formatDuration = (seconds: number | null) => {
     if (!seconds) return "Unknown";
     const minutes = Math.floor(seconds / 60);
@@ -99,6 +103,42 @@ const Meditate = () => {
           <p className="text-botanical-text-medium text-sm italic">
             Guided meditation practices for inner peace
           </p>
+        </div>
+
+        {/* Meditation Types Section */}
+        <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.05s" }}>
+          <h2 className="text-botanical-text-dark text-lg font-medium mb-4">Meditation Types</h2>
+          
+          <div className="space-y-3">
+            {/* Breath Awareness */}
+            <div className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-botanical-sage/20 rounded-full flex items-center justify-center">
+                  <span className="text-2xl">🌬️</span>
+                </div>
+                <div>
+                  <h3 className="font-medium text-botanical-text-dark">Breath Awareness</h3>
+                  <p className="text-botanical-text-medium text-sm">Focus on the natural rhythm of your breath</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Radha Meditation */}
+            <div 
+              onClick={handleRadhaMeditation}
+              className="calm-card p-4 cursor-pointer transform transition-all duration-300 hover:scale-105"
+            >
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-2xl">✨</span>
+                </div>
+                <div>
+                  <h3 className="font-medium text-botanical-text-dark">Radha Meditation</h3>
+                  <p className="text-botanical-text-medium text-sm">7-minute cosmic meditation under the stars</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Videos Section */}
