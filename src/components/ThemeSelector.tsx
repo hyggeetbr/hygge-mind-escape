@@ -69,6 +69,7 @@ const ThemeSelector = ({ onThemeChange }: ThemeSelectorProps) => {
 
         if (error) {
           console.error('Error fetching user theme:', error);
+          setLoading(false);
           return;
         }
 
@@ -90,11 +91,13 @@ const ThemeSelector = ({ onThemeChange }: ThemeSelectorProps) => {
   }, [user, onThemeChange]);
 
   const handleThemeSelect = async (theme: Theme) => {
+    // Immediately update the UI state to prevent flickering
     setSelectedTheme(theme.id);
     onThemeChange(theme.background);
 
     if (!user) return;
 
+    // Save to database in the background without affecting UI
     try {
       const { error } = await supabase
         .from('user_profiles')
