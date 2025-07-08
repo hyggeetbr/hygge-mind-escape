@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Volume2 } from "lucide-react";
+import { ArrowLeft, Home, Users, Bot, Music, Zap } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -195,62 +195,34 @@ const Yoga = () => {
             onClick={() => navigate("/dashboard")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-white/60"
-              >
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9,22 9,12 15,12 15,22"/>
-              </svg>
+              <Home className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Home</span>
-          </div>
-          <div
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={() => navigate("/sounds")}
-          >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <Volume2 className="w-4 h-4 text-white/60" />
-            </div>
-            <span className="text-white/60 text-xs">Sounds</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/discover")}
           >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">🔍</div>
-            <span className="text-white/60 text-xs">Discover</span>
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <Music className="w-4 h-4 text-white/60" />
+            </div>
+            <span className="text-white/60 text-xs">Echo</span>
+          </div>
+          <div 
+            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
+            onClick={() => navigate("/pulse")}
+          >
+            <div className="w-6 h-6 text-white/60 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-white/60" />
+            </div>
+            <span className="text-white/60 text-xs">Pulse</span>
           </div>
           <div 
             className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
             onClick={() => navigate("/community")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-white/60"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="m22 21-3-3"/>
-                <path d="m16 18 3 3"/>
-              </svg>
+              <Users className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Community</span>
           </div>
@@ -259,29 +231,9 @@ const Yoga = () => {
             onClick={() => navigate("/ask-ai")}
           >
             <div className="w-6 h-6 text-white/60 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-white/60"
-              >
-                <path d="M12 8V4M4 8H20M6.9 15H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2M17 15h1.9a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2M15 8a3 3 0 1 0-6 0"/>
-              </svg>
+              <Bot className="w-4 h-4 text-white/60" />
             </div>
             <span className="text-white/60 text-xs">Lumina</span>
-          </div>
-          <div 
-            className="flex flex-col items-center space-y-1 min-w-0 flex-1 cursor-pointer"
-            onClick={() => navigate("/premium")}
-          >
-            <div className="w-6 h-6 text-white/60 flex items-center justify-center">⭐</div>
-            <span className="text-white/60 text-xs">Premium</span>
           </div>
         </div>
       </div>
