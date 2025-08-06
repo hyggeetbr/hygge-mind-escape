@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { User, Session } from '@supabase/supabase-js'
 // Change: use the real client, NOT the mock!
@@ -40,6 +41,9 @@ export const useAuth = () => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: window.location.origin,
+      },
     })
     console.log("useAuth: Sign up result:", { data, error });
     return { data, error }
